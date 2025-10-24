@@ -1,0 +1,12 @@
+{
+  "title": "Dashboard",
+  "description": "This is a demo of the EMR Blockchain System with multi-language support (EN/AR) and theme switching (Light/Dark). The URL stays the same when switching languages!",
+  "overview": "Overview",
+  "recentActivities": "Recent Activities",
+  "quickActions": "Quick Actions",
+  "statistics": "Statistics",
+  "totalPatients": "Total Patients",
+  "totalRecords": "Total Records",
+  "pendingReviews": "Pending Reviews",
+  "todayAppointments": "Today's Appointments"
+}
