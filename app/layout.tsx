@@ -5,6 +5,7 @@ import { getMessages } from "next-intl/server";
 import { cookies } from "next/headers";
 import { ThemeProvider } from "@/contexts/ThemeProvider";
 import { LanguageProvider } from "@/contexts/LanguageProvider";
+import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -44,6 +45,7 @@ export default async function RootLayout({
           <ThemeProvider>
             <LanguageProvider initialLocale={locale}>
               {children}
+              <Toaster />
             </LanguageProvider>
           </ThemeProvider>
         </NextIntlClientProvider>

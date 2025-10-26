@@ -5,7 +5,7 @@ import { LanguageSwitcher } from "@/components/common/LanguageSwitcher";
 import { ThemeSwitcher } from "@/components/common/ThemeSwitcher";
 
 export default function Home() {
-  const t = useTranslations();
+  const t = useTranslations("");
 
   return (
     <div className="min-h-screen p-8">
