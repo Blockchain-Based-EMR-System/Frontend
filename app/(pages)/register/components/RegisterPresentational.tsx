@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { LoginForm, LoginFormData } from "./LoginForm";
-import { GoogleLoginButton } from "./GoogleLoginButton";
+import { RegisterForm, RegisterFormData } from "./RegisterForm";
+import { GoogleLoginButton } from "../../../../components/common/GoogleLoginButton";
 import {
   Card,
   CardContent,
@@ -11,27 +11,29 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export interface LoginPresentationalProps {
+export interface RegisterPresentationalProps {
   isLoading: boolean;
-  handleLogin: (data: LoginFormData) => Promise<void>;
-  handleGoogleLogin: () => Promise<void>;
+  handleRegister: (data: RegisterFormData) => Promise<void>;
+  handleGoogleRegister: () => Promise<void>;
   t: (key: string) => string;
 }
 
-export function LoginPresentational({
+export function RegisterPresentational({
   isLoading,
-  handleLogin,
-  handleGoogleLogin,
+  handleRegister,
+  handleGoogleRegister,
   t,
-}: LoginPresentationalProps) {
+}: RegisterPresentationalProps) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-background to-muted p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-2xl font-bold">{t("welcomeBack")}</CardTitle>
+          <CardTitle className="text-2xl font-bold">
+            {t("createAccount")}
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <LoginForm onSubmit={handleLogin} isLoading={isLoading} />
+          <RegisterForm onSubmit={handleRegister} isLoading={isLoading} />
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
@@ -45,19 +47,19 @@ export function LoginPresentational({
           </div>
 
           <GoogleLoginButton
-            onClick={handleGoogleLogin}
+            onClick={handleGoogleRegister}
             isLoading={isLoading}
-            text= {t("continueWithGoogle")}
+            text={t("registerWithGoogle")}
           />
         </CardContent>
         <CardFooter className="flex flex-col space-y-2">
           <div className="text-sm text-center text-muted-foreground">
-            {t("dontHaveAccount")}{" "}
+            {t("alreadyHaveAccount")}{" "}
             <Link
-              href="/register"
+              href="/login"
               className="text-primary hover:underline font-medium"
             >
-              {t("signUp")}
+              {t("signIn")}
             </Link>
           </div>
         </CardFooter>

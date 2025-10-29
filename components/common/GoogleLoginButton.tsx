@@ -7,22 +7,24 @@ interface GoogleLoginButtonProps {
   onClick: () => void;
   isLoading?: boolean;
   text: string;
+  iconSize?: number;
 }
 
 export function GoogleLoginButton({
   onClick,
   isLoading,
   text,
+  iconSize = 4,
 }: GoogleLoginButtonProps) {
   return (
     <Button
       type="button"
-      variant="outline"
-      className="w-full"
+      variant="default"
+      className="w-full flex justify-center items-center gap-2"
       onClick={onClick}
       disabled={isLoading}
     >
-      <Chrome className="mr-2 h-4 w-4" />
+      <Chrome className={`h-${iconSize} w-${iconSize}`} />
       {text}
     </Button>
   );
