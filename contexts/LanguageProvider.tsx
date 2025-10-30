@@ -28,18 +28,13 @@ export function LanguageProvider({
   const direction = locale === "ar" ? "rtl" : "ltr";
 
   useEffect(() => {
-    // Update document direction and lang
     document.documentElement.dir = direction;
     document.documentElement.lang = locale;
   }, [locale, direction]);
 
   const setLocale = async (newLocale: Locale) => {
     setLocaleState(newLocale);
-
-    // Set cookie for persistence
     document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
-
-    // Refresh to apply new locale (without changing URL)
     router.refresh();
   };
 
