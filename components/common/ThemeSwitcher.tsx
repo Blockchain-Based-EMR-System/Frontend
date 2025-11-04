@@ -12,7 +12,6 @@ export function ThemeSwitcher() {
     setMounted(true);
   }, []);
 
-  // Prevent hydration mismatch by not rendering until mounted
   if (!mounted) {
     return (
       <button

@@ -1,7 +1,7 @@
 "use client";
 
-import { RegisterContainer } from "./components/RegisterContainer";
-import { RegisterPresentational } from "./components/RegisterPresentational";
+import { RegisterContainer } from "@/features/register/components/RegisterContainer";
+import { RegisterPresentational } from "@/features/register/components/RegisterPresentational";
 
 export default function RegisterPage() {
   return (

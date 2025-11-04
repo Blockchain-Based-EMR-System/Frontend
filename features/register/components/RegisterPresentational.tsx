@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { RegisterForm, RegisterFormData } from "./RegisterForm";
-import { GoogleLoginButton } from "../../../../components/common/GoogleLoginButton";
+import { RegisterForm, RegisterFormData } from "./registerForm/RegisterForm";
+import { GoogleLoginButton } from "@/components/common/GoogleLoginButton";
 import {
   Card,
   CardContent,

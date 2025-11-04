@@ -2,13 +2,13 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageProvider";
+import { createRegisterSchema } from "./registerSchema";
 
 interface RegisterFormProps {
   onSubmit: (data: RegisterFormData) => Promise<void>;
@@ -29,30 +29,12 @@ export function RegisterForm({ onSubmit, isLoading }: RegisterFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const registerSchema = z
-    .object({
-      fullName: z.string().min(2, { message: t("fullNameRequired") }),
-      email: z.string().email({ message: t("invalidEmail") }),
-      phoneNumber: z
-        .string()
-        .min(10, { message: t("phoneNumberTooShort") })
-        .regex(/^[0-9+\-\s()]*$/, { message: t("invalidPhoneNumber") }),
-      password: z.string().min(8, { message: t("passwordTooShort") }),
-      confirmPassword: z
-        .string()
-        .min(1, { message: t("confirmPasswordRequired") }),
-    })
-    .refine((data) => data.password === data.confirmPassword, {
-      message: t("passwordMismatch"),
-      path: ["confirmPassword"],
-    });
-
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<RegisterFormData>({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(createRegisterSchema(t)),
     defaultValues: {
       fullName: "",
       email: "",

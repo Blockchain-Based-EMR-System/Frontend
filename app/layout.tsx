@@ -5,6 +5,7 @@ import { getMessages } from "next-intl/server";
 import { cookies } from "next/headers";
 import { ThemeProvider } from "@/contexts/ThemeProvider";
 import { LanguageProvider } from "@/contexts/LanguageProvider";
+import { QueryProvider } from "@/contexts/QueryProvider";
 import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 
@@ -41,14 +42,16 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NextIntlClientProvider messages={messages} locale={locale}>
-          <ThemeProvider>
-            <LanguageProvider initialLocale={locale}>
-              {children}
-              <Toaster />
-            </LanguageProvider>
-          </ThemeProvider>
-        </NextIntlClientProvider>
+        <QueryProvider>
+          <NextIntlClientProvider messages={messages} locale={locale}>
+            <ThemeProvider>
+              <LanguageProvider initialLocale={locale}>
+                {children}
+                <Toaster />
+              </LanguageProvider>
+            </ThemeProvider>
+          </NextIntlClientProvider>
+        </QueryProvider>
       </body>
     </html>
   );

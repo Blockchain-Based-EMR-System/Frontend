@@ -2,13 +2,13 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageProvider";
+import { createLoginSchema } from "./LoginSchema";
 
 interface LoginFormProps {
   onSubmit: (data: LoginFormData) => Promise<void>;
@@ -26,18 +26,12 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
   const language = useLanguage();
   const [showPassword, setShowPassword] = useState(false);
 
-  const loginSchema = z.object({
-    emailOrUsername: z.string().min(1, { message: t("emailRequired") }),
-    password: z.string().min(8, { message: t("passwordTooShort") }),
-    rememberMe: z.boolean().optional().default(false),
-  });
-
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(createLoginSchema(t)),
     defaultValues: {
       emailOrUsername: "",
       password: "",
@@ -79,7 +73,9 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className={`absolute top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground ${language.locale === "ar" ? "left-3" : "right-3"}`}
+              className={`absolute top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground ${
+                language.locale === "ar" ? "left-3" : "right-3"
+              }`}
               disabled={isLoading}
             >
               {showPassword ? (
@@ -90,10 +86,11 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
             </button>
           </div>
           {errors.password && (
-            <p className="text-sm text-destructive">{errors.password.message}</p>
+            <p className="text-sm text-destructive">
+              {errors.password.message}
+            </p>
           )}
         </div>
-
 
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? (

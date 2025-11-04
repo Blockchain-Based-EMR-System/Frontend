@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { LoginForm, LoginFormData } from "./LoginForm";
-import { GoogleLoginButton } from "../../../../components/common/GoogleLoginButton";
+import { LoginForm, LoginFormData } from "./loginForm/LoginForm";
+import { GoogleLoginButton } from "@/components/common/GoogleLoginButton";
 import {
   Card,
   CardContent,

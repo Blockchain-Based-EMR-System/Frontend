@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { RegisterFormData } from "./RegisterForm";
-import { useToast } from "@/hooks/use-toast";
+import { RegisterFormData } from "./registerForm/RegisterForm";
+import { useToast } from "@/hooks/useToast";
 
 export interface RegisterContainerProps {
   children: (props: RegisterPresentationalProps) => React.ReactNode;

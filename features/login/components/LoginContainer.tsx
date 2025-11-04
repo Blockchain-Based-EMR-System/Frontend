@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { LoginFormData } from "./LoginForm";
-import { useToast } from "@/hooks/use-toast";
+import { LoginFormData } from "./loginForm/LoginForm";
+import { useToast } from "@/hooks/useToast";
 
 export interface LoginContainerProps {
   children: (props: LoginPresentationalProps) => React.ReactNode;
@@ -28,7 +28,6 @@ export function LoginContainer({ children }: LoginContainerProps) {
         title: t("loginSuccess"),
         description: t("welcomeBack"),
       });
-
     } catch (error: any) {
       toast({
         title: t("loginError"),
@@ -50,7 +49,6 @@ export function LoginContainer({ children }: LoginContainerProps) {
         title: t("loginSuccess"),
         description: t("welcomeBack"),
       });
-
     } catch (error: any) {
       toast({
         title: t("loginError"),

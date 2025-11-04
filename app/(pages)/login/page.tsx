@@ -1,7 +1,7 @@
 "use client";
 
-import { LoginContainer } from "./components/LoginContainer";
-import { LoginPresentational } from "./components/LoginPresentational";
+import { LoginContainer } from "@/features/login/components/LoginContainer";
+import { LoginPresentational } from "@/features/login/components/LoginPresentational";
 
 export default function LoginPage() {
   return (
