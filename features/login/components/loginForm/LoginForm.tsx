@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
@@ -92,6 +93,28 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
           )}
         </div>
 
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="rememberMe"
+              {...register("rememberMe")}
+              disabled={isLoading}
+            />
+            <label
+              htmlFor="rememberMe"
+              className="text-sm font-medium text-primary leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+            >
+              {t("rememberMe")}
+            </label>
+          </div>
+          <a
+            href="/forgot-password"
+            className="text-sm text-primary hover:underline"
+          >
+            {t("forgotPassword")}
+          </a>
+        </div>
+
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? (
             <>
@@ -103,15 +126,6 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
           )}
         </Button>
       </form>
-
-      <div className="flex items-center justify-center">
-        <a
-          href="/forgot-password"
-          className="text-sm text-primary hover:underline"
-        >
-          {t("forgotPassword")}
-        </a>
-      </div>
     </div>
   );
 }
