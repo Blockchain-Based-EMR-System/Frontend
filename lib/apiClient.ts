@@ -7,7 +7,7 @@ import axios, {
 import { getAuthToken, removeAuthToken } from "./tokenManager";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001/api";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
 
 // single Axios instance
 const axiosInstance = axios.create({
@@ -16,13 +16,14 @@ const axiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true, 
 });
 
-// Adds auth token if available
+
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = getAuthToken();
-    if (token) {
+    if (token && !config.headers.Authorization) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
@@ -32,7 +33,7 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// Response interceptor 
+// Response interceptor
 axiosInstance.interceptors.response.use(
   (response) => {
     return response;
@@ -119,7 +120,7 @@ export class ApiClient {
     return response.data;
   }
 
-  // Helper method to handle skipAuth option
+  // handle skipAuth option
   private prepareConfig(
     config?: AxiosRequestConfig & { skipAuth?: boolean }
   ): AxiosRequestConfig {

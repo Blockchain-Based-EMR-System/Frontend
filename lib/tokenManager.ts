@@ -1,5 +1,6 @@
 import Cookies from "js-cookie";
 
+
 const TOKEN_COOKIE_NAME = "auth_token";
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -13,8 +14,8 @@ export const setAuthToken = (
 ): void => {
   Cookies.set(TOKEN_COOKIE_NAME, token, {
     expires: expiresInDays,
-    secure: isProduction, // HTTPS only in production
-    sameSite: "strict",
+    secure: isProduction, 
+    sameSite: "lax", 
     path: "/",
   });
 };
