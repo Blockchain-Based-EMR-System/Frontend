@@ -13,9 +13,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useTranslations } from "next-intl";
-import { Loader2, Calendar } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { createCompleteProfileSchema } from "./CompleteProfileSchema";
 import { useState } from "react";
+import { format } from "date-fns";
+import { useLanguage } from "@/contexts/LanguageProvider";
+import { DatePickerPopover } from "@/components/common/DatePickerPopover";
 
 interface CompleteProfileFormProps {
   onSubmit: (data: CompleteProfileFormData) => Promise<void>;
@@ -36,8 +39,10 @@ export function CompleteProfileForm({
   requirePhone,
   initialPhone = "",
 }: CompleteProfileFormProps) {
+  const { locale } = useLanguage();
   const t = useTranslations("");
   const [selectedGender, setSelectedGender] = useState<string>("");
+  const [date, setDate] = useState<Date>();
 
   const {
     register,
@@ -86,6 +91,7 @@ export function CompleteProfileForm({
           value={selectedGender}
           onValueChange={handleGenderChange}
           disabled={isLoading}
+          dir={locale === "ar" ? "rtl" : "ltr"}
         >
           <SelectTrigger
             className={`py-5 ${errors.gender ? "border-destructive" : ""}`}
@@ -104,18 +110,23 @@ export function CompleteProfileForm({
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="date_of_birth">{t("dateOfBirth")}</Label>
-        <div className="relative">
-          <Input
-            id="date_of_birth"
-            type="date"
-            {...register("date_of_birth")}
-            disabled={isLoading}
-            aria-invalid={!!errors.date_of_birth}
-            className="py-5"
-            max={new Date().toISOString().split("T")[0]}
-          />
-          <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-        </div>
+        <DatePickerPopover
+          date={date}
+          onDateChange={(selectedDate) => {
+            setDate(selectedDate);
+            if (selectedDate) {
+              setValue("date_of_birth", format(selectedDate, "yyyy-MM-dd"), {
+                shouldValidate: true,
+              });
+            }
+          }}
+          placeholder={t("pickDate")}
+          disabled={isLoading}
+          hasError={!!errors.date_of_birth}
+          fromYear={1900}
+          toYear={new Date().getFullYear()}
+          disableFutureDates={true}
+        />
         {errors.date_of_birth && (
           <p className="text-sm text-destructive">
             {errors.date_of_birth.message}
