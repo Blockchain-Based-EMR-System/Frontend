@@ -12,7 +12,6 @@ export const signupUser = async (
   userData: SignupRequest
 ): Promise<SignupResponse> => {
   return api.post<SignupResponse>("/auth/signup", userData, {
-    skipAuth: true,
   });
 };
 

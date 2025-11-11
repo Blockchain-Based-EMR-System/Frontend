@@ -79,6 +79,7 @@ export const useLogout = (): UseMutationResult<
     onSuccess: (data) => {
       removeAuthToken();
       clearUser();
+      console.log("User logged out successfully");
 
       const successMessage =
         locale === "ar"

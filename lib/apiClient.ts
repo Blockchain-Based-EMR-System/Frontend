@@ -2,51 +2,85 @@ import axios, {
   AxiosInstance,
   AxiosRequestConfig,
   AxiosError,
-  InternalAxiosRequestConfig,
 } from "axios";
-import { getAuthToken, removeAuthToken } from "./tokenManager";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
 
-// single Axios instance
+// Single Axios instance with cookie support
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
   timeout: 30000, // 30 seconds
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true, 
+  withCredentials: true, // CRITICAL: Sends cookies with every request
 });
 
+// Token refresh logic
+let refreshTokenPromise: Promise<any> | null = null;
 
-axiosInstance.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    const token = getAuthToken();
-    if (token && !config.headers.Authorization) {
-      config.headers.Authorization = `Bearer ${token}`;
+const refreshAuthToken = async (): Promise<void> => {
+  try {
+    // Call refresh endpoint - new cookies are set automatically
+    await axiosInstance.post("/auth/refresh");
+    
+    // No manual token storage needed!
+    // Browser automatically updates cookies via Set-Cookie header
+    
+    refreshTokenPromise = null;
+  } catch (error) {
+    refreshTokenPromise = null;
+    
+    if (typeof window !== "undefined") {
+      console.error("❌ Token refresh failed, redirecting to login");
+      
+      // Clear any client-side auth state if you have it
+      localStorage.removeItem('user');
+      sessionStorage.clear();
+      
+      window.location.href = "/login";
     }
-    return config;
-  },
-  (error: AxiosError) => {
-    return Promise.reject(error);
+    
+    throw error;
   }
-);
+};
 
-// Response interceptor
+// Response interceptor - handles 401 errors and token refresh
 axiosInstance.interceptors.response.use(
   (response) => {
     return response;
   },
-  (error: AxiosError) => {
-    if (error.response?.status === 401) {
-      removeAuthToken();
+  async (error: AxiosError) => {
+    const originalRequest = error.config as any;
 
-      if (typeof window !== "undefined") {
-        window.location.href = "/login";
+    // Handle 401 unauthorized errors (expired access token)
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      // If a refresh is already in progress, wait for it
+      if (refreshTokenPromise) {
+        try {
+          await refreshTokenPromise;
+          return axiosInstance(originalRequest);
+        } catch (refreshError) {
+          return Promise.reject(refreshError);
+        }
+      }
+
+      // Start a new token refresh
+      refreshTokenPromise = refreshAuthToken();
+
+      try {
+        await refreshTokenPromise;
+        // Retry the original request with new cookies
+        return axiosInstance(originalRequest);
+      } catch (refreshError) {
+        return Promise.reject(refreshError);
       }
     }
 
+    // Handle network errors
     if (!error.response) {
       console.error("Network error:", error.message);
     }
@@ -62,83 +96,41 @@ export class ApiClient {
     this.client = client;
   }
 
-  async get<T>(
-    url: string,
-    config?: AxiosRequestConfig & { skipAuth?: boolean }
-  ): Promise<T> {
-    const response = await this.client.get<T>(url, this.prepareConfig(config));
+  async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    const response = await this.client.get<T>(url, config);
     return response.data;
   }
 
   async post<T>(
     url: string,
     data?: any,
-    config?: AxiosRequestConfig & { skipAuth?: boolean }
+    config?: AxiosRequestConfig
   ): Promise<T> {
-    const response = await this.client.post<T>(
-      url,
-      data,
-      this.prepareConfig(config)
-    );
+    const response = await this.client.post<T>(url, data, config);
     return response.data;
   }
 
   async put<T>(
     url: string,
     data?: any,
-    config?: AxiosRequestConfig & { skipAuth?: boolean }
+    config?: AxiosRequestConfig
   ): Promise<T> {
-    const response = await this.client.put<T>(
-      url,
-      data,
-      this.prepareConfig(config)
-    );
+    const response = await this.client.put<T>(url, data, config);
     return response.data;
   }
 
   async patch<T>(
     url: string,
     data?: any,
-    config?: AxiosRequestConfig & { skipAuth?: boolean }
+    config?: AxiosRequestConfig
   ): Promise<T> {
-    const response = await this.client.patch<T>(
-      url,
-      data,
-      this.prepareConfig(config)
-    );
+    const response = await this.client.patch<T>(url, data, config);
     return response.data;
   }
 
-  async delete<T>(
-    url: string,
-    config?: AxiosRequestConfig & { skipAuth?: boolean }
-  ): Promise<T> {
-    const response = await this.client.delete<T>(
-      url,
-      this.prepareConfig(config)
-    );
+  async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    const response = await this.client.delete<T>(url, config);
     return response.data;
-  }
-
-  // handle skipAuth option
-  private prepareConfig(
-    config?: AxiosRequestConfig & { skipAuth?: boolean }
-  ): AxiosRequestConfig {
-    if (!config) return {};
-
-    const { skipAuth, ...axiosConfig } = config;
-
-    if (skipAuth) {
-      return {
-        ...axiosConfig,
-        headers: {
-          ...axiosConfig.headers,
-          Authorization: undefined,
-        },
-      };
-    }
-
-    return axiosConfig;
   }
 }
 

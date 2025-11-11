@@ -10,11 +10,11 @@ export const loginUser = async (
   credentials: LoginRequest
 ): Promise<LoginResponse> => {
   return api.post<LoginResponse>("/auth/login", credentials, {
-    skipAuth: true,
   });
 };
 
 export const logoutUser = async (): Promise<LogoutResponse> => {
+  console.log("Logging out user...");
   return api.post<LogoutResponse>("/auth/logout");
 };
 
