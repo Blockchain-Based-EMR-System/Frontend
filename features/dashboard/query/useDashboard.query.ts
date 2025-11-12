@@ -11,23 +11,18 @@ export const useDashboard = (): UseQueryResult<DashboardUser, Error> => {
   return useQuery({
     queryKey: ["dashboard", "user"],
     queryFn: async () => {
-      if (user) {
-        return user as DashboardUser;
-      }
-
       try {
         const userData = await getCurrentUser();
-
         setUser(userData);
-
         return userData as DashboardUser;
       } catch (error) {
-        throw new Error("Failed to load user data. Please login again.");
+        throw new Error("Failed to load user data");
       }
     },
-    enabled: hasHydrated, 
-    staleTime: Infinity,
-    gcTime: Infinity,
+    enabled: hasHydrated,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
     retry: 1,
+    initialData: user ? (user as DashboardUser) : undefined,
   });
 };

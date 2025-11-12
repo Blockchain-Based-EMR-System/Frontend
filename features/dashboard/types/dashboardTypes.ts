@@ -1,22 +1,8 @@
-export interface DashboardUser {
-  id?: string;
-  email: string;
-  name: string;
-  username?: string;
-  phone?: string | null;
-  gender?: "MALE" | "FEMALE" | null;
-  date_of_birth?: string | null;
-  isVerified: boolean;
-  created_at?: string;
-  updated_at?: string;
-}
+import { User, ApiResponse } from "@/types/common";
 
-export interface GoogleUserDataResponse {
-  data: DashboardUser;
-  message: string;
-}
+export type DashboardUser = User;
 
-export interface ApiError {
-  messageEn: string;
-  messageAr: string;
+export interface GoogleUserDataResponse extends ApiResponse<User> {
+  data: User;
+  message: string; 
 }

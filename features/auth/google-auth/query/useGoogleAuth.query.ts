@@ -1,11 +1,15 @@
-import { useMutation, UseMutationResult } from "@tanstack/react-query";
+import {
+  useMutation,
+  UseMutationResult,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { updateGoogleUserPhone } from "../api/googleAuth.api";
 import {
   UpdatePhoneRequest,
   UpdatePhoneResponse,
-  ApiError,
 } from "../types/googleAuthTypes";
+import { ApiError } from "@/types/common";
 import { toast } from "@/hooks/useToast";
 import { useLanguage } from "@/contexts/LanguageProvider";
 import { useRouter } from "next/navigation";
@@ -18,6 +22,7 @@ export const useUpdateGoogleUserPhone = (): UseMutationResult<
 > => {
   const { locale } = useLanguage();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const setUser = useUserStore((state) => state.setUser);
 
   return useMutation({
@@ -25,6 +30,7 @@ export const useUpdateGoogleUserPhone = (): UseMutationResult<
     onSuccess: (data) => {
       if (data.data) {
         setUser(data.data);
+        queryClient.setQueryData(["dashboard", "user"], data.data);
       }
 
       const successMessage =

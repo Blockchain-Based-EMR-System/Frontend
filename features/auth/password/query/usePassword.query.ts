@@ -6,8 +6,8 @@ import {
   ForgetPasswordResponse,
   ResetPasswordRequest,
   ResetPasswordResponse,
-  ApiError,
 } from "../types/passwordTypes";
+import { ApiError } from "@/types/common";
 import { toast } from "@/hooks/useToast";
 import { useLanguage } from "@/contexts/LanguageProvider";
 import { useRouter } from "next/navigation";

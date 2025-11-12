@@ -5,8 +5,8 @@ import {
   VerifyEmailRequest,
   VerifyEmailResponse,
   ResendOtpResponse,
-  ApiError,
 } from "../types/verifyEmailTypes";
+import { ApiError } from "@/types/common";
 import { toast } from "@/hooks/useToast";
 import { useLanguage } from "@/contexts/LanguageProvider";
 import { useRouter } from "next/navigation";

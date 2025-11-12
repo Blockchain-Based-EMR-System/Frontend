@@ -1,4 +1,8 @@
-import { useMutation, UseMutationResult } from "@tanstack/react-query";
+import {
+  useMutation,
+  UseMutationResult,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { loginUser, logoutUser, refreshToken } from "../api/login.api";
 import {
@@ -6,8 +10,8 @@ import {
   LoginResponse,
   LogoutResponse,
   RefreshTokenResponse,
-  ApiError,
 } from "../types/authTypes";
+import { ApiError } from "@/types/common";
 import { setAuthToken, removeAuthToken } from "@/lib/tokenManager";
 import { toast } from "@/hooks/useToast";
 import { useLanguage } from "@/contexts/LanguageProvider";
@@ -21,13 +25,15 @@ export const useLogin = (): UseMutationResult<
 > => {
   const { locale } = useLanguage();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const setUser = useUserStore((state) => state.setUser);
 
   return useMutation({
     mutationFn: loginUser,
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       if (data.data) {
         setUser(data.data);
+        queryClient.setQueryData(["dashboard", "user"], data.data);
       } else {
         console.warn("No Data");
       }
@@ -72,6 +78,7 @@ export const useLogout = (): UseMutationResult<
 > => {
   const { locale } = useLanguage();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const clearUser = useUserStore((state) => state.clearUser);
 
   return useMutation({
@@ -79,7 +86,7 @@ export const useLogout = (): UseMutationResult<
     onSuccess: (data) => {
       removeAuthToken();
       clearUser();
-      console.log("User logged out successfully");
+      queryClient.clear();
 
       const successMessage =
         locale === "ar"
@@ -96,6 +103,7 @@ export const useLogout = (): UseMutationResult<
     onError: (error) => {
       removeAuthToken();
       clearUser();
+      queryClient.clear();
 
       const errorData = error.response?.data;
       const errorMessage =

@@ -8,8 +8,8 @@ import {
   VerifyOTPResponse,
   CompleteProfileRequest,
   CompleteProfileResponse,
-  ApiError,
 } from "../types/authTypes";
+import { ApiError } from "@/types/common";
 import { toast } from "@/hooks/useToast";
 import { useLanguage } from "@/contexts/LanguageProvider";
 import { useRouter } from "next/navigation";

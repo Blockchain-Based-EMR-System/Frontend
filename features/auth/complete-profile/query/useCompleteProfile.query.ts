@@ -1,4 +1,8 @@
-import { useMutation, UseMutationResult } from "@tanstack/react-query";
+import {
+  useMutation,
+  UseMutationResult,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import {
   completeProfile,
@@ -9,8 +13,8 @@ import {
   CompleteProfileResponse,
   UpdateGoogleUserPhoneRequest,
   UpdateGoogleUserPhoneResponse,
-  ApiError,
 } from "../types/completeProfileTypes";
+import { ApiError } from "@/types/common";
 import { toast } from "@/hooks/useToast";
 import { useLanguage } from "@/contexts/LanguageProvider";
 import { useRouter } from "next/navigation";
@@ -23,6 +27,7 @@ export const useCompleteProfile = (): UseMutationResult<
 > => {
   const { locale } = useLanguage();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const updateUser = useUserStore((state) => state.updateUser);
   const setUser = useUserStore((state) => state.setUser);
   const user = useUserStore((state) => state.user);
@@ -32,7 +37,8 @@ export const useCompleteProfile = (): UseMutationResult<
     onSuccess: (data) => {
       if (data.data) {
         if (user) {
-          updateUser({
+          const updatedUser = {
+            ...user,
             gender: data.data.gender,
             date_of_birth: data.data.date_of_birth,
             isVerified: data.data.isVerified,
@@ -40,19 +46,24 @@ export const useCompleteProfile = (): UseMutationResult<
             email: data.data.email || user.email,
             name: data.data.name || user.name,
             username: data.data.username || user.username,
-          });
-
+          };
+          updateUser(updatedUser);
+          // Set the updated data in the cache
+          queryClient.setQueryData(["dashboard", "user"], updatedUser);
         } else {
           const currentUser = useUserStore.getState().user;
 
-          setUser({
+          const newUser = {
             ...data.data,
             email: data.data.email || currentUser?.email || "",
             name: data.data.name || currentUser?.name || "",
             phone: data.data.phone || currentUser?.phone || "",
             username: data.data.username || currentUser?.username,
-            id: data.data.id || currentUser?.id,
-          });
+            id: data.data.id || currentUser?.id || "",
+          };
+          setUser(newUser);
+          // Set the data in the cache
+          queryClient.setQueryData(["dashboard", "user"], newUser);
         }
       }
 
@@ -95,6 +106,7 @@ export const useUpdateGoogleUserPhone = (): UseMutationResult<
   UpdateGoogleUserPhoneRequest
 > => {
   const { locale } = useLanguage();
+  const queryClient = useQueryClient();
   const updateUser = useUserStore((state) => state.updateUser);
   const user = useUserStore((state) => state.user);
 
@@ -102,11 +114,12 @@ export const useUpdateGoogleUserPhone = (): UseMutationResult<
     mutationFn: updateGoogleUserPhone,
     onSuccess: (data, variables) => {
       if (user) {
+        const updatedUser = { ...user, phone: variables.phone };
         updateUser({ phone: variables.phone });
+        // Set the updated data in the cache
+        queryClient.setQueryData(["dashboard", "user"], updatedUser);
       } else {
-        console.warn(
-          "User is null"
-        );
+        console.warn("User is null");
       }
 
       const successMessage =

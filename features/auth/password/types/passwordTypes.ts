@@ -1,23 +1,14 @@
+import { BaseResponse } from "@/types/common";
+
 export interface ForgetPasswordRequest {
   email: string;
 }
 
-export interface ForgetPasswordResponse {
-  messageEn?: string;
-  messageAr?: string;
-}
+export interface ForgetPasswordResponse extends BaseResponse {}
 
 export interface ResetPasswordRequest {
   token: string;
   newPassword: string;
 }
 
-export interface ResetPasswordResponse {
-  messageEn?: string;
-  messageAr?: string;
-}
-
-export interface ApiError {
-  messageEn: string;
-  messageAr: string;
-}
+export interface ResetPasswordResponse extends BaseResponse {}

@@ -1,20 +1,11 @@
+import { ApiResponse, BaseResponse } from "@/types/common";
+
 export interface VerifyEmailRequest {
   otp: string;
 }
 
-export interface VerifyEmailResponse {
-  data: boolean;
-  message: string;
-  messageEn?: string;
-  messageAr?: string;
+export interface VerifyEmailResponse extends ApiResponse<boolean> {
+  message: string; 
 }
 
-export interface ResendOtpResponse {
-  messageEn?: string;
-  messageAr?: string;
-}
-
-export interface ApiError {
-  messageEn: string;
-  messageAr: string;
-}
+export interface ResendOtpResponse extends BaseResponse {}

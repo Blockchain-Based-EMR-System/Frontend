@@ -1,18 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-
-export interface User {
-  id?: string;
-  email: string;
-  name: string;
-  username?: string;
-  phone?: string | null;
-  gender?: "MALE" | "FEMALE" | null;
-  date_of_birth?: string | null;
-  isVerified: boolean;
-  created_at?: string;
-  updated_at?: string;
-}
+import { User } from "@/types/common";
 
 interface UserState {
   user: User | null;
