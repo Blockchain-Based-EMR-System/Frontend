@@ -39,6 +39,7 @@ export function CompleteProfileContainer({
   const handleCompleteProfile = async (data: CompleteProfileFormData) => {
     try {
       if (requirePhone && data.phone) {
+        await updatePhoneMutation.mutateAsync({ phone: data.phone });
         setPhoneUpdated(true);
       }
 
@@ -49,7 +50,7 @@ export function CompleteProfileContainer({
 
       clearSignupMethod();
     } catch (error) {
-      console.error("Error", error);
+      console.error("Error completing profile:", error);
     }
   };
 
