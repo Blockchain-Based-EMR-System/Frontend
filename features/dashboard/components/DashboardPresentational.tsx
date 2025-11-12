@@ -118,6 +118,14 @@ export function DashboardPresentational({
                   {user.isVerified ? t("verified") : t("notVerified")}
                 </p>
               </div>
+              <div className="space-y-1">
+                <p className="text-sm text-muted-foreground">
+                  {t("profileStatus")}
+                </p>
+                <p className="font-medium">
+                  {user.hasCompletedProfile ? t("completed") : t("incomplete")}
+                </p>
+              </div>
             </div>
           </CardContent>
         </Card>

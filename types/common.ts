@@ -7,6 +7,7 @@ export interface User {
   gender?: Gender | null;
   date_of_birth?: string | null;
   isVerified: boolean;
+  hasCompletedProfile: boolean;
   created_at: string;
   updated_at: string;
 }

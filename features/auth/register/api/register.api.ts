@@ -11,8 +11,8 @@ import {
 export const signupUser = async (
   userData: SignupRequest
 ): Promise<SignupResponse> => {
-  return api.post<SignupResponse>("/auth/signup", userData, {
-  });
+  const response = await api.post<SignupResponse>("/auth/signup", userData, {});
+  return response;
 };
 
 export const verifyOTP = async (

@@ -31,6 +31,8 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
+    watch,
   } = useForm<LoginFormData>({
     resolver: zodResolver(createLoginSchema(t)),
     defaultValues: {
@@ -39,6 +41,8 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
       rememberMe: false,
     },
   });
+
+  const rememberMeValue = watch("rememberMe");
 
   return (
     <div className="space-y-2">
@@ -97,7 +101,8 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
           <div className="flex items-center space-x-2">
             <Checkbox
               id="rememberMe"
-              {...register("rememberMe")}
+              checked={rememberMeValue}
+              onCheckedChange={(checked) => setValue("rememberMe", !!checked)}
               disabled={isLoading}
             />
             <label

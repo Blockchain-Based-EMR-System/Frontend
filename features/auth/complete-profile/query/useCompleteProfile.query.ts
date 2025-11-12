@@ -42,13 +42,13 @@ export const useCompleteProfile = (): UseMutationResult<
             gender: data.data.gender,
             date_of_birth: data.data.date_of_birth,
             isVerified: data.data.isVerified,
+            hasCompletedProfile: data.data.hasCompletedProfile,
             phone: data.data.phone || user.phone,
             email: data.data.email || user.email,
             name: data.data.name || user.name,
             username: data.data.username || user.username,
           };
           updateUser(updatedUser);
-          // Set the updated data in the cache
           queryClient.setQueryData(["dashboard", "user"], updatedUser);
         } else {
           const currentUser = useUserStore.getState().user;
@@ -62,7 +62,6 @@ export const useCompleteProfile = (): UseMutationResult<
             id: data.data.id || currentUser?.id || "",
           };
           setUser(newUser);
-          // Set the data in the cache
           queryClient.setQueryData(["dashboard", "user"], newUser);
         }
       }
@@ -116,7 +115,6 @@ export const useUpdateGoogleUserPhone = (): UseMutationResult<
       if (user) {
         const updatedUser = { ...user, phone: variables.phone };
         updateUser({ phone: variables.phone });
-        // Set the updated data in the cache
         queryClient.setQueryData(["dashboard", "user"], updatedUser);
       } else {
         console.warn("User is null");

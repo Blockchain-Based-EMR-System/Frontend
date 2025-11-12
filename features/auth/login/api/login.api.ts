@@ -9,12 +9,15 @@ import {
 export const loginUser = async (
   credentials: LoginRequest
 ): Promise<LoginResponse> => {
-  return api.post<LoginResponse>("/auth/login", credentials, {
-  });
+  const response = await api.post<LoginResponse>(
+    "/auth/login",
+    credentials,
+    {}
+  );
+  return response;
 };
 
 export const logoutUser = async (): Promise<LogoutResponse> => {
-  console.log("Logging out user...");
   return api.post<LogoutResponse>("/auth/logout");
 };
 
