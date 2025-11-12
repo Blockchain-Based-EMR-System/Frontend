@@ -12,7 +12,6 @@ import {
   RefreshTokenResponse,
 } from "../types/authTypes";
 import { ApiError } from "@/types/common";
-import { setAuthToken, removeAuthToken } from "@/lib/tokenManager";
 import { toast } from "@/hooks/useToast";
 import { useLanguage } from "@/contexts/LanguageProvider";
 import { useRouter } from "next/navigation";
@@ -84,7 +83,6 @@ export const useLogout = (): UseMutationResult<
   return useMutation({
     mutationFn: logoutUser,
     onSuccess: (data) => {
-      removeAuthToken();
       clearUser();
       queryClient.clear();
 
@@ -101,7 +99,6 @@ export const useLogout = (): UseMutationResult<
       router.push("/login");
     },
     onError: (error) => {
-      removeAuthToken();
       clearUser();
       queryClient.clear();
 
@@ -129,14 +126,7 @@ export const useRefreshToken = (): UseMutationResult<
 > => {
   return useMutation({
     mutationFn: refreshToken,
-    onSuccess: (data) => {
-      if (data.token) {
-        setAuthToken(data.token, 7);
-      }
-    },
     onError: (error) => {
-      removeAuthToken();
-
       if (typeof window !== "undefined") {
         window.location.href = "/login";
       }
