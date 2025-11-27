@@ -9,8 +9,7 @@ import {
 import { ApiError } from "@/types/common";
 import { toast } from "@/hooks/useToast";
 import { useLanguage } from "@/contexts/LanguageProvider";
-import { useRouter } from "next/navigation";
-import { useUserStore } from "@/stores/useUserStore";
+import { useAuthSync } from "@/hooks/useAuthSync";
 
 export const useVerifyEmail = (): UseMutationResult<
   VerifyEmailResponse,
@@ -18,13 +17,11 @@ export const useVerifyEmail = (): UseMutationResult<
   VerifyEmailRequest
 > => {
   const { locale } = useLanguage();
-  const router = useRouter();
-  const updateUser = useUserStore((state) => state.updateUser);
+  const { user, updateAuthState } = useAuthSync();
 
   return useMutation({
     mutationFn: verifyEmail,
     onSuccess: (data) => {
-      updateUser({ isVerified: true });
       const successMessage =
         locale === "ar"
           ? data.messageAr || "تم التحقق من البريد الإلكتروني بنجاح"
@@ -35,7 +32,17 @@ export const useVerifyEmail = (): UseMutationResult<
         description: successMessage,
       });
 
-      router.push("/complete-profile");
+      if (user) {
+        const updatedUser = { ...user, isVerified: true };
+        updateAuthState(updatedUser);
+
+      } else {
+        console.error("User is null");
+      }
+
+      setTimeout(() => {
+        window.location.href = "/complete-profile";
+      }, 100);
     },
     onError: (error) => {
       const errorData = error.response?.data;

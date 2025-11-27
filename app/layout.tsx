@@ -46,8 +46,8 @@ export default async function RootLayout({
           <NextIntlClientProvider messages={messages} locale={locale}>
             <ThemeProvider>
               <LanguageProvider initialLocale={locale}>
-                {children}
-                <Toaster />
+                  {children}
+                  <Toaster />
               </LanguageProvider>
             </ThemeProvider>
           </NextIntlClientProvider>

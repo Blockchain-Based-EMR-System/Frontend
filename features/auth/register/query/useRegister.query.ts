@@ -13,8 +13,9 @@ import { ApiError } from "@/types/common";
 import { toast } from "@/hooks/useToast";
 import { useLanguage } from "@/contexts/LanguageProvider";
 import { useRouter } from "next/navigation";
-import { useUserStore } from "@/stores/useUserStore";
+import { useAuthSync } from "@/hooks/useAuthSync";
 import { useAuthFlowStore } from "@/stores/useAuthFlowStore";
+import { getRedirectAfterAuth } from "@/lib/auth";
 
 export const useSignup = (): UseMutationResult<
   SignupResponse,
@@ -23,7 +24,7 @@ export const useSignup = (): UseMutationResult<
 > => {
   const { locale } = useLanguage();
   const router = useRouter();
-  const setUser = useUserStore((state) => state.setUser);
+  const { updateAuthState } = useAuthSync();
   const setSignupMethod = useAuthFlowStore((state) => state.setSignupMethod);
 
   return useMutation({
@@ -32,7 +33,7 @@ export const useSignup = (): UseMutationResult<
       setSignupMethod("email");
 
       if (data.data) {
-        setUser(data.data);
+        updateAuthState(data.data);
       }
 
       const successMessage =
@@ -48,7 +49,10 @@ export const useSignup = (): UseMutationResult<
         description: successMessage,
       });
 
-      router.push("/verify-email");
+      const redirectPath = data.data
+        ? getRedirectAfterAuth(data.data)
+        : "/complete-profile";
+      router.push(redirectPath);
     },
     onError: (error) => {
       const errorData = error.response?.data;
@@ -77,10 +81,16 @@ export const useVerifyOTP = (): UseMutationResult<
 > => {
   const { locale } = useLanguage();
   const router = useRouter();
+  const { user, updateAuthState } = useAuthSync();
 
   return useMutation({
     mutationFn: verifyOTP,
     onSuccess: (data) => {
+      if (user) {
+        const updatedUser = { ...user, isVerified: true };
+        updateAuthState(updatedUser);
+      }
+
       const successMessage =
         data.message ||
         (locale === "ar"
@@ -92,7 +102,7 @@ export const useVerifyOTP = (): UseMutationResult<
         description: successMessage,
       });
 
-      router.push("/complete-profile");
+      router.push("/dashboard");
     },
     onError: (error) => {
       const errorData = error.response?.data;
@@ -121,7 +131,7 @@ export const useCompleteProfile = (): UseMutationResult<
 > => {
   const { locale } = useLanguage();
   const router = useRouter();
-  const updateUser = useUserStore((state) => state.updateUser);
+  const { updateAuthState } = useAuthSync();
   const clearSignupMethod = useAuthFlowStore(
     (state) => state.clearSignupMethod
   );
@@ -130,10 +140,7 @@ export const useCompleteProfile = (): UseMutationResult<
     mutationFn: completeProfile,
     onSuccess: (data) => {
       if (data.data) {
-        updateUser({
-          gender: data.data.gender,
-          date_of_birth: data.data.date_of_birth,
-        });
+        updateAuthState(data.data);
       }
 
       clearSignupMethod();
@@ -149,7 +156,10 @@ export const useCompleteProfile = (): UseMutationResult<
         description: successMessage,
       });
 
-      router.push("/dashboard");
+      const redirectPath = data.data
+        ? getRedirectAfterAuth(data.data)
+        : "/verify-email";
+      router.push(redirectPath);
     },
     onError: (error) => {
       const errorData = error.response?.data;

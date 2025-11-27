@@ -4,38 +4,56 @@ import { CompleteProfileContainer } from "@/features/auth/complete-profile/compo
 import { CompleteProfilePresentational } from "@/features/auth/complete-profile/components/CompleteProfilePresentational";
 import { useEffect, useState } from "react";
 import { useAuthFlowStore } from "@/stores/useAuthFlowStore";
-import { useUserStore } from "@/stores/useUserStore";
+import { useAuthSync } from "@/hooks/useAuthSync";
 import { getCurrentUser } from "@/features/dashboard/api/dashboard.api";
 
 export default function CompleteProfilePage() {
   const [isLoading, setIsLoading] = useState(true);
   const signupMethod = useAuthFlowStore((state) => state.signupMethod);
-  const user = useUserStore((state) => state.user);
-  const setUser = useUserStore((state) => state.setUser);
-  const hasHydrated = useUserStore((state) => state._hasHydrated);
+  const { user, updateAuthState } = useAuthSync();
 
   useEffect(() => {
     const initializeUser = async () => {
-      if (!hasHydrated) return;
+      const cookies = document.cookie;
+      const hasAuthCookie =
+        cookies.includes("Authorization=") || cookies.includes("RefreshToken=");
+      const hasUserStateCookie = cookies.includes("UserState=");
 
-      // If user data doesn't exist (Google OAuth case), fetch it from backend
-      if (!user || !user.email) {
-        console.log("🔄 No user data in store, fetching from backend...");
+      if (hasAuthCookie && !hasUserStateCookie) {
         try {
           const userData = await getCurrentUser();
-          console.log("✅ User data fetched:", userData);
-          setUser(userData);
+          updateAuthState(userData);
+
+          setTimeout(() => {
+            window.location.reload();
+          }, 100);
+          return;
         } catch (error) {
-          console.error("❌ Failed to fetch user data:", error);
-          // Continue anyway - user might be from email signup
+          console.error("Failed:", error);
         }
       }
 
+      if (!user || !user.email) {
+        try {
+          const userData = await getCurrentUser();
+          updateAuthState(userData);
+
+          setTimeout(() => {
+            const cookies = document.cookie.split(";");
+            const userStateCookie = cookies.find((c) =>
+              c.trim().startsWith("UserState=")
+            );
+            console.log("🍪 UserState cookie:", userStateCookie);
+          }, 50);
+        } catch (error) {
+          console.error("Failed:", error);
+        }
+      }
       setIsLoading(false);
     };
 
     initializeUser();
-  }, [hasHydrated, user, setUser]);
+  }, [user, updateAuthState]);
 
   if (isLoading) {
     return (

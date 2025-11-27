@@ -13,7 +13,7 @@ import { ApiError } from "@/types/common";
 import { toast } from "@/hooks/useToast";
 import { useLanguage } from "@/contexts/LanguageProvider";
 import { useRouter } from "next/navigation";
-import { useUserStore } from "@/stores/useUserStore";
+import { useAuthSync } from "@/hooks/useAuthSync";
 
 export const useUpdateGoogleUserPhone = (): UseMutationResult<
   UpdatePhoneResponse,
@@ -23,13 +23,13 @@ export const useUpdateGoogleUserPhone = (): UseMutationResult<
   const { locale } = useLanguage();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const setUser = useUserStore((state) => state.setUser);
+  const { updateAuthState } = useAuthSync();
 
   return useMutation({
     mutationFn: updateGoogleUserPhone,
     onSuccess: (data) => {
       if (data.data) {
-        setUser(data.data);
+        updateAuthState(data.data);
         queryClient.setQueryData(["dashboard", "user"], data.data);
       }
 

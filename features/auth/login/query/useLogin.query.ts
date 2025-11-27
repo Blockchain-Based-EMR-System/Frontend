@@ -15,7 +15,8 @@ import { ApiError } from "@/types/common";
 import { toast } from "@/hooks/useToast";
 import { useLanguage } from "@/contexts/LanguageProvider";
 import { useRouter } from "next/navigation";
-import { useUserStore } from "@/stores/useUserStore";
+import { useAuthSync } from "@/hooks/useAuthSync";
+import { getRedirectAfterAuth } from "@/lib/auth";
 
 export const useLogin = (): UseMutationResult<
   LoginResponse,
@@ -25,13 +26,13 @@ export const useLogin = (): UseMutationResult<
   const { locale } = useLanguage();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const setUser = useUserStore((state) => state.setUser);
+  const { updateAuthState } = useAuthSync();
 
   return useMutation({
     mutationFn: loginUser,
     onSuccess: async (data) => {
       if (data.data) {
-        setUser(data.data);
+        updateAuthState(data.data);
         queryClient.setQueryData(["dashboard", "user"], data.data);
       } else {
         console.warn("No Data");
@@ -48,7 +49,10 @@ export const useLogin = (): UseMutationResult<
         description: successMessage,
       });
 
-      router.push("/dashboard");
+      const redirectPath = data.data
+        ? getRedirectAfterAuth(data.data)
+        : "/dashboard";
+      router.push(redirectPath);
     },
     onError: (error) => {
       const errorData = error.response?.data;
@@ -78,12 +82,12 @@ export const useLogout = (): UseMutationResult<
   const { locale } = useLanguage();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const clearUser = useUserStore((state) => state.clearUser);
+  const { clearAuthState } = useAuthSync();
 
   return useMutation({
     mutationFn: logoutUser,
     onSuccess: (data) => {
-      clearUser();
+      clearAuthState();
       queryClient.clear();
 
       const successMessage =
@@ -99,7 +103,7 @@ export const useLogout = (): UseMutationResult<
       router.push("/login");
     },
     onError: (error) => {
-      clearUser();
+      clearAuthState();
       queryClient.clear();
 
       const errorData = error.response?.data;

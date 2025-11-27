@@ -17,8 +17,8 @@ import {
 import { ApiError } from "@/types/common";
 import { toast } from "@/hooks/useToast";
 import { useLanguage } from "@/contexts/LanguageProvider";
-import { useRouter } from "next/navigation";
-import { useUserStore } from "@/stores/useUserStore";
+import { useAuthSync } from "@/hooks/useAuthSync";
+import { getRedirectAfterAuth } from "@/lib/auth";
 
 export const useCompleteProfile = (): UseMutationResult<
   CompleteProfileResponse,
@@ -26,44 +26,15 @@ export const useCompleteProfile = (): UseMutationResult<
   CompleteProfileRequest
 > => {
   const { locale } = useLanguage();
-  const router = useRouter();
   const queryClient = useQueryClient();
-  const updateUser = useUserStore((state) => state.updateUser);
-  const setUser = useUserStore((state) => state.setUser);
-  const user = useUserStore((state) => state.user);
+  const { updateAuthState } = useAuthSync();
 
   return useMutation({
     mutationFn: completeProfile,
     onSuccess: (data) => {
       if (data.data) {
-        if (user) {
-          const updatedUser = {
-            ...user,
-            gender: data.data.gender,
-            date_of_birth: data.data.date_of_birth,
-            isVerified: data.data.isVerified,
-            hasCompletedProfile: data.data.hasCompletedProfile,
-            phone: data.data.phone || user.phone,
-            email: data.data.email || user.email,
-            name: data.data.name || user.name,
-            username: data.data.username || user.username,
-          };
-          updateUser(updatedUser);
-          queryClient.setQueryData(["dashboard", "user"], updatedUser);
-        } else {
-          const currentUser = useUserStore.getState().user;
-
-          const newUser = {
-            ...data.data,
-            email: data.data.email || currentUser?.email || "",
-            name: data.data.name || currentUser?.name || "",
-            phone: data.data.phone || currentUser?.phone || "",
-            username: data.data.username || currentUser?.username,
-            id: data.data.id || currentUser?.id || "",
-          };
-          setUser(newUser);
-          queryClient.setQueryData(["dashboard", "user"], newUser);
-        }
+        updateAuthState(data.data);
+        queryClient.setQueryData(["dashboard", "user"], data.data);
       }
 
       const successMessage =
@@ -76,7 +47,10 @@ export const useCompleteProfile = (): UseMutationResult<
         description: successMessage,
       });
 
-      router.push("/dashboard");
+      const redirectPath = data.data
+        ? getRedirectAfterAuth(data.data)
+        : "/dashboard";
+      window.location.href = redirectPath;
     },
     onError: (error) => {
       const errorData = error.response?.data;
@@ -106,15 +80,14 @@ export const useUpdateGoogleUserPhone = (): UseMutationResult<
 > => {
   const { locale } = useLanguage();
   const queryClient = useQueryClient();
-  const updateUser = useUserStore((state) => state.updateUser);
-  const user = useUserStore((state) => state.user);
+  const { user, updateAuthState } = useAuthSync();
 
   return useMutation({
     mutationFn: updateGoogleUserPhone,
     onSuccess: (data, variables) => {
       if (user) {
         const updatedUser = { ...user, phone: variables.phone };
-        updateUser({ phone: variables.phone });
+        updateAuthState(updatedUser);
         queryClient.setQueryData(["dashboard", "user"], updatedUser);
       } else {
         console.warn("User is null");
