@@ -1,0 +1,189 @@
+"use client";
+
+import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Menu, X } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { useUserStore } from "@/stores/useUserStore";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { LanguageSwitcher } from "@/components/common/LanguageSwitcher";
+import { ThemeSwitcher } from "@/components/common/ThemeSwitcher";
+
+export function Navbar() {
+  const t = useTranslations("");
+  const [isOpen, setIsOpen] = useState(false);
+  const { user, isAuthenticated } = useUserStore();
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
+
+  const navLinks = [
+    { href: "/clinics", label: t("clinics") },
+    { href: "/contact", label: t("contactUs") },
+  ];
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  return (
+    <nav
+      ref={menuRef}
+      className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60"
+    >
+      <div className="container flex h-16 items-center justify-between px-4 md:mx-auto md:max-w-7xl">
+        <Link
+          href="/"
+          className="flex items-center space-x-2 rtl:space-x-reverse"
+        >
+          <div className="flex items-center">
+            <span className="text-2xl font-bold bg-linear-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+              MedicBridge
+            </span>
+          </div>
+        </Link>
+
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center space-x-6 rtl:space-x-reverse">
+          {/* Nav Links */}
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="text-sm font-medium transition-colors hover:text-primary"
+            >
+              {link.label}
+            </Link>
+          ))}
+
+          {/* Auth Section */}
+          {isAuthenticated && user ? (
+            <div className="flex items-center space-x-3 rtl:space-x-reverse border-l pl-6 rtl:border-l-0 rtl:border-r rtl:pr-6 rtl:pl-0">
+              <span className="text-sm text-muted-foreground">
+                {t("welcome")}, {user.name.split(" ")[0]}
+              </span>
+              <Link href="/dashboard">
+                <Avatar className="h-9 w-9 cursor-pointer ring-2 ring-offset-2 ring-primary/20 hover:ring-primary/40 transition-all">
+                  <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                    {getInitials(user.name)}
+                  </AvatarFallback>
+                </Avatar>
+              </Link>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 border-l pl-6 rtl:border-l-0 rtl:border-r rtl:pr-6 rtl:pl-0">
+              <Button variant="ghost" asChild>
+                <Link href="/login">{t("login")}</Link>
+              </Button>
+              <Button asChild>
+                <Link href="/register">{t("signup")}</Link>
+              </Button>
+            </div>
+          )}
+
+          {/* Language & Theme Switchers */}
+          <div className="flex items-center gap-2 border-l pl-6 rtl:border-l-0 rtl:border-r rtl:pr-6 rtl:pl-0 rtl:mr-6 rtl:ml-0">
+            <LanguageSwitcher />
+            <ThemeSwitcher />
+          </div>
+        </div>
+
+        {/* Mobile Navigation */}
+        <div className="flex md:hidden items-center gap-2">
+          <LanguageSwitcher />
+          <ThemeSwitcher />
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label="Toggle menu"
+          >
+            {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </Button>
+        </div>
+      </div>
+
+      {/* Mobile Menu Dropdown */}
+      {isOpen && (
+        <div className="md:hidden absolute top-16 left-0 right-0 z-40 bg-background border-b shadow-lg">
+          <div className="container px-4 py-6">
+            <div className="flex flex-col space-y-6">
+              {/* User Section for Mobile */}
+              {isAuthenticated && user ? (
+                <div className="flex items-center space-x-3 rtl:space-x-reverse pb-4 border-b">
+                  <Avatar className="h-12 w-12 ring-2 ring-primary/20">
+                    <AvatarFallback className="bg-primary/10 text-primary font-semibold text-lg">
+                      {getInitials(user.name)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium">{user.name}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {user.email}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col space-y-2 pb-4 border-b">
+                  <Button asChild className="w-full">
+                    <Link href="/login" onClick={() => setIsOpen(false)}>
+                      {t("login")}
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" className="w-full">
+                    <Link href="/register" onClick={() => setIsOpen(false)}>
+                      {t("signup")}
+                    </Link>
+                  </Button>
+                </div>
+              )}
+
+              {/* Navigation Links */}
+              <div className="flex flex-col space-y-1">
+                {isAuthenticated && user && (
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center px-4 py-3 rounded-md hover:bg-accent transition-colors"
+                  >
+                    <span className="font-medium">{t("dashboard")}</span>
+                  </Link>
+                )}
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center px-4 py-3 rounded-md hover:bg-accent transition-colors"
+                  >
+                    <span className="font-medium">{link.label}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </nav>
+  );
+}

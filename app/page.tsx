@@ -1,22 +1,12 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { LanguageSwitcher } from "@/components/common/LanguageSwitcher";
-import { ThemeSwitcher } from "@/components/common/ThemeSwitcher";
 
 export default function Home() {
   const t = useTranslations("");
 
   return (
-    <div className="min-h-screen p-8">
-      <header className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">{t("welcome")}</h1>
-        <div className="flex gap-4">
-          <LanguageSwitcher />
-          <ThemeSwitcher />
-        </div>
-      </header>
-
+    <div className="p-8 ">
       {/* Demo Content */}
       <main className="max-w-4xl mx-auto space-y-6">
         <div className="p-6 border rounded-lg bg-card">

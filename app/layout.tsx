@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/contexts/ThemeProvider";
 import { LanguageProvider } from "@/contexts/LanguageProvider";
 import { QueryProvider } from "@/contexts/QueryProvider";
 import { Toaster } from "@/components/ui/toaster";
+import { Navbar } from "@/components/layout/Navbar";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -46,8 +47,13 @@ export default async function RootLayout({
           <NextIntlClientProvider messages={messages} locale={locale}>
             <ThemeProvider>
               <LanguageProvider initialLocale={locale}>
-                  {children}
-                  <Toaster />
+                <div className="flex flex-col min-h-screen">
+                  <Navbar />
+                  <div className="grow flex flex-col">
+                    {children}
+                  </div>
+                </div>
+                <Toaster />
               </LanguageProvider>
             </ThemeProvider>
           </NextIntlClientProvider>
