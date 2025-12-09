@@ -6,7 +6,7 @@ export default function Home() {
   const t = useTranslations("");
 
   return (
-    <div className="p-8 ">
+    <div className="p-8">
       {/* Demo Content */}
       <main className="max-w-4xl mx-auto space-y-6">
         <div className="p-6 border rounded-lg bg-card">

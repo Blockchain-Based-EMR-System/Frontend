@@ -2,7 +2,7 @@
 
 import { useEffect, useCallback } from "react";
 import { useUserStore } from "@/stores/useUserStore";
-import { User } from "@/types/common";
+import { User } from "@/types";
 
 export function useAuthSync() {
   const user = useUserStore((state) => state.user);

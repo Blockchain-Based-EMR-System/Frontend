@@ -1,4 +1,4 @@
-import { ApiResponse, BaseResponse } from "@/types/common";
+import { ApiResponse, BaseResponse } from "@/types";
 
 export interface VerifyEmailRequest {
   otp: string;

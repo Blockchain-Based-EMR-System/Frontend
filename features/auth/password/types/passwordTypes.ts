@@ -1,4 +1,4 @@
-import { BaseResponse } from "@/types/common";
+import { BaseResponse } from "@/types";
 
 export interface ForgetPasswordRequest {
   email: string;

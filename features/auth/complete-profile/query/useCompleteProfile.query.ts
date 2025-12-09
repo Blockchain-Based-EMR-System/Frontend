@@ -14,7 +14,7 @@ import {
   UpdateGoogleUserPhoneRequest,
   UpdateGoogleUserPhoneResponse,
 } from "../types/completeProfileTypes";
-import { ApiError } from "@/types/common";
+import { ApiError } from "@/types";
 import { toast } from "@/hooks/useToast";
 import { useLanguage } from "@/contexts/LanguageProvider";
 import { useAuthSync } from "@/hooks/useAuthSync";

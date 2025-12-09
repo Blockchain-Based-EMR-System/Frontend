@@ -1,4 +1,4 @@
-import { User, Gender, ApiResponse } from "@/types/common";
+import { User, Gender, ApiResponse } from "@/types";
 
 export interface SignupRequest {
   email: string;

@@ -6,7 +6,6 @@ export type SignupMethod = "email" | "google" | null;
 interface AuthFlowState {
   signupMethod: SignupMethod;
 
-  // Actions
   setSignupMethod: (method: SignupMethod) => void;
   clearSignupMethod: () => void;
 }

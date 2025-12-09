@@ -1,4 +1,4 @@
-import { User, Gender, ApiResponse, BaseResponse } from "@/types/common";
+import { User, Gender, ApiResponse, BaseResponse } from "@/types";
 
 export interface CompleteProfileRequest {
   gender: Gender;

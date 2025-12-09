@@ -27,7 +27,7 @@ export function ForgotPasswordPresentational({
   t,
 }: ForgotPasswordPresentationalProps) {
   return (
-    <div className="flex flex-1 items-center justify-center bg-linear-to-br from-background to-muted p-4">
+    <div className="flex flex-1 items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-3 text-center">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">

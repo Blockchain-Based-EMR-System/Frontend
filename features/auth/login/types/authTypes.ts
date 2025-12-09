@@ -1,4 +1,4 @@
-import { AuthResponse, BaseResponse } from "@/types/common";
+import { AuthResponse, BaseResponse } from "@/types";
 
 export interface LoginRequest {
   emailOrUsername: string;

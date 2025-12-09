@@ -1,4 +1,4 @@
-import { User } from "@/types/common";
+import { User } from "@/types";
 
 export enum AuthState {
   UNAUTHENTICATED = "UNAUTHENTICATED",

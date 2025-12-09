@@ -9,7 +9,7 @@ import {
   CompleteProfileRequest,
   CompleteProfileResponse,
 } from "../types/authTypes";
-import { ApiError } from "@/types/common";
+import { ApiError } from "@/types";
 import { toast } from "@/hooks/useToast";
 import { useLanguage } from "@/contexts/LanguageProvider";
 import { useRouter } from "next/navigation";

@@ -1,4 +1,4 @@
-import { User, ApiResponse } from "@/types/common";
+import { User, ApiResponse } from "@/types";
 
 export type DashboardUser = User;
 

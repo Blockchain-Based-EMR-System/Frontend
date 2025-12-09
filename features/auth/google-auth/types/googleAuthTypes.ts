@@ -1,4 +1,4 @@
-import { User, AuthResponse, ApiResponse } from "@/types/common";
+import { User, AuthResponse, ApiResponse } from "@/types";
 
 export interface GoogleAuthResponse extends AuthResponse {}
 
