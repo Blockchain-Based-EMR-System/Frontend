@@ -21,8 +21,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "EMR Blockchain System",
-  description: "Blockchain-based Electronic Medical Records System",
+  title: "MedicBridge",
+  description: "Connecting Patients with Trusted Medical Professionals Worldwide",
 };
 
 export default async function RootLayout({
