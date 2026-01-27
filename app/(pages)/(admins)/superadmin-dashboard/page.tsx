@@ -6,33 +6,14 @@ import {
   Users,
   Stethoscope,
   Activity,
-  LayoutDashboard,
-  UserCog,
 } from "lucide-react";
 import { useAdmins } from "@/features/admins/super-admin/query/useAdmin.query";
 import { useDoctors } from "@/features/admins/super-admin/query/useDoctor.query";
+import { navigationItems } from "@/constants/superAdminNavigationItems";
 
 export default function SuperAdminDashboardPage() {
   const { data: adminsData } = useAdmins();
   const { data: doctorsData } = useDoctors();
-
-  const navigationItems = [
-    {
-      nameKey: "dashboard",
-      href: "/superadmin-dashboard",
-      icon: LayoutDashboard,
-    },
-    {
-      nameKey: "admins",
-      href: "/superadmin-dashboard/admins",
-      icon: UserCog,
-    },
-    {
-      nameKey: "doctors",
-      href: "/superadmin-dashboard/doctors",
-      icon: Stethoscope,
-    },
-  ];
 
   const adminsCount = adminsData?.data?.length || 0;
   const doctorsCount = doctorsData?.data?.length || 0;
