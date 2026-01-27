@@ -43,3 +43,5 @@ next-env.d.ts
 # Swagger Files
 .yaml
 .yml
+swagger-output.json
+

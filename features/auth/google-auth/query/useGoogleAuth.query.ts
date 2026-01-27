@@ -14,6 +14,7 @@ import { toast } from "@/hooks/useToast";
 import { useLanguage } from "@/contexts/LanguageProvider";
 import { useRouter } from "next/navigation";
 import { useAuthSync } from "@/hooks/useAuthSync";
+import { getRedirectAfterAuth } from "@/lib/auth";
 
 export const useUpdateGoogleUserPhone = (): UseMutationResult<
   UpdatePhoneResponse,
@@ -44,7 +45,10 @@ export const useUpdateGoogleUserPhone = (): UseMutationResult<
         description: successMessage,
       });
 
-      router.push("/dashboard");
+      const redirectPath = data.data
+        ? getRedirectAfterAuth(data.data)
+        : "/dashboard";
+      router.push(redirectPath);
     },
     onError: (error) => {
       const errorData = error.response?.data;

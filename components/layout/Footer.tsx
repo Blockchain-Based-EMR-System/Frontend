@@ -2,7 +2,7 @@ import { useTranslations } from "next-intl";
 
 export function Footer() {
 
-  const t = useTranslations("");
+  const tCommon = useTranslations("common");
 
   return (
     <footer className="w-full flex flex-col gap-3 items-center border-t bg-background/50 px-4 py-6 text-center text-muted-foreground backdrop-blur-sm">
@@ -10,7 +10,7 @@ export function Footer() {
             MedicBridge
         </p>
         <p className="text-base">
-            {t("slogan")}
+            {tCommon("slogan")}
         </p>
         <div className="flex gap-2 items-center text-sm">
             <p dir="ltr">
@@ -20,7 +20,7 @@ export function Footer() {
                 </a> 
             </p>
             <p>
-                {t("allRightsReserved")}
+                {tCommon("allRightsReserved")}
             </p>
         </div>
     </footer>

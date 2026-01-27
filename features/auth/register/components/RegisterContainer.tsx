@@ -18,7 +18,7 @@ export interface RegisterPresentationalProps {
 }
 
 export function RegisterContainer({ children }: RegisterContainerProps) {
-  const t = useTranslations("");
+  const t = useTranslations("auth");
   const signupMutation = useSignup();
   const setSignupMethod = useAuthFlowStore((state) => state.setSignupMethod);
 

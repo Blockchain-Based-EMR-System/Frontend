@@ -6,12 +6,13 @@ import { Menu, X } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useUserStore } from "@/stores/useUserStore";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LanguageSwitcher } from "@/components/common/LanguageSwitcher";
 import { ThemeSwitcher } from "@/components/common/ThemeSwitcher";
+import { UserProfileDropdown } from "@/components/common/UserProfileDropdown";
 
 export function Navbar() {
-  const t = useTranslations("");
+  const tCommon = useTranslations("common");
   const [isOpen, setIsOpen] = useState(false);
   const { user, isAuthenticated } = useUserStore();
   const menuRef = useRef<HTMLDivElement>(null);
@@ -33,18 +34,9 @@ export function Navbar() {
   }, [isOpen]);
 
   const navLinks = [
-    { href: "/clinics", label: t("clinics") },
-    { href: "/contact", label: t("contactUs") },
+    { href: "/clinics", label: tCommon("clinics") },
+    { href: "/contact", label: tCommon("contactUs") },
   ];
-
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
 
   return (
     <nav
@@ -79,24 +71,18 @@ export function Navbar() {
           {/* Auth Section */}
           {isAuthenticated && user ? (
             <div className="flex items-center space-x-3 rtl:space-x-reverse border-l pl-6 rtl:border-l-0 rtl:border-r rtl:pr-6 rtl:pl-0">
-              <span className="text-sm text-muted-foreground">
-                {t("welcome")}, {user.name.split(" ")[0]}
-              </span>
-              <Link href="/dashboard">
-                <Avatar className="h-9 w-9 cursor-pointer ring-2 ring-offset-2 ring-primary/20 hover:ring-primary/40 transition-all">
-                  <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                    {getInitials(user.name)}
-                  </AvatarFallback>
-                </Avatar>
-              </Link>
+              <UserProfileDropdown
+                user={user}
+                onLogout={() => useUserStore.getState().clearUser()}
+              />
             </div>
           ) : (
             <div className="flex items-center gap-2 border-l pl-6 rtl:border-l-0 rtl:border-r rtl:pr-6 rtl:pl-0">
               <Button variant="ghost" asChild>
-                <Link href="/login">{t("login")}</Link>
+                <Link href="/login">{tCommon("login")}</Link>
               </Button>
               <Button asChild>
-                <Link href="/register">{t("signup")}</Link>
+                <Link href="/register">{tCommon("signup")}</Link>
               </Button>
             </div>
           )}
@@ -132,8 +118,17 @@ export function Navbar() {
               {isAuthenticated && user ? (
                 <div className="flex items-center space-x-3 rtl:space-x-reverse pb-4 border-b">
                   <Avatar className="h-12 w-12 ring-2 ring-primary/20">
+                    <AvatarImage
+                      src={user.profileImage || undefined}
+                      alt={user.name}
+                    />
                     <AvatarFallback className="bg-primary/10 text-primary font-semibold text-lg">
-                      {getInitials(user.name)}
+                      {user.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                        .toUpperCase()
+                        .slice(0, 2)}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col">
@@ -147,12 +142,12 @@ export function Navbar() {
                 <div className="flex flex-col space-y-2 pb-4 border-b">
                   <Button asChild className="w-full">
                     <Link href="/login" onClick={() => setIsOpen(false)}>
-                      {t("login")}
+                      {tCommon("login")}
                     </Link>
                   </Button>
                   <Button asChild variant="outline" className="w-full">
                     <Link href="/register" onClick={() => setIsOpen(false)}>
-                      {t("signup")}
+                      {tCommon("signup")}
                     </Link>
                   </Button>
                 </div>
@@ -166,7 +161,7 @@ export function Navbar() {
                     onClick={() => setIsOpen(false)}
                     className="flex items-center px-4 py-3 rounded-md hover:bg-accent transition-colors"
                   >
-                    <span className="font-medium">{t("dashboard")}</span>
+                    <span className="font-medium">{tCommon("dashboard")}</span>
                   </Link>
                 )}
                 {navLinks.map((link) => (

@@ -28,7 +28,7 @@ export function CompleteProfileContainer({
   userPhone,
   requirePhone = false,
 }: CompleteProfileContainerProps) {
-  const t = useTranslations("");
+  const t = useTranslations("auth");
   const completeProfileMutation = useCompleteProfile();
   const updatePhoneMutation = useUpdateGoogleUserPhone();
   const clearSignupMethod = useAuthFlowStore(

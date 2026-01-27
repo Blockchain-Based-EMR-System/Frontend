@@ -17,7 +17,7 @@ export interface LoginPresentationalProps {
 }
 
 export function LoginContainer({ children }: LoginContainerProps) {
-  const t = useTranslations("");
+  const t = useTranslations("auth");
   const loginMutation = useLogin();
 
   const handleLogin = async (data: LoginFormData) => {

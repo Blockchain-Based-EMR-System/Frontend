@@ -27,7 +27,7 @@ export function VerifyEmailForm({
   isResendDisabled,
   resendCountdown,
 }: VerifyEmailFormProps) {
-  const t = useTranslations("");
+  const tAuth = useTranslations("auth");
 
   const {
     setValue,
@@ -35,7 +35,7 @@ export function VerifyEmailForm({
     formState: { errors },
     watch,
   } = useForm<VerifyEmailFormData>({
-    resolver: zodResolver(createVerifyEmailSchema(t)),
+    resolver: zodResolver(createVerifyEmailSchema(tAuth)),
     defaultValues: {
       otp: "",
     },
@@ -75,16 +75,16 @@ export function VerifyEmailForm({
         {isLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            {t("verifying")}
+            {tAuth("verifying")}
           </>
         ) : (
-          t("verifyEmail")
+          tAuth("verifyEmail")
         )}
       </Button>
 
       <div className="text-center">
         <p className="text-sm text-muted-foreground mb-2">
-          {t("didntReceiveCode")}
+          {tAuth("didntReceiveCode")}
         </p>
         <Button
           type="button"
@@ -94,8 +94,8 @@ export function VerifyEmailForm({
           className="text-primary"
         >
           {isResendDisabled
-            ? `${t("resendOtp")} (${resendCountdown}s)`
-            : t("resendOtp")}
+            ? `${tAuth("resendOtp")} (${resendCountdown}s)`
+            : tAuth("resendOtp")}
         </Button>
       </div>
     </form>

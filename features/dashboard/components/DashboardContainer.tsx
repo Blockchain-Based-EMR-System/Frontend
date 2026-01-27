@@ -18,7 +18,7 @@ export interface DashboardPresentationalProps {
 }
 
 export function DashboardContainer({ children }: DashboardContainerProps) {
-  const t = useTranslations("");
+  const t = useTranslations("auth");
   const { data: user, isLoading, isError } = useDashboard();
   const logoutMutation = useLogout();
 

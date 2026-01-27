@@ -17,7 +17,7 @@ export interface ForgotPasswordPresentationalProps {
 export function ForgotPasswordContainer({
   children,
 }: ForgotPasswordContainerProps) {
-  const t = useTranslations("");
+  const t = useTranslations("auth");
   const forgetPasswordMutation = useForgetPassword();
 
   const handleForgotPassword = async (data: ForgotPasswordFormData) => {

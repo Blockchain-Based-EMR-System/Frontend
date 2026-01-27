@@ -102,7 +102,8 @@ export const useVerifyOTP = (): UseMutationResult<
         description: successMessage,
       });
 
-      router.push("/dashboard");
+      const redirectPath = user ? getRedirectAfterAuth(user) : "/dashboard";
+      router.push(redirectPath);
     },
     onError: (error) => {
       const errorData = error.response?.data;

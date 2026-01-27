@@ -6,21 +6,31 @@ export type Locale = (typeof locales)[number];
 
 export const defaultLocale: Locale = "en";
 
+const namespaces = [
+  "common",
+  "auth",
+  "dashboard",
+  "patients",
+  "records",
+  "settings",
+  "admin",
+] as const;
+
 export default getRequestConfig(async () => {
-  // Get locale from cookie (no URL locale needed)
   const cookieStore = await cookies();
   const locale =
     (cookieStore.get("NEXT_LOCALE")?.value as Locale) || defaultLocale;
 
+  const messages: Record<string, any> = {};
+
+  for (const namespace of namespaces) {
+    messages[namespace] = (
+      await import(`./locales/${locale}/${namespace}.json`)
+    ).default;
+  }
+
   return {
     locale,
-    messages: {
-      ...(await import(`./locales/${locale}/common.json`)).default,
-      ...(await import(`./locales/${locale}/auth.json`)).default,
-      ...(await import(`./locales/${locale}/dashboard.json`)).default,
-      ...(await import(`./locales/${locale}/patients.json`)).default,
-      ...(await import(`./locales/${locale}/records.json`)).default,
-      ...(await import(`./locales/${locale}/settings.json`)).default,
-    },
+    messages,
   };
 });

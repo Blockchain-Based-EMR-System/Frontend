@@ -1,4 +1,4 @@
-import { User } from "@/types";
+import { User, Role } from "@/types";
 
 export enum AuthState {
   UNAUTHENTICATED = "UNAUTHENTICATED",
@@ -7,6 +7,23 @@ export enum AuthState {
   FULLY_AUTHENTICATED = "FULLY_AUTHENTICATED",
 }
 
+export function getRoleDashboardPath(role?: Role): string {
+  if (!role) return "/dashboard"; 
+
+  switch (role) {
+    case Role.SUPER_ADMIN:
+      return "/superadmin-dashboard";
+    case Role.ADMIN:
+      return "/admin-dashboard";
+    case Role.DOCTOR:
+      return "/doctor-dashboard";
+    case Role.NURSE:
+      return "/nurse-dashboard";
+    case Role.PATIENT:
+    default:
+      return "/dashboard";
+  }
+}
 
 export function hasAuthToken(): boolean {
   if (typeof window === "undefined") return false;
@@ -20,7 +37,6 @@ export function hasAuthToken(): boolean {
     );
   });
 }
-
 
 export function getAuthState(user: User | null): AuthState {
   if (!user || !hasAuthToken()) {
@@ -42,10 +58,10 @@ export function getAuthState(user: User | null): AuthState {
   return AuthState.UNAUTHENTICATED;
 }
 
-
 export function canAccessRoute(
   path: string,
-  authState: AuthState
+  authState: AuthState,
+  userRole?: Role
 ): { allowed: boolean; redirectTo?: string } {
   const publicRoutes = [
     "/",
@@ -56,9 +72,38 @@ export function canAccessRoute(
   ];
   const verifyEmailRoute = "/verify-email";
   const completeProfileRoute = "/complete-profile";
-  const dashboardRoute = "/dashboard";
+  const dashboardRoute = userRole
+    ? getRoleDashboardPath(userRole)
+    : "/dashboard";
 
   const normalizedPath = path === "/" ? "/" : path.replace(/\/$/, "");
+
+  if (authState === AuthState.FULLY_AUTHENTICATED && userRole) {
+    if (
+      normalizedPath.startsWith("/superadmin-dashboard") &&
+      userRole !== Role.SUPER_ADMIN
+    ) {
+      return { allowed: false, redirectTo: getRoleDashboardPath(userRole) };
+    }
+    if (
+      normalizedPath.startsWith("/admin-dashboard") &&
+      userRole !== Role.ADMIN
+    ) {
+      return { allowed: false, redirectTo: getRoleDashboardPath(userRole) };
+    }
+    if (
+      normalizedPath.startsWith("/doctor-dashboard") &&
+      userRole !== Role.DOCTOR
+    ) {
+      return { allowed: false, redirectTo: getRoleDashboardPath(userRole) };
+    }
+    if (
+      normalizedPath.startsWith("/nurse-dashboard") &&
+      userRole !== Role.NURSE
+    ) {
+      return { allowed: false, redirectTo: getRoleDashboardPath(userRole) };
+    }
+  }
 
   switch (authState) {
     case AuthState.UNAUTHENTICATED:
@@ -105,7 +150,7 @@ export function getRedirectAfterAuth(user: User | null): string {
     case AuthState.NEEDS_PROFILE_COMPLETION:
       return "/complete-profile";
     case AuthState.FULLY_AUTHENTICATED:
-      return "/dashboard";
+      return user ? getRoleDashboardPath(user.role) : "/dashboard";
     default:
       return "/login";
   }

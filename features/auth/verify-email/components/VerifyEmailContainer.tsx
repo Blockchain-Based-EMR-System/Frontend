@@ -21,7 +21,7 @@ export interface VerifyEmailPresentationalProps {
 const RESEND_COOLDOWN = 60;
 
 export function VerifyEmailContainer({ children }: VerifyEmailContainerProps) {
-  const t = useTranslations("");
+  const t = useTranslations("auth");
   const verifyEmailMutation = useVerifyEmail();
   const resendOtpMutation = useResendOtp();
 

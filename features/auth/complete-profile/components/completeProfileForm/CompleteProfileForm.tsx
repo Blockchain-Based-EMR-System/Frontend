@@ -40,7 +40,7 @@ export function CompleteProfileForm({
   initialPhone = "",
 }: CompleteProfileFormProps) {
   const { locale } = useLanguage();
-  const t = useTranslations("");
+  const tAuth = useTranslations("auth");
   const [selectedGender, setSelectedGender] = useState<string>("");
   const [date, setDate] = useState<Date>();
 
@@ -50,7 +50,7 @@ export function CompleteProfileForm({
     formState: { errors },
     setValue,
   } = useForm<CompleteProfileFormData>({
-    resolver: zodResolver(createCompleteProfileSchema(t, requirePhone)),
+    resolver: zodResolver(createCompleteProfileSchema(tAuth, requirePhone)),
     defaultValues: {
       phone: initialPhone,
       gender: undefined,
@@ -69,11 +69,11 @@ export function CompleteProfileForm({
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {requirePhone && (
         <div className="flex flex-col gap-2">
-          <Label htmlFor="phone">{t("phoneNumber")}</Label>
+          <Label htmlFor="phone">{tAuth("phoneNumber")}</Label>
           <Input
             id="phone"
             type="tel"
-            placeholder={t("phoneNumberPlaceholder")}
+            placeholder={tAuth("phoneNumberPlaceholder")}
             {...register("phone")}
             disabled={isLoading}
             aria-invalid={!!errors.phone}
@@ -86,7 +86,7 @@ export function CompleteProfileForm({
       )}
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="gender">{t("gender")}</Label>
+        <Label htmlFor="gender">{tAuth("gender")}</Label>
         <Select
           value={selectedGender}
           onValueChange={handleGenderChange}
@@ -96,11 +96,11 @@ export function CompleteProfileForm({
           <SelectTrigger
             className={`py-5 ${errors.gender ? "border-destructive" : ""}`}
           >
-            <SelectValue placeholder={t("selectGender")} />
+            <SelectValue placeholder={tAuth("selectGender")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="MALE">{t("male")}</SelectItem>
-            <SelectItem value="FEMALE">{t("female")}</SelectItem>
+            <SelectItem value="MALE">{tAuth("male")}</SelectItem>
+            <SelectItem value="FEMALE">{tAuth("female")}</SelectItem>
           </SelectContent>
         </Select>
         {errors.gender && (
@@ -109,7 +109,7 @@ export function CompleteProfileForm({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="date_of_birth">{t("dateOfBirth")}</Label>
+        <Label htmlFor="date_of_birth">{tAuth("dateOfBirth")}</Label>
         <DatePickerPopover
           date={date}
           onDateChange={(selectedDate) => {
@@ -120,7 +120,7 @@ export function CompleteProfileForm({
               });
             }
           }}
-          placeholder={t("pickDate")}
+          placeholder={tAuth("pickDate")}
           disabled={isLoading}
           hasError={!!errors.date_of_birth}
           fromYear={1900}
@@ -138,10 +138,10 @@ export function CompleteProfileForm({
         {isLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            {t("completing")}
+            {tAuth("completing")}
           </>
         ) : (
-          t("completeProfile")
+          tAuth("completeProfile")
         )}
       </Button>
     </form>

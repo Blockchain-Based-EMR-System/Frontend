@@ -1,13 +1,39 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+enum Role {
+  SUPER_ADMIN = "SUPER_ADMIN",
+  ADMIN = "ADMIN",
+  DOCTOR = "DOCTOR",
+  NURSE = "NURSE",
+  PATIENT = "PATIENT",
+}
+
+function getRoleDashboardPath(role?: Role): string {
+  if (!role) return "/dashboard";
+
+  switch (role) {
+    case Role.SUPER_ADMIN:
+      return "/superadmin-dashboard";
+    case Role.ADMIN:
+      return "/admin-dashboard";
+    case Role.DOCTOR:
+      return "/doctor-dashboard";
+    case Role.NURSE:
+      return "/nurse-dashboard";
+    case Role.PATIENT:
+    default:
+      return "/dashboard";
+  }
+}
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
-    pathname.includes(".") 
+    pathname.includes(".")
   ) {
     return NextResponse.next();
   }
@@ -38,12 +64,14 @@ export function middleware(request: NextRequest) {
 
   let isVerified = false;
   let hasCompletedProfile = false;
+  let userRole: Role | null = null;
 
   if (userStateCookie?.value) {
     try {
       const userState = JSON.parse(decodeURIComponent(userStateCookie.value));
       isVerified = userState.isVerified || false;
       hasCompletedProfile = userState.hasCompletedProfile || false;
+      userRole = userState.role || null;
     } catch (error) {
       console.error("Failed:", error);
     }
@@ -63,15 +91,61 @@ export function middleware(request: NextRequest) {
   }
 
   if (isVerified && hasCompletedProfile) {
+    const userDashboard = userRole
+      ? getRoleDashboardPath(userRole)
+      : dashboardRoute;
+
     if (authRoutes.includes(normalizedPath)) {
-      return NextResponse.redirect(new URL(dashboardRoute, request.url));
+      return NextResponse.redirect(new URL(userDashboard, request.url));
     }
+
     if (
       normalizedPath === completeProfileRoute ||
       normalizedPath === verifyEmailRoute
     ) {
-      return NextResponse.redirect(new URL(dashboardRoute, request.url));
+      return NextResponse.redirect(new URL(userDashboard, request.url));
     }
+
+    if (userRole) {
+      if (
+        normalizedPath.startsWith("/superadmin-dashboard") &&
+        userRole !== Role.SUPER_ADMIN
+      ) {
+        return NextResponse.redirect(
+          new URL(getRoleDashboardPath(userRole), request.url)
+        );
+      }
+      if (
+        normalizedPath.startsWith("/admin-dashboard") &&
+        userRole !== Role.ADMIN
+      ) {
+        return NextResponse.redirect(
+          new URL(getRoleDashboardPath(userRole), request.url)
+        );
+      }
+      if (
+        normalizedPath.startsWith("/doctor-dashboard") &&
+        userRole !== Role.DOCTOR
+      ) {
+        return NextResponse.redirect(
+          new URL(getRoleDashboardPath(userRole), request.url)
+        );
+      }
+      if (
+        normalizedPath.startsWith("/nurse-dashboard") &&
+        userRole !== Role.NURSE
+      ) {
+        return NextResponse.redirect(
+          new URL(getRoleDashboardPath(userRole), request.url)
+        );
+      }
+      if (normalizedPath === "/dashboard" && userRole !== Role.PATIENT) {
+        return NextResponse.redirect(
+          new URL(getRoleDashboardPath(userRole), request.url)
+        );
+      }
+    }
+
     return NextResponse.next();
   }
 

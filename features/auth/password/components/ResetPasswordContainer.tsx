@@ -19,7 +19,7 @@ export function ResetPasswordContainer({
   children,
   token,
 }: ResetPasswordContainerProps) {
-  const t = useTranslations("");
+  const t = useTranslations("auth");
   const resetPasswordMutation = useResetPassword();
 
   const handleResetPassword = async (data: ResetPasswordFormData) => {

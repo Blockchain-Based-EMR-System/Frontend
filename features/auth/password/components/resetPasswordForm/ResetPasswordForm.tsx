@@ -25,7 +25,7 @@ export function ResetPasswordForm({
   onSubmit,
   isLoading,
 }: ResetPasswordFormProps) {
-  const t = useTranslations("");
+  const tAuth = useTranslations("auth");
   const language = useLanguage();
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -35,7 +35,7 @@ export function ResetPasswordForm({
     handleSubmit,
     formState: { errors },
   } = useForm<ResetPasswordFormData>({
-    resolver: zodResolver(createResetPasswordSchema(t)),
+    resolver: zodResolver(createResetPasswordSchema(tAuth)),
     defaultValues: {
       newPassword: "",
       confirmPassword: "",
@@ -45,12 +45,12 @@ export function ResetPasswordForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="flex flex-col gap-2">
-        <Label htmlFor="newPassword">{t("newPassword")}</Label>
+        <Label htmlFor="newPassword">{tAuth("newPassword")}</Label>
         <div className="relative">
           <Input
             id="newPassword"
             type={showNewPassword ? "text" : "password"}
-            placeholder={t("newPasswordPlaceholder")}
+            placeholder={tAuth("newPasswordPlaceholder")}
             {...register("newPassword")}
             disabled={isLoading}
             aria-invalid={!!errors.newPassword}
@@ -86,12 +86,12 @@ export function ResetPasswordForm({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="confirmPassword">{t("confirmPassword")}</Label>
+        <Label htmlFor="confirmPassword">{tAuth("confirmPassword")}</Label>
         <div className="relative">
           <Input
             id="confirmPassword"
             type={showConfirmPassword ? "text" : "password"}
-            placeholder={t("confirmPasswordPlaceholder")}
+            placeholder={tAuth("confirmPasswordPlaceholder")}
             {...register("confirmPassword")}
             disabled={isLoading}
             aria-invalid={!!errors.confirmPassword}
@@ -130,10 +130,10 @@ export function ResetPasswordForm({
         {isLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            {t("resetting")}
+            {tAuth("resetting")}
           </>
         ) : (
-          t("resetPassword")
+          tAuth("resetPassword")
         )}
       </Button>
     </form>

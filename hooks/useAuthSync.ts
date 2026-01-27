@@ -14,6 +14,7 @@ export function useAuthSync() {
       const userState = {
         isVerified: user.isVerified,
         hasCompletedProfile: user.hasCompletedProfile,
+        role: user.role,
       };
 
       document.cookie = `UserState=${encodeURIComponent(
@@ -24,7 +25,6 @@ export function useAuthSync() {
         "UserState=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     }
   }, [user]);
-
 
   const refreshUserState = useCallback(async () => {
     try {
@@ -42,6 +42,7 @@ export function useAuthSync() {
           const userState = {
             isVerified: userData.isVerified,
             hasCompletedProfile: userData.hasCompletedProfile,
+            role: userData.role,
           };
           document.cookie = `UserState=${encodeURIComponent(
             JSON.stringify(userState)
@@ -67,14 +68,13 @@ export function useAuthSync() {
       const userState = {
         isVerified: userData.isVerified,
         hasCompletedProfile: userData.hasCompletedProfile,
+        role: userData.role,
       };
 
       const cookieString = `UserState=${encodeURIComponent(
         JSON.stringify(userState)
       )}; path=/; max-age=2592000; SameSite=Lax`;
-      console.log("🍪 Setting cookie:", cookieString);
       document.cookie = cookieString;
-
     },
     [setUser]
   );
@@ -92,5 +92,3 @@ export function useAuthSync() {
     clearAuthState,
   };
 }
-
-

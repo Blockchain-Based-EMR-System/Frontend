@@ -1,3 +1,19 @@
+export enum Role {
+  SUPER_ADMIN = "SUPER_ADMIN",
+  ADMIN = "ADMIN",
+  DOCTOR = "DOCTOR",
+  NURSE = "NURSE",
+  PATIENT = "PATIENT",
+}
+
+export enum DoctorAccountStatus {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+}
+
+export type Gender = "MALE" | "FEMALE";
+
 export interface User {
   id: string;
   email: string;
@@ -8,8 +24,22 @@ export interface User {
   date_of_birth?: string | null;
   isVerified: boolean;
   hasCompletedProfile: boolean;
+  role?: Role;
+  profileImage?: string | null;
   created_at: string;
   updated_at: string;
 }
 
-export type Gender = "MALE" | "FEMALE";
+export interface Doctor extends User {
+  doctor?: {
+    specialization: {
+      key: string;
+      value: string;
+    };
+    avg_time: string | null;
+    account_status: DoctorAccountStatus;
+  };
+}
+
+export interface Admin extends User {
+}
