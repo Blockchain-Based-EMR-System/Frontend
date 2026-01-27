@@ -1,0 +1,11 @@
+{
+  "admins": "المسؤولون",
+  "adminsDescription": "إدارة مسؤولي النظام",
+  "addAdmin": "إضافة مسؤول",
+  "addNewAdmin": "إضافة مسؤول جديد",
+  "noAdminsFound": "لم يتم العثور على مسؤولين",
+  "adminDetails": "تفاصيل المسؤول",
+  "dashboard": "لوحة التحكم",
+  "doctors": "الأطباء",
+  "superAdmin": "المسؤول الأعلى"
+}

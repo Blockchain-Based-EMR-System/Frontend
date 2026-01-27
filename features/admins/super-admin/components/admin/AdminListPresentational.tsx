@@ -29,7 +29,7 @@ export function AdminListPresentational({
   onAddAdmin,
 }: AdminListPresentationalProps) {
   const tCommon = useTranslations("common");
-  const tAdmin = useTranslations("admin");
+  const tAdmin = useTranslations("superAdmin");
 
   if (isLoading) {
     return (

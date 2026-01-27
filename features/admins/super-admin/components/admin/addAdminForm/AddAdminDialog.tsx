@@ -33,7 +33,7 @@ interface AddAdminDialogProps {
 export function AddAdminDialog({ open, onClose }: AddAdminDialogProps) {
   const { toast } = useToast();
   const createAdminMutation = useCreateAdmin();
-  const tAdmin = useTranslations("admin");
+  const tAdmin = useTranslations("superAdmin");
   const tCommon = useTranslations("common");
   const tAuth = useTranslations("auth");
 
@@ -105,7 +105,7 @@ export function AddAdminDialog({ open, onClose }: AddAdminDialogProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">{tCommon("password")} *</Label>
+              <Label htmlFor="password">{tAuth("password")} *</Label>
               <Input id="password" type="password" {...register("password")} />
               {errors.password && (
                 <p className="text-sm text-destructive">

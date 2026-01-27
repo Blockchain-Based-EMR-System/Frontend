@@ -4,14 +4,7 @@ import { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import {
-  Users,
-  UserCog,
-  LayoutDashboard,
-  Menu,
-  X,
-  Stethoscope,
-} from "lucide-react";
+import { LucideIcon, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,37 +16,38 @@ import {
 } from "@/components/ui/sheet";
 import { useState } from "react";
 
-interface SuperAdminLayoutProps {
-  children: ReactNode;
+interface NavigationItem {
+  nameKey: string; 
+  href: string;
+  icon: LucideIcon;
 }
 
-export function SuperAdminLayout({ children }: SuperAdminLayoutProps) {
-  const pathname = usePathname();
-  const t = useTranslations("");
-  const [isOpen, setIsOpen] = useState(false);
+interface SidebarProps {
+  children: ReactNode;
+  titleNameKey: string;
+  titleIcon: LucideIcon;
+  navigationItems: NavigationItem[];
+  translationNamespace: string; 
+  dashboardHref: string; 
+}
 
-  const navigation = [
-    {
-      name: "Dashboard",
-      href: "/superadmin-dashboard",
-      icon: LayoutDashboard,
-    },
-    {
-      name: "Admins",
-      href: "/superadmin-dashboard/admins",
-      icon: UserCog,
-    },
-    {
-      name: "Doctors",
-      href: "/superadmin-dashboard/doctors",
-      icon: Stethoscope,
-    },
-  ];
+export function Sidebar({
+  children,
+  titleNameKey,
+  titleIcon: TitleIcon,
+  navigationItems,
+  translationNamespace,
+  dashboardHref,
+}: SidebarProps) {
+  const pathname = usePathname();
+  const t = useTranslations(translationNamespace);
+  const [isOpen, setIsOpen] = useState(false);
 
   const NavLinks = () => (
     <>
-      {navigation.map((item) => {
+      {navigationItems.map((item) => {
         const isActive = pathname === item.href;
+        const ItemIcon = item.icon;
         return (
           <Link
             key={item.href}
@@ -63,11 +57,11 @@ export function SuperAdminLayout({ children }: SuperAdminLayoutProps) {
               "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all hover:bg-accent",
               isActive
                 ? "bg-accent text-accent-foreground"
-                : "text-muted-foreground hover:text-foreground"
+                : "text-muted-foreground hover:text-foreground",
             )}
           >
-            <item.icon className="h-5 w-5" />
-            {item.name}
+            <ItemIcon className="h-5 w-5" />
+            {t(item.nameKey)}
           </Link>
         );
       })}
@@ -79,12 +73,9 @@ export function SuperAdminLayout({ children }: SuperAdminLayoutProps) {
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex w-64 flex-col border-r bg-background">
         <div className="flex h-16 items-center border-b px-6">
-          <Link
-            href="/superadmin-dashboard"
-            className="flex items-center gap-2"
-          >
-            <Users className="h-6 w-6 text-primary" />
-            <span className="text-lg font-semibold">Super Admin</span>
+          <Link href={dashboardHref} className="flex items-center gap-2">
+            <TitleIcon className="h-6 w-6 text-primary" />
+            <span className="text-lg font-semibold">{t(titleNameKey)}</span>
           </Link>
         </div>
         <nav className="flex-1 space-y-1 p-4">
@@ -109,12 +100,12 @@ export function SuperAdminLayout({ children }: SuperAdminLayoutProps) {
               </SheetHeader>
               <div className="flex h-16 items-center border-b px-6">
                 <Link
-                  href="/superadmin-dashboard"
+                  href={dashboardHref}
                   className="flex items-center gap-2"
                   onClick={() => setIsOpen(false)}
                 >
-                  <Users className="h-6 w-6 text-primary" />
-                  <span className="text-lg font-semibold">Super Admin</span>
+                  <TitleIcon className="h-6 w-6 text-primary" />
+                  <span className="text-lg font-semibold">{t(titleNameKey)}</span>
                 </Link>
               </div>
               <nav className="flex-1 space-y-1 p-4">
@@ -123,8 +114,8 @@ export function SuperAdminLayout({ children }: SuperAdminLayoutProps) {
             </SheetContent>
           </Sheet>
           <div className="flex items-center gap-2">
-            <Users className="h-6 w-6 text-primary" />
-            <span className="text-lg font-semibold">Super Admin</span>
+            <TitleIcon className="h-6 w-6 text-primary" />
+            <span className="text-lg font-semibold">{t(titleNameKey)}</span>
           </div>
         </header>
 
