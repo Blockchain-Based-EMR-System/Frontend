@@ -25,7 +25,7 @@ export interface User {
   isVerified: boolean;
   hasCompletedProfile: boolean;
   role?: Role;
-  profileImage?: string | null;
+  profilePicture?: string | null;
   created_at: string;
   updated_at: string;
 }

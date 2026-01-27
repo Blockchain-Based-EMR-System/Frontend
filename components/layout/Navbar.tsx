@@ -6,7 +6,6 @@ import { Menu, X } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useUserStore } from "@/stores/useUserStore";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LanguageSwitcher } from "@/components/common/LanguageSwitcher";
 import { ThemeSwitcher } from "@/components/common/ThemeSwitcher";
 import { UserProfileDropdown } from "@/components/common/UserProfileDropdown";
@@ -116,27 +115,14 @@ export function Navbar() {
             <div className="flex flex-col space-y-6">
               {/* User Section for Mobile */}
               {isAuthenticated && user ? (
-                <div className="flex items-center space-x-3 rtl:space-x-reverse pb-4 border-b">
-                  <Avatar className="h-12 w-12 ring-2 ring-primary/20">
-                    <AvatarImage
-                      src={user.profileImage || undefined}
-                      alt={user.name}
-                    />
-                    <AvatarFallback className="bg-primary/10 text-primary font-semibold text-lg">
-                      {user.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")
-                        .toUpperCase()
-                        .slice(0, 2)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col">
-                    <span className="text-sm font-medium">{user.name}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {user.email}
-                    </span>
-                  </div>
+                <div className="pb-4 border-b">
+                  <UserProfileDropdown
+                    user={user}
+                    onLogout={() => {
+                      useUserStore.getState().clearUser();
+                      setIsOpen(false);
+                    }}
+                  />
                 </div>
               ) : (
                 <div className="flex flex-col space-y-2 pb-4 border-b">
@@ -154,22 +140,13 @@ export function Navbar() {
               )}
 
               {/* Navigation Links */}
-              <div className="flex flex-col space-y-1">
-                {isAuthenticated && user && (
-                  <Link
-                    href="/dashboard"
-                    onClick={() => setIsOpen(false)}
-                    className="flex items-center px-4 py-3 rounded-md hover:bg-accent transition-colors"
-                  >
-                    <span className="font-medium">{tCommon("dashboard")}</span>
-                  </Link>
-                )}
+              <div className="flex flex-col space-y-3 px-2">
                 {navLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center px-4 py-3 rounded-md hover:bg-accent transition-colors"
+                    className="text-sm flex items-center px-2 py-1 rounded-md hover:bg-accent transition-colors"
                   >
                     <span className="font-medium">{link.label}</span>
                   </Link>
