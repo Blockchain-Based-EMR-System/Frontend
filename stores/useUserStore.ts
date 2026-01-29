@@ -23,6 +23,7 @@ export const useUserStore = create<UserState>()(
       _hasHydrated: false,
 
       setUser: (user: User) => {
+        console.log("📝 Setting user:", user.email);
         set({ user, isAuthenticated: true });
       },
 
@@ -30,11 +31,13 @@ export const useUserStore = create<UserState>()(
         const currentUser = get().user;
         if (currentUser) {
           const updatedUser = { ...currentUser, ...updates };
+          console.log("📝 Updating user:", updatedUser.email);
           set({ user: updatedUser });
         }
       },
 
       clearUser: () => {
+        console.log("🧹 CLEARING USER from Zustand store");
         set({ user: null, isAuthenticated: false });
       },
 

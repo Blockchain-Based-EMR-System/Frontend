@@ -7,6 +7,23 @@ export enum AuthState {
   FULLY_AUTHENTICATED = "FULLY_AUTHENTICATED",
 }
 
+export const getRoleDisplayName = (role?: Role): string => {
+  switch (role) {
+    case Role.SUPER_ADMIN:
+      return "Super Admin";
+    case Role.ADMIN:
+      return "Admin";
+    case Role.DOCTOR:
+      return "Doctor";
+    case Role.NURSE:
+      return "Nurse";
+    case Role.PATIENT:
+      return "Patient";
+    default:
+      return "User";
+  }
+};
+
 export function getRoleDashboardPath(role?: Role): string {
   if (!role) return "/dashboard"; 
 
@@ -27,14 +44,10 @@ export function getRoleDashboardPath(role?: Role): string {
 
 export function hasAuthToken(): boolean {
   if (typeof window === "undefined") return false;
-
   const cookies = document.cookie.split(";");
   return cookies.some((cookie) => {
     const trimmed = cookie.trim();
-    return (
-      trimmed.startsWith("Authorization=") ||
-      trimmed.startsWith("RefreshToken=")
-    );
+    return trimmed.startsWith("UserState=");
   });
 }
 

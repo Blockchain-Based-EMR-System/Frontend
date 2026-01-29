@@ -18,21 +18,29 @@ const axiosInstance = axios.create({
 
 let refreshTokenPromise: Promise<any> | null = null;
 
+const clearAllAuthStateAndReload = () => {
+  if (typeof window !== "undefined") {
+    
+    localStorage.clear();
+    
+    sessionStorage.clear();
+        
+    window.location.replace("/login");
+  }
+};
+
 const refreshAuthToken = async (): Promise<void> => {
   try {
     await axiosInstance.post("/auth/refresh");
     
     refreshTokenPromise = null;
+    console.log("✅ Token refreshed successfully");
   } catch (error) {
     refreshTokenPromise = null;
     
     if (typeof window !== "undefined") {
-      console.error("❌ Token refresh failed, redirecting to login");
-      
-      localStorage.removeItem('user');
-      sessionStorage.clear();
-      
-      window.location.href = "/login";
+      console.error("❌ Token refresh failed");
+      clearAllAuthStateAndReload();
     }
     
     throw error;
@@ -47,6 +55,12 @@ axiosInstance.interceptors.response.use(
     const originalRequest = error.config as any;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
+      if (originalRequest.url?.includes('/auth/refresh')) {
+        console.error("❌ Refresh endpoint returned 401");
+        clearAllAuthStateAndReload();
+        return Promise.reject(error);
+      }
+
       originalRequest._retry = true;
 
       if (refreshTokenPromise) {
@@ -102,7 +116,7 @@ export class ApiClient {
     data?: any,
     config?: AxiosRequestConfig
   ): Promise<T> {
-    const response = await this.client.put<T>(url, data, config);
+    const response = await this.client.patch<T>(url, data, config);
     return response.data;
   }
 

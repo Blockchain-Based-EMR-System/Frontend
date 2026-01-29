@@ -1,8 +1,14 @@
 "use client";
-
 import { useEffect, useCallback } from "react";
 import { useUserStore } from "@/stores/useUserStore";
 import { User } from "@/types";
+import { api } from "@/lib/apiClient";
+
+interface RefreshResponse {
+  data?: {
+    user?: User;
+  };
+}
 
 export function useAuthSync() {
   const user = useUserStore((state) => state.user);
@@ -16,7 +22,6 @@ export function useAuthSync() {
         hasCompletedProfile: user.hasCompletedProfile,
         role: user.role,
       };
-
       document.cookie = `UserState=${encodeURIComponent(
         JSON.stringify(userState)
       )}; path=/; max-age=2592000; SameSite=Lax`;
@@ -26,34 +31,41 @@ export function useAuthSync() {
     }
   }, [user]);
 
+
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "user-storage" && !e.newValue) {
+        clearUser();
+        document.cookie = "UserState=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, [clearUser]);
+
   const refreshUserState = useCallback(async () => {
     try {
-      const response = await fetch("/api/auth/refresh", {
-        method: "POST",
-        credentials: "include",
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.data?.user) {
-          const userData = data.data.user;
-          setUser(userData);
-
-          const userState = {
-            isVerified: userData.isVerified,
-            hasCompletedProfile: userData.hasCompletedProfile,
-            role: userData.role,
-          };
-          document.cookie = `UserState=${encodeURIComponent(
-            JSON.stringify(userState)
-          )}; path=/; max-age=2592000; SameSite=Lax`;
-
-          return userData;
-        }
-      } else {
-        clearUser();
-        return null;
+      const data = await api.post<RefreshResponse>("/api/auth/refresh");
+      
+      if (data?.data?.user) {
+        const userData = data.data.user;
+        setUser(userData);
+        
+        const userState = {
+          isVerified: userData.isVerified,
+          hasCompletedProfile: userData.hasCompletedProfile,
+          role: userData.role,
+        };
+        document.cookie = `UserState=${encodeURIComponent(
+          JSON.stringify(userState)
+        )}; path=/; max-age=2592000; SameSite=Lax`;
+        
+        return userData;
       }
+      
+      clearUser();
+      return null;
     } catch (error) {
       console.error("Failed to refresh user state:", error);
       clearUser();
@@ -64,13 +76,11 @@ export function useAuthSync() {
   const updateAuthState = useCallback(
     (userData: User) => {
       setUser(userData);
-
       const userState = {
         isVerified: userData.isVerified,
         hasCompletedProfile: userData.hasCompletedProfile,
         role: userData.role,
       };
-
       const cookieString = `UserState=${encodeURIComponent(
         JSON.stringify(userState)
       )}; path=/; max-age=2592000; SameSite=Lax`;

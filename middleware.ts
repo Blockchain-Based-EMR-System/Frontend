@@ -1,31 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-
-enum Role {
-  SUPER_ADMIN = "SUPER_ADMIN",
-  ADMIN = "ADMIN",
-  DOCTOR = "DOCTOR",
-  NURSE = "NURSE",
-  PATIENT = "PATIENT",
-}
-
-function getRoleDashboardPath(role?: Role): string {
-  if (!role) return "/dashboard";
-
-  switch (role) {
-    case Role.SUPER_ADMIN:
-      return "/superadmin-dashboard";
-    case Role.ADMIN:
-      return "/admin-dashboard";
-    case Role.DOCTOR:
-      return "/doctor-dashboard";
-    case Role.NURSE:
-      return "/nurse-dashboard";
-    case Role.PATIENT:
-    default:
-      return "/dashboard";
-  }
-}
+import { Role } from "./types/user";
+import { getRoleDashboardPath } from "@/lib/auth"
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;

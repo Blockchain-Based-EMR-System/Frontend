@@ -28,7 +28,7 @@ import {
   useUpdateProfilePicture,
   useDeleteProfilePicture,
 } from "@/features/user";
-import { getDashboardUrl } from "@/utils/roleHelpers";
+import { getRoleDashboardPath } from "@/lib/auth";
 import { useLanguage } from "@/contexts/LanguageProvider";
 
 interface UserProfileDropdownProps {
@@ -46,7 +46,7 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
   const updateProfilePictureMutation = useUpdateProfilePicture();
   const deleteProfilePictureMutation = useDeleteProfilePicture();
 
-  const dashboardUrl = getDashboardUrl(user.role);
+  const dashboardUrl = getRoleDashboardPath(user.role);
 
   const getInitials = (name: string) => {
     return name
