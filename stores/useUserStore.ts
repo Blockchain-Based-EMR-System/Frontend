@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { User } from "@/types";
+import { shouldAttemptRefresh, attemptTokenRefresh } from "@/lib/tokenRefresh";
 
 interface UserState {
   user: User | null;
@@ -23,7 +24,6 @@ export const useUserStore = create<UserState>()(
       _hasHydrated: false,
 
       setUser: (user: User) => {
-        console.log("📝 Setting user:", user.email);
         set({ user, isAuthenticated: true });
       },
 
@@ -31,13 +31,11 @@ export const useUserStore = create<UserState>()(
         const currentUser = get().user;
         if (currentUser) {
           const updatedUser = { ...currentUser, ...updates };
-          console.log("📝 Updating user:", updatedUser.email);
           set({ user: updatedUser });
         }
       },
 
       clearUser: () => {
-        console.log("🧹 CLEARING USER from Zustand store");
         set({ user: null, isAuthenticated: false });
       },
 
@@ -56,11 +54,32 @@ export const useUserStore = create<UserState>()(
         user: state.user,
         isAuthenticated: state.isAuthenticated,
       }),
-      onRehydrateStorage: () => (state) => {
+      onRehydrateStorage: () => async (state) => {
         if (state) {
           state.setHasHydrated(true);
+          if (shouldAttemptRefresh()) {
+            const refreshSuccess = await attemptTokenRefresh();
+
+            if (!refreshSuccess) {
+              state.clearUser();
+
+              if (
+                typeof window !== "undefined" &&
+                window.location.pathname !== "/login"
+              ) {
+                window.location.replace("/login");
+              }
+            } else {
+              console.log(
+                "✅ [Zustand] Auto-refresh successful - reloading to update state",
+              );
+              if (typeof window !== "undefined") {
+                window.location.reload();
+              }
+            }
+          }
         }
       },
-    }
-  )
+    },
+  ),
 );
