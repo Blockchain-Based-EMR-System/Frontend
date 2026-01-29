@@ -19,3 +19,6 @@ export interface AuthResponse extends BaseResponse {
   data?: User;
   token?: string;
 }
+
+
+

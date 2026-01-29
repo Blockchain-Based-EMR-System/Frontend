@@ -2,10 +2,14 @@
   "admins": "المسؤولون",
   "adminsDescription": "إدارة مسؤولي النظام",
   "addAdmin": "إضافة مسؤول",
+  "addingAdmin": "جارٍ إضافة المسؤول ...",
   "addNewAdmin": "إضافة مسؤول جديد",
   "noAdminsFound": "لم يتم العثور على مسؤولين",
   "adminDetails": "تفاصيل المسؤول",
   "dashboard": "لوحة التحكم",
+  "welcomeToDashboard": "مرحبًا بك في لوحة تحكم المسؤول الأعلى",
   "doctors": "الأطباء",
-  "superAdmin": "المسؤول الأعلى"
+  "superAdmin": "المسؤول الأعلى",
+  "totalDoctors": "إجمالي الأطباء",
+  "totalAdmins": "إجمالي المسؤولين"
 }

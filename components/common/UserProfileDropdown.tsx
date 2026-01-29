@@ -193,10 +193,10 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
                     >
                       <Upload className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
                       {updateProfilePictureMutation.isPending
-                        ? "Uploading..."
+                        ? language.locale === "en" ? "Uploading..." : "جاري الرفع..."
                         : user.profilePicture
-                          ? "Change"
-                          : "Upload"}
+                          ? language.locale === "en" ? "Change" : "تغيير"
+                          : language.locale === "en" ? "Upload" : "رفع"}
                     </Button>
                     {user.profilePicture && (
                       <Button

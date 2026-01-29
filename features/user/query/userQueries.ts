@@ -6,6 +6,8 @@ import {
 } from "../api/userApi";
 import { useToast } from "@/hooks/useToast";
 import { useUserStore } from "@/stores/useUserStore";
+import { useLanguage } from "@/contexts/LanguageProvider";
+import { getLocalizedMessage } from "@/lib/helpers";
 import {
   UpdateProfilePictureResponse,
   DeleteProfilePictureResponse,
@@ -13,20 +15,21 @@ import {
 
 export const useUpdateProfilePicture = () => {
   const { toast } = useToast();
+  const { locale } = useLanguage();
   const queryClient = useQueryClient();
   const { updateUser } = useUserStore();
 
   return useMutation<UpdateProfilePictureResponse, Error, File>({
     mutationFn: updateProfilePicture,
-    onSuccess: async () => {
+    onSuccess: async (data) => {
       toast({
         title: "Success",
-        description: "Profile picture updated successfully",
+        description: getLocalizedMessage(data, locale),
       });
 
       try {
         const response = await getProfilePicture();
-        let profilePictureUrl = response.url;
+        let profilePictureUrl = response.data?.url;
 
         if (profilePictureUrl && !profilePictureUrl.startsWith("http")) {
           const apiBase =
@@ -43,11 +46,14 @@ export const useUpdateProfilePicture = () => {
 
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error("Error updating profile picture:", error);
+      const errorMessage = error?.response?.data
+        ? getLocalizedMessage(error.response.data, locale)
+        : error?.message || "Failed to upload profile picture";
       toast({
         title: "Upload failed",
-        description: error.message || "Failed to upload profile picture",
+        description: errorMessage,
         variant: "destructive",
       });
     },
@@ -56,25 +62,29 @@ export const useUpdateProfilePicture = () => {
 
 export const useDeleteProfilePicture = () => {
   const { toast } = useToast();
+  const { locale } = useLanguage();
   const queryClient = useQueryClient();
   const { updateUser } = useUserStore();
 
   return useMutation<DeleteProfilePictureResponse, Error, void>({
     mutationFn: deleteProfilePicture,
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
         title: "Success",
-        description: "Profile picture deleted successfully",
+        description: getLocalizedMessage(data, locale),
       });
 
       updateUser({ profilePicture: null });
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error("Error deleting profile picture:", error);
+      const errorMessage = error?.response?.data
+        ? getLocalizedMessage(error.response.data, locale)
+        : error?.message || "Failed to delete profile picture";
       toast({
         title: "Delete failed",
-        description: error.message || "Failed to delete profile picture",
+        description: errorMessage,
         variant: "destructive",
       });
     },

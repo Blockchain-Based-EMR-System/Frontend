@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AdminTableSkeleton } from "../skeletons";
 
 interface AdminListPresentationalProps {
   admins: Admin[];
@@ -32,20 +33,16 @@ export function AdminListPresentational({
   const tAdmin = useTranslations("superAdmin");
 
   if (isLoading) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Loading Admins...</CardTitle>
-        </CardHeader>
-      </Card>
-    );
+    return <AdminTableSkeleton />;
   }
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{tAdmin("admins")}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            {tAdmin("admins")}
+          </h1>
           <p className="text-muted-foreground">{tAdmin("adminsDescription")}</p>
         </div>
         <Button onClick={onAddAdmin} className="w-full md:w-auto">
@@ -59,14 +56,21 @@ export function AdminListPresentational({
         <Card className="rounded-lg overflow-hidden">
           <CardContent className="p-0">
             <div className="overflow-x-auto">
-              <Table style={{ minWidth: '800px' }}>
+              <Table style={{ minWidth: "800px" }}>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="whitespace-nowrap">{tCommon("name")}</TableHead>
-                    <TableHead className="whitespace-nowrap">{tCommon("email")}</TableHead>
-                    <TableHead className="whitespace-nowrap">{tCommon("username")}</TableHead>
-                    <TableHead className="whitespace-nowrap">{tCommon("phone")}</TableHead>
-                    <TableHead className="whitespace-nowrap">{tCommon("status")}</TableHead>
+                    <TableHead className="whitespace-nowrap">
+                      {tCommon("name")}
+                    </TableHead>
+                    <TableHead className="whitespace-nowrap">
+                      {tCommon("email")}
+                    </TableHead>
+                    <TableHead className="whitespace-nowrap">
+                      {tCommon("username")}
+                    </TableHead>
+                    <TableHead className="whitespace-nowrap">
+                      {tCommon("phone")}
+                    </TableHead>
                     <TableHead className="text-right whitespace-nowrap">
                       {tCommon("actions")}
                     </TableHead>
@@ -93,13 +97,6 @@ export function AdminListPresentational({
                         </TableCell>
                         <TableCell className="whitespace-nowrap">
                           {admin.phone || "N/A"}
-                        </TableCell>
-                        <TableCell className="whitespace-nowrap">
-                          <Badge
-                            variant={admin.isVerified ? "success" : "warning"}
-                          >
-                            {admin.isVerified ? tCommon("verified") : tCommon("pending")}
-                          </Badge>
                         </TableCell>
                         <TableCell className="text-right whitespace-nowrap">
                           <Button

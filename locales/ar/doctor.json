@@ -1,0 +1,9 @@
+{
+    "doctors": "الأطباء",
+    "manageDoctors": "إدارة الأطباء",
+    "addDoctor": "إضافة طبيب",
+    "addingDoctor": "جارٍ إضافة الطبيب ...",
+    "noDoctorsFound": "لم يتم العثور على أطباء.",
+    "specialization": "التخصص",
+    "doctorDetails": "تفاصيل الطبيب"
+}

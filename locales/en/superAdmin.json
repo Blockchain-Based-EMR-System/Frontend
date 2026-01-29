@@ -2,10 +2,14 @@
   "admins": "Admins",
   "adminsDescription": "Manage system administrators",
   "addAdmin": "Add Admin",
+  "addingAdmin": "Adding Admin ...",
   "addNewAdmin": "Add New Admin",
   "noAdminsFound": "No admins found",
   "adminDetails": "Admin Details",
   "dashboard": "Dashboard",
+  "welcomeToDashboard": "Welcome to the Super Admin Dashboard",
   "doctors": "Doctors",
-  "superAdmin": "Super Admin"
+  "superAdmin": "Super Admin",
+  "totalDoctors": "Total Doctors",
+  "totalAdmins": "Total Admins"
 }

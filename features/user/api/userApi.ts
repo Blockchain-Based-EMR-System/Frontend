@@ -1,5 +1,4 @@
-import apiClient from "@/lib/apiClient";
-import { AxiosResponse } from "axios";
+import { api } from "@/lib/apiClient";
 import {
   UpdateProfilePictureResponse,
   DeleteProfilePictureResponse,
@@ -12,28 +11,33 @@ export const updateProfilePicture = async (
   const formData = new FormData();
   formData.append("profilePicture", file);
 
-  const response: AxiosResponse<UpdateProfilePictureResponse> =
-    await apiClient.patch("/users/profile-picture", formData, {
+  const response = await api.patch<UpdateProfilePictureResponse>(
+    "/users/profile-picture",
+    formData,
+    {
       headers: {
         "Content-Type": "multipart/form-data",
       },
-    });
+    },
+  );
 
-  return response.data;
+  return response;
 };
 
 export const deleteProfilePicture =
   async (): Promise<DeleteProfilePictureResponse> => {
-    const response: AxiosResponse<DeleteProfilePictureResponse> =
-      await apiClient.delete("/users/profile-picture");
+    const response = await api.delete<DeleteProfilePictureResponse>(
+      "/users/profile-picture",
+    );
 
-    return response.data;
+    return response;
   };
 
 export const getProfilePicture =
   async (): Promise<GetProfilePictureResponse> => {
-    const response: AxiosResponse<GetProfilePictureResponse> =
-      await apiClient.get("/users/profile-picture");
+    const response = await api.get<GetProfilePictureResponse>(
+      "/users/profile-picture",
+    );
 
-    return response.data;
+    return response;
   };

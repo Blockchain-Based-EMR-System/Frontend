@@ -1,0 +1,9 @@
+{
+    "doctors": "Doctors",
+    "manageDoctors": "Manage Doctors in the System",
+    "addDoctor": "Add Doctor",
+    "addingDoctor": "Adding Doctor ...",
+    "noDoctorsFound": "No doctors found.",
+    "specialization": "Specialization",
+    "doctorDetails": "Doctor Details"
+}

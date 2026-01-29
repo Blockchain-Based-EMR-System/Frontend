@@ -6,7 +6,6 @@ export interface CreateDoctorRequest {
   phone: string;
   gender: "MALE" | "FEMALE";
   date_of_birth: string;
-  specialization: string;
 }
 
 export interface DoctorListResponse {

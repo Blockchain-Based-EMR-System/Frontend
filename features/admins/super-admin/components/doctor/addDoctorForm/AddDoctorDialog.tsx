@@ -19,12 +19,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SpecializationSelect } from "@/components/common/SpecializationSelect";
 import { DatePickerPopover } from "@/components/common/DatePickerPopover";
 import { useCreateDoctor } from "../../../query/useDoctor.query";
 import { useToast } from "@/hooks/useToast";
+import { useLanguage } from "@/contexts/LanguageProvider";
 import { CreateDoctorRequest } from "../../../types/doctorTypes";
 import { addDoctorSchema } from "./addDoctorSchema";
+import { getLocalizedMessage } from "@/lib/helpers";
+import { useTranslations } from "next-intl";
 
 type AddDoctorForm = z.infer<typeof addDoctorSchema>;
 
@@ -35,6 +37,10 @@ interface AddDoctorDialogProps {
 
 export function AddDoctorDialog({ open, onClose }: AddDoctorDialogProps) {
   const { toast } = useToast();
+  const { locale, direction } = useLanguage();
+  const tDoctor = useTranslations("doctor");
+  const tCommon = useTranslations("common");
+  const tAuth = useTranslations("auth");
   const createDoctorMutation = useCreateDoctor();
 
   const {
@@ -49,31 +55,32 @@ export function AddDoctorDialog({ open, onClose }: AddDoctorDialogProps) {
   });
 
   const gender = watch("gender");
-  const specialization = watch("specialization");
   const dateOfBirth = watch("date_of_birth");
 
   const onSubmit = async (data: AddDoctorForm) => {
     try {
-      // Format date to YYYY-MM-DD
       const formattedData = {
         ...data,
         date_of_birth: data.date_of_birth
           ? new Date(data.date_of_birth).toISOString().split("T")[0]
           : "",
       };
-      await createDoctorMutation.mutateAsync(
-        formattedData as CreateDoctorRequest
+      const response = await createDoctorMutation.mutateAsync(
+        formattedData as CreateDoctorRequest,
       );
       toast({
         title: "Success",
-        description: "Doctor created successfully",
+        description: getLocalizedMessage(response, locale),
       });
       reset();
       onClose();
     } catch (error: any) {
+      const errorMessage = error?.response?.data
+        ? getLocalizedMessage(error.response.data, locale)
+        : error?.message || "Failed to create doctor";
       toast({
         title: "Error",
-        description: error?.message || "Failed to create doctor",
+        description: errorMessage,
         variant: "destructive",
       });
     }
@@ -83,24 +90,22 @@ export function AddDoctorDialog({ open, onClose }: AddDoctorDialogProps) {
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Add New Doctor</DialogTitle>
+          <DialogTitle>{tDoctor("addDoctor")}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Name *</Label>
-              <Input id="name" {...register("name")} />
-              {errors.name && (
-                <p className="text-sm text-destructive">
-                  {errors.name.message}
-                </p>
-              )}
-            </div>
+          <div className="space-y-2">
+            <Input id="name" placeholder={tAuth("namePlaceholder")} {...register("name")} />
+            {errors.name && (
+              <p className="text-sm text-destructive">
+                {errors.name.message}
+              </p>
+            )}
+          </div>
 
+          <div className="grid grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="email">Email *</Label>
-              <Input id="email" type="email" {...register("email")} />
+              <Input id="email" type="email" placeholder={tAuth("emailPlaceholder")} {...register("email")} />
               {errors.email && (
                 <p className="text-sm text-destructive">
                   {errors.email.message}
@@ -109,29 +114,30 @@ export function AddDoctorDialog({ open, onClose }: AddDoctorDialogProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone *</Label>
-              <Input id="phone" {...register("phone")} />
+              <Input id="phone" placeholder={tAuth("phoneNumberPlaceholder")} {...register("phone")} />
               {errors.phone && (
                 <p className="text-sm text-destructive">
                   {errors.phone.message}
                 </p>
               )}
             </div>
+          </div>
 
+          <div className="grid grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="gender">Gender *</Label>
               <Select
+                dir ={direction}
                 value={gender}
                 onValueChange={(value) =>
                   setValue("gender", value as "MALE" | "FEMALE")
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select gender" />
+                  <SelectValue placeholder={tCommon("selectGender")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="MALE">Male</SelectItem>
-                  <SelectItem value="FEMALE">Female</SelectItem>
+                  <SelectItem value="MALE">{tAuth("male")}</SelectItem>
+                  <SelectItem value="FEMALE">{tAuth("female")}</SelectItem>
                 </SelectContent>
               </Select>
               {errors.gender && (
@@ -142,13 +148,12 @@ export function AddDoctorDialog({ open, onClose }: AddDoctorDialogProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="date_of_birth">Date of Birth *</Label>
               <DatePickerPopover
                 date={dateOfBirth ? new Date(dateOfBirth) : undefined}
                 onDateChange={(date) =>
                   setValue("date_of_birth", date?.toISOString() || "")
                 }
-                placeholder="Pick date of birth"
+                placeholder={tCommon("dateOfBirthPlaceholder")}
                 hasError={!!errors.date_of_birth}
                 disableFutureDates
                 fromYear={1950}
@@ -160,28 +165,14 @@ export function AddDoctorDialog({ open, onClose }: AddDoctorDialogProps) {
                 </p>
               )}
             </div>
-
-            <div className="space-y-2 col-span-2">
-              <Label htmlFor="specialization">Specialization *</Label>
-              <SpecializationSelect
-                value={specialization}
-                onValueChange={(value) => setValue("specialization", value)}
-                placeholder="Search and select specialization"
-              />
-              {errors.specialization && (
-                <p className="text-sm text-destructive">
-                  {errors.specialization.message}
-                </p>
-              )}
-            </div>
           </div>
 
           <div className="flex justify-end gap-2 pt-4">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              {tCommon("cancel")}
             </Button>
             <Button type="submit" disabled={createDoctorMutation.isPending}>
-              {createDoctorMutation.isPending ? "Creating..." : "Create Doctor"}
+              {createDoctorMutation.isPending ? tCommon("creating") : tDoctor("addDoctor")}
             </Button>
           </div>
         </form>

@@ -21,6 +21,8 @@ import {
 import { DatePickerPopover } from "@/components/common/DatePickerPopover";
 import { useCreateAdmin } from "../../../query/useAdmin.query";
 import { useToast } from "@/hooks/useToast";
+import { useLanguage } from "@/contexts/LanguageProvider";
+import { getLocalizedMessage } from "@/lib/helpers";
 import { CreateAdminRequest } from "../../../types/adminTypes";
 import { addAdminSchema } from "./addAdminSchema";
 import { useTranslations } from "next-intl";
@@ -32,6 +34,7 @@ interface AddAdminDialogProps {
 
 export function AddAdminDialog({ open, onClose }: AddAdminDialogProps) {
   const { toast } = useToast();
+  const { locale, direction } = useLanguage();
   const createAdminMutation = useCreateAdmin();
   const tAdmin = useTranslations("superAdmin");
   const tCommon = useTranslations("common");
@@ -59,17 +62,20 @@ export function AddAdminDialog({ open, onClose }: AddAdminDialogProps) {
           ? new Date(data.date_of_birth).toISOString().split("T")[0]
           : "",
       };
-      await createAdminMutation.mutateAsync(formattedData);
+      const response = await createAdminMutation.mutateAsync(formattedData);
       toast({
         title: "Success",
-        description: "Admin created successfully",
+        description: getLocalizedMessage(response, locale),
       });
       reset();
       onClose();
     } catch (error: any) {
+      const errorMessage = error?.response?.data
+        ? getLocalizedMessage(error.response.data, locale)
+        : error?.message || "Failed to create admin";
       toast({
         title: "Error",
-        description: error?.message || "Failed to create admin",
+        description: errorMessage,
         variant: "destructive",
       });
     }
@@ -83,10 +89,9 @@ export function AddAdminDialog({ open, onClose }: AddAdminDialogProps) {
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-6 mt-4">
             <div className="space-y-2">
-              <Label htmlFor="name">{tCommon("name")} *</Label>
-              <Input id="name" {...register("name")} />
+              <Input id="name" placeholder={tAuth("namePlaceholder")} {...register("name")} />
               {errors.name && (
                 <p className="text-sm text-destructive">
                   {errors.name.message}
@@ -95,8 +100,7 @@ export function AddAdminDialog({ open, onClose }: AddAdminDialogProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">{tCommon("email")} *</Label>
-              <Input id="email" type="email" {...register("email")} />
+              <Input id="email" type="email" placeholder={tAuth("emailPlaceholder")} {...register("email")} />
               {errors.email && (
                 <p className="text-sm text-destructive">
                   {errors.email.message}
@@ -105,8 +109,7 @@ export function AddAdminDialog({ open, onClose }: AddAdminDialogProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">{tAuth("password")} *</Label>
-              <Input id="password" type="password" {...register("password")} />
+              <Input id="password" type="password" placeholder={tAuth("passwordPlaceholder")} {...register("password")} />
               {errors.password && (
                 <p className="text-sm text-destructive">
                   {errors.password.message}
@@ -115,8 +118,7 @@ export function AddAdminDialog({ open, onClose }: AddAdminDialogProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="phone">{tCommon("phone")} *</Label>
-              <Input id="phone" {...register("phone")} />
+              <Input id="phone" placeholder={tAuth("phoneNumberPlaceholder")} {...register("phone")} />
               {errors.phone && (
                 <p className="text-sm text-destructive">
                   {errors.phone.message}
@@ -125,15 +127,15 @@ export function AddAdminDialog({ open, onClose }: AddAdminDialogProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="gender">{tCommon("gender")} *</Label>
               <Select
+                dir ={direction}
                 value={gender}
                 onValueChange={(value) =>
                   setValue("gender", value as "MALE" | "FEMALE")
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select gender" />
+                  <SelectValue placeholder={tCommon("selectGender")} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="MALE">{tAuth("male")}</SelectItem>
@@ -148,13 +150,12 @@ export function AddAdminDialog({ open, onClose }: AddAdminDialogProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="date_of_birth">{tCommon("dateOfBirth")} *</Label>
               <DatePickerPopover
                 date={dateOfBirth ? new Date(dateOfBirth) : undefined}
                 onDateChange={(date) =>
                   setValue("date_of_birth", date?.toISOString() || "")
                 }
-                placeholder="Pick date of birth"
+                placeholder={tCommon("dateOfBirthPlaceholder")}
                 hasError={!!errors.date_of_birth}
                 disableFutureDates
                 fromYear={1950}
@@ -173,7 +174,9 @@ export function AddAdminDialog({ open, onClose }: AddAdminDialogProps) {
               {tCommon("cancel")}
             </Button>
             <Button type="submit" disabled={createAdminMutation.isPending}>
-              {createAdminMutation.isPending ? tCommon("creating") : tCommon("create")}
+              {createAdminMutation.isPending
+                ? tAdmin("addingAdmin")
+                : tAdmin("addAdmin")}
             </Button>
           </div>
         </form>

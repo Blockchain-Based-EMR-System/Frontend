@@ -1,12 +1,20 @@
 export interface UpdateProfilePictureResponse {
-  message: string;
+  message?: string;
+  messageEn?: string;
+  messageAr?: string;
 }
 
 export interface DeleteProfilePictureResponse {
-  message: string;
+  message?: string;
+  messageEn?: string;
+  messageAr?: string;
 }
 
 export interface GetProfilePictureResponse {
-  url: string;
-  message: string;
+  data: {
+    url: string;
+  };
+  message?: string;
+  messageEn?: string;
+  messageAr?: string;
 }

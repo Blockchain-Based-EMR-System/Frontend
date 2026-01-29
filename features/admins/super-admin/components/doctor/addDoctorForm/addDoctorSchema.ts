@@ -6,5 +6,4 @@ export const addDoctorSchema = z.object({
   phone: z.string().min(10, "Phone number must be at least 10 digits"),
   gender: z.enum(["MALE", "FEMALE"]),
   date_of_birth: z.string().min(1, "Date of birth is required"),
-  specialization: z.string().min(1, "Specialization is required"),
 });

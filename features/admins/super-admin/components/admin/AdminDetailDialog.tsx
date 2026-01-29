@@ -38,7 +38,7 @@ export function AdminDetailDialog({
 
   const tAdmin = useTranslations("superAdmin");
   const tCommon = useTranslations("common");
-  const direction = useLanguage().direction;
+  const tAuth = useTranslations("auth");
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -51,33 +51,33 @@ export function AdminDetailDialog({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <p className="text-sm font-medium text-muted-foreground">{tCommon("name")}</p>
-              <p className="text-sm">{admin.name}</p>
+              <p className="text-base">{admin.name}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">{tCommon("email")}</p>
-              <p className="text-sm">{admin.email}</p>
+              <p className="text-base">{admin.email}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">
                 {tCommon("username")}
               </p>
-              <p className="text-sm">{admin.username}</p>
+              <p className="text-base">{admin.username}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">{tCommon("phone")}</p>
-              <p className="text-sm">{admin.phone || "N/A"}</p>
+              <p className="text-base">{admin.phone || "N/A"}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">
                 {tCommon("gender")}
               </p>
-              <p className="text-sm">{admin.gender || "N/A"}</p>
+              <p className="text-base">{admin.gender === "MALE" ? tAuth("male") : admin.gender === "FEMALE" ? tAuth("female") : "N/A"}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">
                 {tCommon("dateOfBirth")}
               </p>
-              <p className="text-sm">
+              <p className="text-base">
                 {formatSafeDate(admin.date_of_birth, "PP")}
               </p>
             </div>
