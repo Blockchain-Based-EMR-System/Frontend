@@ -14,10 +14,10 @@ import {
   SheetTitle,
   SheetHeader,
 } from "@/components/ui/sheet";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface NavigationItem {
-  nameKey: string; 
+  nameKey: string;
   href: string;
   icon: LucideIcon;
 }
@@ -27,9 +27,16 @@ interface SidebarProps {
   titleNameKey: string;
   titleIcon: LucideIcon;
   navigationItems: NavigationItem[];
-  translationNamespace: string; 
-  dashboardHref: string; 
+  translationNamespace: string;
+  dashboardHref: string;
 }
+
+const handleExpandToggle = (
+  isExpanded: boolean,
+  setIsExpanded: (value: boolean) => void,
+) => {
+  setIsExpanded(!isExpanded);
+};
 
 export function Sidebar({
   children,
@@ -42,6 +49,22 @@ export function Sidebar({
   const pathname = usePathname();
   const t = useTranslations(translationNamespace);
   const [isOpen, setIsOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const saved = localStorage.getItem("sidebarExpanded");
+    if (saved !== null) {
+      setIsExpanded(JSON.parse(saved));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      localStorage.setItem("sidebarExpanded", JSON.stringify(isExpanded));
+    }
+  }, [isExpanded, mounted]);
 
   const NavLinks = () => (
     <>
@@ -61,7 +84,7 @@ export function Sidebar({
             )}
           >
             <ItemIcon className="h-5 w-5" />
-            {t(item.nameKey)}
+            {isExpanded && t(item.nameKey)}
           </Link>
         );
       })}
@@ -71,12 +94,19 @@ export function Sidebar({
   return (
     <div className="flex min-h-screen">
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex w-64 flex-col border-r bg-background">
+      <aside
+        className={`hidden md:flex ${isExpanded ? "w-64" : "w-20"} flex-col border-r bg-background transition-width duration-300`}
+      >
         <div className="flex h-16 items-center border-b px-6">
-          <Link href={dashboardHref} className="flex items-center gap-2">
+          <button
+            className="flex items-center gap-2 hover:cursor-pointer"
+            onClick={() => handleExpandToggle(isExpanded, setIsExpanded)}
+          >
             <TitleIcon className="h-6 w-6 text-primary" />
-            <span className="text-lg font-semibold">{t(titleNameKey)}</span>
-          </Link>
+            {isExpanded && (
+              <span className="text-lg font-semibold">{t(titleNameKey)}</span>
+            )}
+          </button>
         </div>
         <nav className="flex-1 space-y-1 p-4">
           <NavLinks />
@@ -105,7 +135,9 @@ export function Sidebar({
                   onClick={() => setIsOpen(false)}
                 >
                   <TitleIcon className="h-6 w-6 text-primary" />
-                  <span className="text-lg font-semibold">{t(titleNameKey)}</span>
+                  <span className="text-lg font-semibold">
+                    {t(titleNameKey)}
+                  </span>
                 </Link>
               </div>
               <nav className="flex-1 space-y-1 p-4">

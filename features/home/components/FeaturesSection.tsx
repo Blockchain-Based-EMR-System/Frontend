@@ -68,14 +68,14 @@ export function FeaturesSection() {
   ];
 
   return (
-    <section className="py-20 md:py-32 bg-muted/30">
-      <div className="container mx-auto px-4 md:max-w-7xl md:px-0">
+    <section className="py-20 lg:py-32 bg-muted/30">
+      <div className="container mx-auto px-4 lg:max-w-7xl lg:px-0">
         <div className="mb-16 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
             <Shield className="h-4 w-4" />
             <span>{t("blockchainBadge")}</span>
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="text-3xl lg:text-4xl font-bold mb-4">
             {t("blockchainTitle")}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -83,14 +83,14 @@ export function FeaturesSection() {
           </p>
         </div>
 
-        <div className="mb-16 md:mb-32">
-          <h3 className="text-2xl md:text-3xl font-bold mb-8 text-center">
+        <div className="mb-16 lg:mb-32">
+          <h3 className="text-2xl lg:text-3xl font-bold mb-8 text-center">
             {t("patientFeatures")}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {patientFeatures.map((feature) => {
               const Icon = feature.icon;
-              return (
+              return (  
                 <Card
                   key={feature.key}
                   className="hover:scale-105 transition-all duration-500 ease-in-out hover:border-primary"
@@ -115,10 +115,10 @@ export function FeaturesSection() {
         </div>
 
         <div>
-          <h3 className="text-2xl md:text-3xl font-bold mb-8 text-center">
+          <h3 className="text-2xl lg:text-3xl font-bold mb-8 text-center">
             {t("doctorFeatures")}
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {doctorFeatures.map((feature) => {
               const Icon = feature.icon;
               return (

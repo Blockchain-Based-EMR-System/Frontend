@@ -11,7 +11,7 @@ export function HeroSection() {
   const t = useTranslations("home");
 
   return (
-    <section className="relative overflow-hidden bg-linear-to-br from-primary/5 via-background to-secondary/5 py-20 md:py-32">
+    <section className="relative overflow-hidden bg-linear-to-br from-primary/5 via-background to-secondary/5 py-20 lg:py-32">
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center text-center space-y-8">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium">
@@ -29,7 +29,7 @@ export function HeroSection() {
             </span>
           </h1>
 
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl">
+          <p className="text-lg lg:text-xl text-muted-foreground max-w-2xl">
             {t("hero.description")}
           </p>
 
@@ -51,7 +51,7 @@ export function HeroSection() {
 
           <div className="grid grid-cols-3 gap-8 mt-16 pt-16 border-t w-full max-w-3xl">
             <div>
-              <div className="text-3xl md:text-4xl font-bold text-primary">
+              <div className="text-3xl lg:text-4xl font-bold text-primary">
                 50+
               </div>
               <div className="text-sm text-muted-foreground mt-1">
@@ -59,7 +59,7 @@ export function HeroSection() {
               </div>
             </div>
             <div>
-              <div className="text-3xl md:text-4xl font-bold text-primary">
+              <div className="text-3xl lg:text-4xl font-bold text-primary">
                 500+
               </div>
               <div className="text-sm text-muted-foreground mt-1">
@@ -67,7 +67,7 @@ export function HeroSection() {
               </div>
             </div>
             <div>
-              <div className="text-3xl md:text-4xl font-bold text-primary">
+              <div className="text-3xl lg:text-4xl font-bold text-primary">
                 1000+
               </div>
               <div className="text-sm text-muted-foreground mt-1">

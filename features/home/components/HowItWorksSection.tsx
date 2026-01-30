@@ -33,10 +33,10 @@ export function HowItWorksSection() {
   ];
 
   return (
-    <section className="py-20 md:py-32 md:max-w-7xl md:mx-auto">
-      <div className="container mx-auto px-4 md:px-0">
+    <section className="py-20 lg:py-32 lg:max-w-7xl lg:mx-auto">
+      <div className="container mx-auto px-4 lg:px-0">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">{t("title")}</h2>
+          <h2 className="text-3xl lg:text-4xl font-bold mb-4">{t("title")}</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             {t("description")}
           </p>
@@ -50,7 +50,7 @@ export function HowItWorksSection() {
                   <div className={`hidden lg:block absolute top-16  w-[80%] h-0.5 bg-linear-to-r from-primary/50 to-primary/20 ${locale === "ar" ? "right-[60%]" : "left-[60%]"}`} />
                 )}
 
-                <Card className="text-center hover:shadow-lg transition-shadow">
+                <Card className="text-center transition-all hover:scale-105 duration-300 ease-in-out border-transparent hover:border-primary">
                   <CardContent className="pt-6 pb-6">
                     <div className="relative inline-flex items-center justify-center">
                       <div className="text-7xl font-bold text-primary mb-5">
