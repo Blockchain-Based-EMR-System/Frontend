@@ -34,7 +34,7 @@ export const useDoctorJoin = (): UseMutationResult<
       });
 
       setTimeout(() => {
-        router.push(`/${locale}/login`);
+        router.push(`/`);
       }, 2000);
     },
     onError: (error) => {

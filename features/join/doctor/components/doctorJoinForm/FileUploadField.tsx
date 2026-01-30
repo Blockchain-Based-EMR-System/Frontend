@@ -38,12 +38,19 @@ export function FileUploadField({
     if (selectedFile) {
       setValue(name, selectedFile as any);
     }
+    e.target.value = "";
   };
 
   const handleRemoveFile = () => {
     setValue(name, null as any);
     if (inputRef.current) {
       inputRef.current.value = "";
+    }
+  };
+
+  const handleClick = () => {
+    if (!file && !isLoading) {
+      inputRef.current?.click();
     }
   };
 
@@ -54,7 +61,7 @@ export function FileUploadField({
 
       <div
         className="border-2 border-dashed rounded-lg p-4 hover:border-primary/50 transition-colors cursor-pointer"
-        onClick={() => !file && !isLoading && inputRef.current?.click()}
+        onClick={handleClick}
       >
         {file ? (
           <div className="flex items-center justify-between">
