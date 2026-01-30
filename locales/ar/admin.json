@@ -1,3 +1,13 @@
 {
-
+    "admin": "مسؤول",
+    "dashboard": "لوحة التحكم",
+    "admins": "المسؤولين",
+    "doctors": "الأطباء",
+    "showUnverifiedOnly": "عرض غير المعتمدين فقط",
+    "verify": "تفعيل",
+    "reject": "رفض",
+    "verifySuccess": "تم تفعيل الطبيب بنجاح",
+    "rejectSuccess": "تم رفض الطبيب بنجاح",
+    "totalDoctors": "مجموع الأطباء",
+    "welcomeToDashboard": "مرحبا بك في لوحة تحكم المسؤول"
 }

@@ -3,7 +3,7 @@
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Users } from "lucide-react";
 import { navigationItems } from "@/constants/AdminNavigationItems";
-import { DashboardContainer } from "@/features/admins/admin/components/dashboard/DashboardContainer";
+import { DoctorListContainer } from "@/features/admins/admin/components/doctors/DoctorListContainer";
 
 export default function AdminDashboardPage() {
   return (
@@ -14,7 +14,7 @@ export default function AdminDashboardPage() {
       translationNamespace="admin"
       dashboardHref="/admin-dashboard"
     >
-      <DashboardContainer />
+      <DoctorListContainer />
     </Sidebar>
   );
 }

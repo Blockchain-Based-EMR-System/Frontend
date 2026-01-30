@@ -1,3 +1,13 @@
 {
-
+    "admin": "Admin",
+    "dashboard": "Dashboard",
+    "admins": "Admins",
+    "doctors": "Doctors",
+    "showUnverifiedOnly": "Show Unverified Only",
+    "verify": "Verify",
+    "reject": "Reject",
+    "verifySuccess": "Doctor verified successfully",
+    "rejectSuccess": "Doctor rejected successfully",
+    "totalDoctors": "Total Doctors",
+    "welcomeToDashboard": "Welcome to the Admin Dashboard"
 }
