@@ -35,6 +35,7 @@ export function Navbar() {
   const navLinks = [
     { href: "/clinics", label: tCommon("clinics") },
     { href: "/contact", label: tCommon("contactUs") },
+    { href: "/join/doctor", label: tCommon("joinAsDoctor") },
   ];
 
   return (
@@ -42,7 +43,7 @@ export function Navbar() {
       ref={menuRef}
       className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60"
     >
-      <div className="container flex h-16 items-center justify-between px-4 md:mx-auto md:max-w-7xl">
+      <div className="container flex h-16 items-center justify-between px-4 lg:mx-auto lg:px-0 lg:max-w-7xl">
         <Link
           href="/"
           className="flex items-center space-x-2 rtl:space-x-reverse"
@@ -55,7 +56,7 @@ export function Navbar() {
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-6 rtl:space-x-reverse">
+        <div className="hidden lg:flex items-center space-x-6 rtl:space-x-reverse">
           {/* Nav Links */}
           {navLinks.map((link) => (
             <Link
@@ -94,7 +95,7 @@ export function Navbar() {
         </div>
 
         {/* Mobile Navigation */}
-        <div className="flex md:hidden items-center gap-2">
+        <div className="flex lg:hidden items-center gap-2">
           <LanguageSwitcher />
           <ThemeSwitcher />
           <Button
@@ -110,7 +111,7 @@ export function Navbar() {
 
       {/* Mobile Menu Dropdown */}
       {isOpen && (
-        <div className="md:hidden absolute top-16 left-0 right-0 z-40 bg-background border-b shadow-lg">
+        <div className="lg:hidden absolute top-16 left-0 right-0 z-40 bg-background border-b shadow-lg">
           <div className="container px-4 py-6">
             <div className="flex flex-col space-y-6">
               {/* User Section for Mobile */}
@@ -146,7 +147,7 @@ export function Navbar() {
                     key={link.href}
                     href={link.href}
                     onClick={() => setIsOpen(false)}
-                    className="text-sm flex items-center px-2 py-1 rounded-md hover:bg-accent transition-colors"
+                    className="text-sm flex items-center px-2 py-1 rounded-lg hover:bg-accent transition-colors"
                   >
                     <span className="font-medium">{link.label}</span>
                   </Link>

@@ -16,6 +16,8 @@ const namespaces = [
   "admin",
   "superAdmin",
   "doctor",
+  "doctorJoining",
+  "home",
 ] as const;
 
 export default getRequestConfig(async () => {

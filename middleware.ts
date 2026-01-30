@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { Role } from "./types/user";
-import { getRoleDashboardPath } from "@/lib/auth"
+import { getRoleDashboardPath } from "@/lib/auth";
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -16,6 +16,7 @@ export function middleware(request: NextRequest) {
 
   const authCookie = request.cookies.get("Authorization");
   const refreshCookie = request.cookies.get("RefreshToken");
+  const userStateCookie = request.cookies.get("UserState");
   const hasAuthToken = !!authCookie?.value || !!refreshCookie?.value;
 
   const publicRoutes = [
@@ -24,6 +25,7 @@ export function middleware(request: NextRequest) {
     "/register",
     "/forgot-password",
     "/reset-password",
+    "/join/doctor"
   ];
   const completeProfileRoute = "/complete-profile";
   const verifyEmailRoute = "/verify-email";
@@ -36,7 +38,20 @@ export function middleware(request: NextRequest) {
     "/reset-password",
   ];
 
-  const userStateCookie = request.cookies.get("UserState");
+  if (refreshCookie?.value && !userStateCookie?.value && !authCookie?.value) {
+    console.warn(
+      "⚠️ [Middleware] Inconsistent cookie state detected: RefreshToken exists but UserState is missing",
+    );
+    console.log(
+      "🔄 [Middleware] User needs to re-authenticate - redirecting to login",
+    );
+
+    const response = NextResponse.redirect(new URL("/login", request.url));
+    response.cookies.set("RefreshToken", "", { maxAge: 0, path: "/" });
+    response.cookies.set("Authorization", "", { maxAge: 0, path: "/" });
+    response.cookies.set("UserState", "", { maxAge: 0, path: "/" });
+    return response;
+  }
 
   let isVerified = false;
   let hasCompletedProfile = false;
@@ -49,7 +64,14 @@ export function middleware(request: NextRequest) {
       hasCompletedProfile = userState.hasCompletedProfile || false;
       userRole = userState.role || null;
     } catch (error) {
-      console.error("Failed:", error);
+      console.error("[Middleware] Failed to parse UserState cookie:", error);
+      if (hasAuthToken) {
+        const response = NextResponse.redirect(new URL("/login", request.url));
+        response.cookies.set("RefreshToken", "", { maxAge: 0, path: "/" });
+        response.cookies.set("Authorization", "", { maxAge: 0, path: "/" });
+        response.cookies.set("UserState", "", { maxAge: 0, path: "/" });
+        return response;
+      }
     }
   }
 
@@ -88,7 +110,7 @@ export function middleware(request: NextRequest) {
         userRole !== Role.SUPER_ADMIN
       ) {
         return NextResponse.redirect(
-          new URL(getRoleDashboardPath(userRole), request.url)
+          new URL(getRoleDashboardPath(userRole), request.url),
         );
       }
       if (
@@ -96,7 +118,7 @@ export function middleware(request: NextRequest) {
         userRole !== Role.ADMIN
       ) {
         return NextResponse.redirect(
-          new URL(getRoleDashboardPath(userRole), request.url)
+          new URL(getRoleDashboardPath(userRole), request.url),
         );
       }
       if (
@@ -104,7 +126,7 @@ export function middleware(request: NextRequest) {
         userRole !== Role.DOCTOR
       ) {
         return NextResponse.redirect(
-          new URL(getRoleDashboardPath(userRole), request.url)
+          new URL(getRoleDashboardPath(userRole), request.url),
         );
       }
       if (
@@ -112,12 +134,12 @@ export function middleware(request: NextRequest) {
         userRole !== Role.NURSE
       ) {
         return NextResponse.redirect(
-          new URL(getRoleDashboardPath(userRole), request.url)
+          new URL(getRoleDashboardPath(userRole), request.url),
         );
       }
       if (normalizedPath === "/dashboard" && userRole !== Role.PATIENT) {
         return NextResponse.redirect(
-          new URL(getRoleDashboardPath(userRole), request.url)
+          new URL(getRoleDashboardPath(userRole), request.url),
         );
       }
     }

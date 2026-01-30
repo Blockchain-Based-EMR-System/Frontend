@@ -1,48 +1,63 @@
-import axios, {
-  AxiosInstance,
-  AxiosRequestConfig,
-  AxiosError,
-} from "axios";
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosError } from "axios";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 30000, 
+  timeout: 30000,
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true, 
+  withCredentials: true,
 });
 
 let refreshTokenPromise: Promise<any> | null = null;
+let isLoggingOut = false; 
+
+export const setLoggingOut = (value: boolean) => {
+  isLoggingOut = value;
+  console.log(`🔓 [API Client] Logout flag set to: ${value}`);
+};
+
+const clearClientCookies = () => {
+  if (typeof document !== "undefined") {
+    document.cookie = `UserState=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    document.cookie = `UserState=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`;
+  }
+};
 
 const clearAllAuthStateAndReload = () => {
   if (typeof window !== "undefined") {
-    
+    if (isLoggingOut) {
+      return;
+    }
+
     localStorage.clear();
-    
     sessionStorage.clear();
-        
+    clearClientCookies();
+
     window.location.replace("/login");
   }
 };
 
 const refreshAuthToken = async (): Promise<void> => {
   try {
-    await axiosInstance.post("/auth/refresh");
-    
+    const response = await axiosInstance.post("/auth/refresh");
+
     refreshTokenPromise = null;
-    console.log("✅ Token refreshed successfully");
-  } catch (error) {
+  } catch (error: any) {
     refreshTokenPromise = null;
-    
+    console.error(
+      "❌ Token refresh failed:",
+      error.response?.status,
+      error.message,
+    );
+
     if (typeof window !== "undefined") {
-      console.error("❌ Token refresh failed");
       clearAllAuthStateAndReload();
     }
-    
+
     throw error;
   }
 };
@@ -55,8 +70,11 @@ axiosInstance.interceptors.response.use(
     const originalRequest = error.config as any;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
-      if (originalRequest.url?.includes('/auth/refresh')) {
-        console.error("❌ Refresh endpoint returned 401");
+      if (isLoggingOut) {
+        return Promise.reject(error);
+      }
+
+      if (originalRequest.url?.includes("/auth/refresh")) {
         clearAllAuthStateAndReload();
         return Promise.reject(error);
       }
@@ -87,7 +105,7 @@ axiosInstance.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export class ApiClient {
@@ -105,7 +123,7 @@ export class ApiClient {
   async post<T>(
     url: string,
     data?: any,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
   ): Promise<T> {
     const response = await this.client.post<T>(url, data, config);
     return response.data;
@@ -114,7 +132,7 @@ export class ApiClient {
   async put<T>(
     url: string,
     data?: any,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
   ): Promise<T> {
     const response = await this.client.patch<T>(url, data, config);
     return response.data;
@@ -123,7 +141,7 @@ export class ApiClient {
   async patch<T>(
     url: string,
     data?: any,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
   ): Promise<T> {
     const response = await this.client.patch<T>(url, data, config);
     return response.data;

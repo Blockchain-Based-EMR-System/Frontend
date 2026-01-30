@@ -131,7 +131,7 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
 
       <div className="flex flex-col items-center gap-2">
         {/* Desktop: Dropdown Menu */}
-        <div className="hidden md:block">
+        <div className="hidden lg:block">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -251,7 +251,7 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
           </DropdownMenu>
         </div>
 
-        <div className="flex flex-col md:hidden gap-3 w-full">
+        <div className="flex flex-col lg:hidden gap-3 w-full">
           {/* Avatar */}
           <div className="flex flex-col items-center gap-2">
             <Avatar className="h-12 w-12 ring-2 ring-offset-2 ring-primary/20">
