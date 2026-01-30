@@ -13,6 +13,12 @@ const axiosInstance = axios.create({
 });
 
 let refreshTokenPromise: Promise<any> | null = null;
+let isLoggingOut = false; 
+
+export const setLoggingOut = (value: boolean) => {
+  isLoggingOut = value;
+  console.log(`🔓 [API Client] Logout flag set to: ${value}`);
+};
 
 const clearClientCookies = () => {
   if (typeof document !== "undefined") {
@@ -23,9 +29,14 @@ const clearClientCookies = () => {
 
 const clearAllAuthStateAndReload = () => {
   if (typeof window !== "undefined") {
+    if (isLoggingOut) {
+      return;
+    }
+
     localStorage.clear();
     sessionStorage.clear();
     clearClientCookies();
+
     window.location.replace("/login");
   }
 };
@@ -35,7 +46,6 @@ const refreshAuthToken = async (): Promise<void> => {
     const response = await axiosInstance.post("/auth/refresh");
 
     refreshTokenPromise = null;
-    console.log("✅ Token refreshed successfully", response.status);
   } catch (error: any) {
     refreshTokenPromise = null;
     console.error(
@@ -60,6 +70,10 @@ axiosInstance.interceptors.response.use(
     const originalRequest = error.config as any;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
+      if (isLoggingOut) {
+        return Promise.reject(error);
+      }
+
       if (originalRequest.url?.includes("/auth/refresh")) {
         clearAllAuthStateAndReload();
         return Promise.reject(error);

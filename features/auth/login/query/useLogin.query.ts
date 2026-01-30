@@ -17,6 +17,7 @@ import { useLanguage } from "@/contexts/LanguageProvider";
 import { useRouter } from "next/navigation";
 import { useAuthSync } from "@/hooks/useAuthSync";
 import { getRedirectAfterAuth } from "@/lib/auth";
+import { setLoggingOut } from "@/lib/apiClient";
 
 export const useLogin = (): UseMutationResult<
   LoginResponse,
@@ -80,12 +81,20 @@ export const useLogout = (): UseMutationResult<
   void
 > => {
   const { locale } = useLanguage();
-  const router = useRouter();
   const queryClient = useQueryClient();
   const { clearAuthState } = useAuthSync();
 
   return useMutation({
-    mutationFn: logoutUser,
+    mutationFn: async () => {
+      setLoggingOut(true);
+      try {
+        const result = await logoutUser();
+        return result;
+      } catch (error) {
+        console.error("❌ [Logout] Logout API call failed:", error);
+        throw error;
+      }
+    },
     onSuccess: (data) => {
       clearAuthState();
       queryClient.clear();
@@ -98,9 +107,12 @@ export const useLogout = (): UseMutationResult<
       toast({
         title: locale === "ar" ? "نجح" : "Success",
         description: successMessage,
+        duration: 3000,
       });
 
-      router.push("/login");
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 2000);
     },
     onError: (error) => {
       clearAuthState();
@@ -116,9 +128,12 @@ export const useLogout = (): UseMutationResult<
         variant: "destructive",
         title: locale === "ar" ? "خطأ" : "Error",
         description: errorMessage,
+        duration: 3000,
       });
 
-      router.push("/login");
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 2000); 
     },
   });
 };
