@@ -35,6 +35,7 @@ export function Navbar() {
   const navLinks = [
     { href: "/clinics", label: tCommon("clinics") },
     { href: "/contact", label: tCommon("contactUs") },
+    { href: "/join/doctor", label: tCommon("joinAsDoctor") },
   ];
 
   return (

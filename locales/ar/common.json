@@ -48,5 +48,6 @@
   "pending": "قيد الانتظار",
   "unknown": "غير معروف",
   "complete": "مكتمل",
-  "incomplete": "غير مكتمل"
+  "incomplete": "غير مكتمل",
+  "joinAsDoctor": "انضم كطبيب"
 }

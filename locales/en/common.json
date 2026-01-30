@@ -48,5 +48,6 @@
   "rejected": "Rejected",
   "unknown": "Unknown",
   "complete": "Complete",
-  "incomplete": "Incomplete"
+  "incomplete": "Incomplete",
+  "joinAsDoctor": "Join as a Doctor"
 }

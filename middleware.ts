@@ -25,6 +25,7 @@ export function middleware(request: NextRequest) {
     "/register",
     "/forgot-password",
     "/reset-password",
+    "/join/doctor"
   ];
   const completeProfileRoute = "/complete-profile";
   const verifyEmailRoute = "/verify-email";
