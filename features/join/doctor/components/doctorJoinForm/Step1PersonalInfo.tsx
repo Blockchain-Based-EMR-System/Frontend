@@ -142,7 +142,7 @@ export function Step1PersonalInfo({
               placeholder={t("passwordPlaceholder")}
               {...register("password")}
               disabled={isLoading}
-              className="py-5 pr-10"
+              className="py-5"
             />
             <button
               type="button"
@@ -172,7 +172,7 @@ export function Step1PersonalInfo({
               placeholder={t("confirmPasswordPlaceholder")}
               {...register("confirmPassword")}
               disabled={isLoading}
-              className="py-5 pr-10"
+              className="py-5"
             />
             <button
               type="button"
