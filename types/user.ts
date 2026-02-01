@@ -38,8 +38,13 @@ export interface Doctor extends User {
     };
     avg_time: string | null;
     account_status: DoctorAccountStatus;
+    mastersCertificateUrl?: string | null;
+    graduationCertificateUrl?: string | null;
+    fellowshipCertificateUrl?: string | null;
+    professionalPracticeCardUrl?: string | null;
+    membershipCardUrl?: string | null;
+    unionSpecializationCertificateUrl?: string | null;
   };
 }
 
-export interface Admin extends User {
-}
+export interface Admin extends User {}

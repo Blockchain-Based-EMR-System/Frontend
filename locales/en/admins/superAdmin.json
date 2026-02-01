@@ -19,5 +19,16 @@
   "addingDoctor": "Adding Doctor ...",
   "noDoctorsFound": "No doctors found.",
   "specialization": "Specialization",
-  "doctorDetails": "Doctor Details"
+  "doctorDetails": "Doctor Details",
+
+  "certificates": "Certificates & Documents",
+  "graduationCertificate": "Graduation Certificate",
+  "membershipCard": "Membership Card",
+  "professionalPracticeCard": "Professional Practice Card",
+  "mastersCertificate": "Masters Certificate",
+  "fellowshipCertificate": "Fellowship Certificate",
+  "unionSpecializationCertificate": "Union Specialization Certificate",
+  "viewDocument": "View Document",
+  "notProvided": "Not Provided",
+  "downloadPDF": "Download PDF"
 }

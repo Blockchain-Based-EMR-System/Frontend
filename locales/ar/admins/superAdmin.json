@@ -19,5 +19,16 @@
   "addingDoctor": "جارٍ إضافة الطبيب ...",
   "noDoctorsFound": "لم يتم العثور على أطباء.",
   "specialization": "التخصص",
-  "doctorDetails": "تفاصيل الطبيب"
+  "doctorDetails": "تفاصيل الطبيب",
+
+  "certificates": "الشهادات والمستندات",
+  "graduationCertificate": "شهادة التخرج",
+  "membershipCard": "بطاقة النقابة",
+  "professionalPracticeCard": "بطاقة مزاولة المهنة",
+  "mastersCertificate": "شهادة الماجستير",
+  "fellowshipCertificate": "شهادة الزمالة",
+  "unionSpecializationCertificate": "شهادة تخصص النقابة",
+  "viewDocument": "عرض المستند",
+  "notProvided": "غير متوفر",
+  "downloadPDF": "تحميل PDF"
 }

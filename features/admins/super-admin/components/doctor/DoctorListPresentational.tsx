@@ -50,10 +50,6 @@ export function DoctorListPresentational({
           </h1>
           <p className="text-muted-foreground">{tAdmin("manageDoctors")}</p>
         </div>
-        <Button onClick={onAddDoctor} className="w-full md:w-auto">
-          <Plus className="h-4 w-4 mr-2 rtl:mr-0 rtl:ml-2" />
-          {tAdmin("addDoctor")}
-        </Button>
       </div>
 
       <Card>
