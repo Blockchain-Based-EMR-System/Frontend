@@ -14,11 +14,15 @@ export interface DashboardPresentationalProps {
   isLoading: boolean;
   isError: boolean;
   onLogout: () => void;
-  t: (key: string) => string;
+  tDashboard: (key: string) => string;
+  tFields: (key: string) => string;
+  tCommon: (key: string) => string;
 }
 
 export function DashboardContainer({ children }: DashboardContainerProps) {
-  const t = useTranslations("auth");
+  const tDashboard = useTranslations("userDashboard");
+  const tFields = useTranslations("fields");
+  const tCommon = useTranslations("common");
   const { data: user, isLoading, isError } = useDashboard();
   const logoutMutation = useLogout();
 
@@ -33,7 +37,9 @@ export function DashboardContainer({ children }: DashboardContainerProps) {
         isLoading,
         isError,
         onLogout: handleLogout,
-        t,
+        tDashboard,
+        tFields,
+        tCommon,
       })}
     </>
   );

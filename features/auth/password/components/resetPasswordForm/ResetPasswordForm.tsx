@@ -26,6 +26,8 @@ export function ResetPasswordForm({
   isLoading,
 }: ResetPasswordFormProps) {
   const tAuth = useTranslations("auth");
+  const tFields = useTranslations("fields");
+  const tCommon = useTranslations("common");
   const language = useLanguage();
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -35,7 +37,7 @@ export function ResetPasswordForm({
     handleSubmit,
     formState: { errors },
   } = useForm<ResetPasswordFormData>({
-    resolver: zodResolver(createResetPasswordSchema(tAuth)),
+    resolver: zodResolver(createResetPasswordSchema(tFields)),
     defaultValues: {
       newPassword: "",
       confirmPassword: "",
@@ -45,12 +47,12 @@ export function ResetPasswordForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="flex flex-col gap-2">
-        <Label htmlFor="newPassword">{tAuth("newPassword")}</Label>
+        <Label htmlFor="newPassword">{tFields("newPassword")}</Label>
         <div className="relative">
           <Input
             id="newPassword"
             type={showNewPassword ? "text" : "password"}
-            placeholder={tAuth("newPasswordPlaceholder")}
+            placeholder={tFields("newPasswordPlaceholder")}
             {...register("newPassword")}
             disabled={isLoading}
             aria-invalid={!!errors.newPassword}
@@ -86,12 +88,12 @@ export function ResetPasswordForm({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="confirmPassword">{tAuth("confirmPassword")}</Label>
+        <Label htmlFor="confirmPassword">{tFields("confirmPassword")}</Label>
         <div className="relative">
           <Input
             id="confirmPassword"
             type={showConfirmPassword ? "text" : "password"}
-            placeholder={tAuth("confirmPasswordPlaceholder")}
+            placeholder={tFields("confirmPasswordPlaceholder")}
             {...register("confirmPassword")}
             disabled={isLoading}
             aria-invalid={!!errors.confirmPassword}
@@ -130,7 +132,7 @@ export function ResetPasswordForm({
         {isLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            {tAuth("resetting")}
+            {tCommon("resetting")}
           </>
         ) : (
           tAuth("resetPassword")

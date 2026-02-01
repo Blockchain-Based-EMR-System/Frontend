@@ -28,6 +28,7 @@ export function RegisterContainer({ children }: RegisterContainerProps) {
       name: data.fullName,
       password: data.password,
       phone: data.phoneNumber,
+      rememberMe: data.rememberMe ?? false,
     });
   };
 

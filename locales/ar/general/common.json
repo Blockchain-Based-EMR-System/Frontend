@@ -1,0 +1,53 @@
+{
+  "welcome": "مرحبا",
+  "settings": "الإعدادات",
+  "logout": "تسجيل الخروج",
+
+  "clinics": "العيادات",
+  "contactUs": "تواصل معنا",
+  "joinAsDoctor": "انضم كطبيب",
+
+  "loading": "جارٍ التحميل...",
+  "sending": "جارٍ الإرسال...",
+  "resetting": "جارٍ إعادة التعيين...",
+  "completing": "جارٍ الإكمال...",
+  "verifing": "جارٍ التحقق...",
+  "submitting": "جارٍ الإرسال...",
+  "creating": "جارٍ الإنشاء",
+
+  "error": "خطأ",
+  "success": "نجاح",
+
+  "cancel": "إلغاء",
+  "save": "حفظ",
+  "create": "إنشاء",
+  "delete": "حذف",
+  "edit": "تعديل",
+  "view": "عرض",
+  "search": "بحث",
+  "filter": "تصفية",
+  "export": "تصدير",
+  "import": "استيراد",
+  "verify": "تفعيل",
+  "reject": "رفض",
+  "submit": "إرسال",
+  "complete": "اكتمال",
+  "navigation": "قائمة التنقل",
+
+  "allRightsReserved": "جميع الحقوق محفوظة.",
+  "slogan": "منصة واحدة. رعاية كاملة.",
+
+  "actions": "الإجراءات",
+  "accountStatus": "حالة الحساب",
+  "verified": "تم التحقق",
+  "notVerified": "لم يتم التحقق",
+  "approved": "موافق عليه",
+  "pending": "قيد الانتظار",
+  "rejected": "مرفوض",
+  "completed": "مكتمل",
+  "incomplete": "غير مكتمل",
+  "unknown": "غير معروف",
+
+  "next": "التالي",
+  "previous": "السابق"
+}

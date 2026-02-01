@@ -5,7 +5,7 @@ import { CompleteProfilePresentational } from "@/features/auth/complete-profile/
 import { useEffect, useState } from "react";
 import { useAuthFlowStore } from "@/stores/useAuthFlowStore";
 import { useAuthSync } from "@/hooks/useAuthSync";
-import { getCurrentUser } from "@/features/dashboard/api/dashboard.api";
+import { getCurrentUser } from "@/features/dashboards/dashboard/api/dashboard.api";
 
 export default function CompleteProfilePage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -41,7 +41,7 @@ export default function CompleteProfilePage() {
           setTimeout(() => {
             const cookies = document.cookie.split(";");
             const userStateCookie = cookies.find((c) =>
-              c.trim().startsWith("UserState=")
+              c.trim().startsWith("UserState="),
             );
             console.log("🍪 UserState cookie:", userStateCookie);
           }, 50);

@@ -15,6 +15,7 @@ export const createRegisterSchema = (t: (key: string) => string) => {
       confirmPassword: z
         .string()
         .min(1, { message: t("confirmPasswordRequired") }),
+      rememberMe: z.boolean().optional(),
     })
     .refine((data) => data.password === data.confirmPassword, {
       message: t("passwordMismatch"),

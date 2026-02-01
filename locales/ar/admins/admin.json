@@ -1,0 +1,17 @@
+{
+    "admin": "مسؤلية النظام",
+    "admins": "المسؤولين",
+
+    "dashboard": "لوحة التحكم",
+    "showUnverifiedOnly": "عرض غير المعتمدين فقط",
+    "verifySuccess": "تم تفعيل الطبيب بنجاح",
+    "rejectSuccess": "تم رفض الطبيب بنجاح",
+    "totalDoctors": "مجموع الأطباء",
+    "welcomeToDashboard": "مرحبا بك في لوحة تحكم المسؤول",
+    
+    "doctors": "الأطباء",
+    "manageDoctors": "إدارة الأطباء في النظام",
+    "noDoctorsFound": "لم يتم العثور على أطباء.",
+    "specialization": "التخصص",
+    "doctorDetails": "تفاصيل الطبيب"
+}

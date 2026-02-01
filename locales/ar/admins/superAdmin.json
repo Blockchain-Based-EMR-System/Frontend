@@ -1,15 +1,23 @@
 {
-  "admins": "المسؤولون",
+  "admins": "مسؤلي النظام",
   "adminsDescription": "إدارة مسؤولي النظام",
   "addAdmin": "إضافة مسؤول",
   "addingAdmin": "جارٍ إضافة المسؤول ...",
   "addNewAdmin": "إضافة مسؤول جديد",
   "noAdminsFound": "لم يتم العثور على مسؤولين",
   "adminDetails": "تفاصيل المسؤول",
+
   "dashboard": "لوحة التحكم",
   "welcomeToDashboard": "مرحبًا بك في لوحة تحكم المسؤول الأعلى",
-  "doctors": "الأطباء",
   "superAdmin": "المسؤول الأعلى",
   "totalDoctors": "إجمالي الأطباء",
-  "totalAdmins": "إجمالي المسؤولين"
+  "totalAdmins": "إجمالي المسؤولين",
+
+  "doctors": "الأطباء",
+  "manageDoctors": "إدارة الأطباء في النظام",
+  "addDoctor": "إضافة طبيب",
+  "addingDoctor": "جارٍ إضافة الطبيب ...",
+  "noDoctorsFound": "لم يتم العثور على أطباء.",
+  "specialization": "التخصص",
+  "doctorDetails": "تفاصيل الطبيب"
 }

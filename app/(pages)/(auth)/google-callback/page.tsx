@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getCurrentUser } from "@/features/dashboard/api/dashboard.api";
+import { getCurrentUser } from "@/features/dashboards/dashboard/api/dashboard.api";
 import { useAuthSync } from "@/hooks/useAuthSync";
 
 export default function GoogleCallbackPage() {

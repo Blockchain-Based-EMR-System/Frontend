@@ -1,0 +1,27 @@
+{
+  "title": "Join as a Doctor",
+  "subtitle": "Complete your registration in 3 simple steps",
+  "step1Title": "Personal Information",
+  "step2Title": "Doctor Verification",
+  "step3Title": "Specialization Documents",
+  "stepOf": "Step {current} of {total}",
+
+  "graduationCertificate": "Graduation Certificate",
+  "graduationCertificateDesc": "Upload your graduation certificate (PDF)",
+  "membershipCard": "Membership Card",
+  "membershipCardDesc": "Upload your membership card (PDF)",
+  "professionalPracticeCard": "Professional Practice Card",
+  "professionalPracticeCardDesc": "Upload your professional practice card (PDF)",
+
+  "mastersCertificate": "Masters Certificate",
+  "mastersCertificateDesc": "Upload your masters certificate (PDF)",
+  "fellowshipCertificate": "Fellowship Certificate",
+  "fellowshipCertificateDesc": "Upload your fellowship certificate (PDF)",
+  "unionSpecializationCertificate": "Union Specialization Certificate",
+  "unionSpecializationCertificateDesc": "Upload your union specialization certificate (PDF)",
+
+  "successTitle": "Application Submitted!",
+  "successMessage": "Your application has been submitted successfully. We will review your documents and get back to you soon.",
+  "errorTitle": "Submission Failed",
+  "errorMessage": "Failed to submit your application. Please try again."
+}

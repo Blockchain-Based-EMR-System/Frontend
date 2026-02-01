@@ -23,6 +23,7 @@ export interface LoginFormData {
 }
 
 export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
+  const tFields = useTranslations("fields");
   const tAuth = useTranslations("auth");
   const language = useLanguage();
   const [showPassword, setShowPassword] = useState(false);
@@ -34,7 +35,7 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
     setValue,
     watch,
   } = useForm<LoginFormData>({
-    resolver: zodResolver(createLoginSchema(tAuth)),
+    resolver: zodResolver(createLoginSchema(tFields)),
     defaultValues: {
       emailOrUsername: "",
       password: "",
@@ -51,7 +52,7 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
           <Input
             id="emailOrUsername"
             type="text"
-            placeholder={tAuth("emailOrUsernamePlaceholder")}
+            placeholder={tFields("emailOrUsernamePlaceholder")}
             {...register("emailOrUsername")}
             disabled={isLoading}
             aria-invalid={!!errors.emailOrUsername}
@@ -69,7 +70,7 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
             <Input
               id="password"
               type={showPassword ? "text" : "password"}
-              placeholder={tAuth("passwordPlaceholder")}
+              placeholder={tFields("passwordPlaceholder")}
               {...register("password")}
               disabled={isLoading}
               aria-invalid={!!errors.password}
@@ -109,14 +110,14 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
               htmlFor="rememberMe"
               className="text-sm font-medium text-primary leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
             >
-              {tAuth("rememberMe")}
+              {tFields("rememberMe")}
             </label>
           </div>
           <a
             href="/forgot-password"
             className="text-sm text-primary hover:underline"
           >
-            {tAuth("forgotPassword")}
+            {tFields("forgotPassword")}
           </a>
         </div>
 

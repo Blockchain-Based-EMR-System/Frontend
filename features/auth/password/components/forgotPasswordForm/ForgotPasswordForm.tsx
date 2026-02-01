@@ -22,14 +22,16 @@ export function ForgotPasswordForm({
   onSubmit,
   isLoading,
 }: ForgotPasswordFormProps) {
+  const tFields = useTranslations("fields");
   const tAuth = useTranslations("auth");
+  const tCommon = useTranslations("common");
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<ForgotPasswordFormData>({
-    resolver: zodResolver(createForgotPasswordSchema(tAuth)),
+    resolver: zodResolver(createForgotPasswordSchema(tFields)),
     defaultValues: {
       email: "",
     },
@@ -38,12 +40,12 @@ export function ForgotPasswordForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="flex flex-col gap-2">
-        <Label htmlFor="email">{tAuth("email")}</Label>
+        <Label htmlFor="email">{tFields("email")}</Label>
         <div className="relative">
           <Input
             id="email"
             type="email"
-            placeholder={tAuth("emailPlaceholder")}
+            placeholder={tFields("emailPlaceholder")}
             {...register("email")}
             disabled={isLoading}
             aria-invalid={!!errors.email}
@@ -60,7 +62,7 @@ export function ForgotPasswordForm({
         {isLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            {tAuth("sending")}
+            {tCommon("sending")}
           </>
         ) : (
           tAuth("sendResetLink")

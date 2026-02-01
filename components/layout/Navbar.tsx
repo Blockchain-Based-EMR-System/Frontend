@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Menu, X } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
@@ -12,6 +13,8 @@ import { UserProfileDropdown } from "@/components/common/UserProfileDropdown";
 
 export function Navbar() {
   const tCommon = useTranslations("common");
+  const tAuth = useTranslations("auth");
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const { user, isAuthenticated } = useUserStore();
   const menuRef = useRef<HTMLDivElement>(null);
@@ -58,15 +61,20 @@ export function Navbar() {
         {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center space-x-6 rtl:space-x-reverse">
           {/* Nav Links */}
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm font-medium transition-colors hover:text-primary"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`text-sm font-medium transition-colors hover:text-primary ${
+                  isActive ? "text-primary underline underline-offset-8" : ""
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
 
           {/* Auth Section */}
           {isAuthenticated && user ? (
@@ -79,10 +87,10 @@ export function Navbar() {
           ) : (
             <div className="flex items-center gap-2 border-l pl-6 rtl:border-l-0 rtl:border-r rtl:pr-6 rtl:pl-0">
               <Button variant="ghost" asChild>
-                <Link href="/login">{tCommon("login")}</Link>
+                <Link href="/login">{tAuth("login")}</Link>
               </Button>
               <Button asChild>
-                <Link href="/register">{tCommon("signup")}</Link>
+                <Link href="/register">{tAuth("signUp")}</Link>
               </Button>
             </div>
           )}
@@ -129,12 +137,12 @@ export function Navbar() {
                 <div className="flex flex-col space-y-2 pb-4 border-b">
                   <Button asChild className="w-full">
                     <Link href="/login" onClick={() => setIsOpen(false)}>
-                      {tCommon("login")}
+                      {tAuth("login")}
                     </Link>
                   </Button>
                   <Button asChild variant="outline" className="w-full">
                     <Link href="/register" onClick={() => setIsOpen(false)}>
-                      {tCommon("signup")}
+                      {tAuth("signUp")}
                     </Link>
                   </Button>
                 </div>
@@ -142,16 +150,21 @@ export function Navbar() {
 
               {/* Navigation Links */}
               <div className="flex flex-col space-y-3 px-2">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setIsOpen(false)}
-                    className="text-sm flex items-center px-2 py-1 rounded-lg hover:bg-accent transition-colors"
-                  >
-                    <span className="font-medium">{link.label}</span>
-                  </Link>
-                ))}
+                {navLinks.map((link) => {
+                  const isActive = pathname === link.href;
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setIsOpen(false)}
+                      className={`text-sm flex items-center px-2 py-1 rounded-lg hover:bg-accent transition-colors ${
+                        isActive ? "text-primary font-semibold" : ""
+                      }`}
+                    >
+                      <span className="font-medium">{link.label}</span>
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           </div>

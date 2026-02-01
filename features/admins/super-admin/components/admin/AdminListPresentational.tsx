@@ -12,8 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { AdminTableSkeleton } from "../skeletons";
 
 interface AdminListPresentationalProps {
@@ -31,6 +30,7 @@ export function AdminListPresentational({
 }: AdminListPresentationalProps) {
   const tCommon = useTranslations("common");
   const tAdmin = useTranslations("superAdmin");
+  const tFields = useTranslations("fields");
 
   if (isLoading) {
     return <AdminTableSkeleton />;
@@ -60,16 +60,16 @@ export function AdminListPresentational({
                 <TableHeader>
                   <TableRow>
                     <TableHead className="whitespace-nowrap">
-                      {tCommon("name")}
+                      {tFields("name")}
                     </TableHead>
                     <TableHead className="whitespace-nowrap">
-                      {tCommon("email")}
+                      {tFields("email")}
                     </TableHead>
                     <TableHead className="whitespace-nowrap">
-                      {tCommon("username")}
+                      {tFields("username")}
                     </TableHead>
                     <TableHead className="whitespace-nowrap">
-                      {tCommon("phone")}
+                      {tFields("phoneNumber")}
                     </TableHead>
                     <TableHead className="text-right whitespace-nowrap">
                       {tCommon("actions")}

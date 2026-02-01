@@ -39,6 +39,7 @@ interface UserProfileDropdownProps {
 export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
   const language = useLanguage();
   const tCommon = useTranslations("common");
+  const tDashboard = useTranslations("userDashboard");
   const logoutMutation = useLogout();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -224,7 +225,7 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
                   className="cursor-pointer flex items-center"
                 >
                   <UserIcon className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
-                  {tCommon("dashboard")}
+                  {tDashboard("dashboard")}
                 </Link>
               </DropdownMenuItem>
 
@@ -314,7 +315,7 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
             >
               <Link href={dashboardUrl}>
                 <UserIcon className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
-                {tCommon("dashboard")}
+                {tDashboard("dashboard")}
               </Link>
             </Button>
 

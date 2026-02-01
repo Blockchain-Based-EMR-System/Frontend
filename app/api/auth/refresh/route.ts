@@ -8,7 +8,9 @@ export async function POST(request: NextRequest) {
     const refreshCookie = request.cookies.get("RefreshToken");
 
     if (!refreshCookie) {
-      console.error("❌ [Refresh Route] No refresh token found");
+      console.error(
+        "❌ [Refresh Route] No refresh token found in request cookies",
+      );
       const response = NextResponse.json(
         {
           messageEn: "No refresh token found",
@@ -20,6 +22,7 @@ export async function POST(request: NextRequest) {
       response.cookies.set("Authorization", "", { maxAge: 0, path: "/" });
       response.cookies.set("RefreshToken", "", { maxAge: 0, path: "/" });
       response.cookies.set("UserState", "", { maxAge: 0, path: "/" });
+      response.cookies.set("AuthFailure", "true", { maxAge: 60, path: "/" });
 
       return response;
     }
@@ -60,6 +63,10 @@ export async function POST(request: NextRequest) {
         });
         errorResponse.cookies.set("RefreshToken", "", { maxAge: 0, path: "/" });
         errorResponse.cookies.set("UserState", "", { maxAge: 0, path: "/" });
+        errorResponse.cookies.set("AuthFailure", "true", {
+          maxAge: 60,
+          path: "/",
+        });
         return errorResponse;
       }
 
@@ -72,20 +79,30 @@ export async function POST(request: NextRequest) {
       );
     }
 
-
     if (!response.ok) {
+      console.error(
+        `❌ [Refresh Route] Backend refresh failed with status: ${response.status}`,
+        data,
+      );
 
       const errorResponse = NextResponse.json(data, {
         status: response.status,
       });
 
       if (response.status === 401) {
+        console.error(
+          "🔐 [Refresh Route] Unauthorized - clearing all auth cookies",
+        );
         errorResponse.cookies.set("Authorization", "", {
           maxAge: 0,
           path: "/",
         });
         errorResponse.cookies.set("RefreshToken", "", { maxAge: 0, path: "/" });
         errorResponse.cookies.set("UserState", "", { maxAge: 0, path: "/" });
+        errorResponse.cookies.set("AuthFailure", "true", {
+          maxAge: 60,
+          path: "/",
+        });
       } else {
         console.warn(
           "⚠️ [Refresh Route] Backend error (not 401) - keeping cookies, might retry later",
@@ -100,7 +117,6 @@ export async function POST(request: NextRequest) {
     const setCookieHeaders = response.headers.getSetCookie();
     if (setCookieHeaders && setCookieHeaders.length > 0) {
       setCookieHeaders.forEach((cookie, index) => {
-
         nextResponse.headers.append("Set-Cookie", cookie);
 
         const cookieMatch = cookie.match(/^([^=]+)=([^;]+)/);
@@ -143,6 +159,8 @@ export async function POST(request: NextRequest) {
         path: "/",
         maxAge: 60 * 60 * 24 * 7,
       });
+
+      nextResponse.cookies.set("AuthFailure", "", { maxAge: 0, path: "/" });
     }
 
     return nextResponse;
@@ -159,7 +177,7 @@ export async function POST(request: NextRequest) {
           messageEn: "Unable to connect to authentication server",
           messageAr: "غير قادر على الاتصال بخادم المصادقة",
         },
-        { status: 503 }, 
+        { status: 503 },
       );
     }
 

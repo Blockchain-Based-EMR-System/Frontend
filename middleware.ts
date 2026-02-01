@@ -17,7 +17,17 @@ export function middleware(request: NextRequest) {
   const authCookie = request.cookies.get("Authorization");
   const refreshCookie = request.cookies.get("RefreshToken");
   const userStateCookie = request.cookies.get("UserState");
+  const authFailureMarker = request.cookies.get("AuthFailure");
   const hasAuthToken = !!authCookie?.value || !!refreshCookie?.value;
+
+  if (authFailureMarker?.value === "true") {
+    const response = NextResponse.redirect(new URL("/login", request.url));
+    response.cookies.set("AuthFailure", "", { maxAge: 0, path: "/" });
+    response.cookies.set("RefreshToken", "", { maxAge: 0, path: "/" });
+    response.cookies.set("Authorization", "", { maxAge: 0, path: "/" });
+    response.cookies.set("UserState", "", { maxAge: 0, path: "/" });
+    return response;
+  }
 
   const publicRoutes = [
     "/",
@@ -25,7 +35,7 @@ export function middleware(request: NextRequest) {
     "/register",
     "/forgot-password",
     "/reset-password",
-    "/join/doctor"
+    "/join/doctor",
   ];
   const completeProfileRoute = "/complete-profile";
   const verifyEmailRoute = "/verify-email";
@@ -38,19 +48,24 @@ export function middleware(request: NextRequest) {
     "/reset-password",
   ];
 
-  if (refreshCookie?.value && !userStateCookie?.value && !authCookie?.value) {
-    console.warn(
-      "⚠️ [Middleware] Inconsistent cookie state detected: RefreshToken exists but UserState is missing",
-    );
-    console.log(
-      "🔄 [Middleware] User needs to re-authenticate - redirecting to login",
-    );
+  const normalizedPath = pathname === "/" ? "/" : pathname.replace(/\/$/, "");
 
-    const response = NextResponse.redirect(new URL("/login", request.url));
-    response.cookies.set("RefreshToken", "", { maxAge: 0, path: "/" });
-    response.cookies.set("Authorization", "", { maxAge: 0, path: "/" });
-    response.cookies.set("UserState", "", { maxAge: 0, path: "/" });
-    return response;
+  if (refreshCookie?.value && !userStateCookie?.value && !authCookie?.value) {
+    if (!publicRoutes.includes(normalizedPath)) {
+      console.warn(
+        "⚠️ [Middleware] Inconsistent cookie state detected: RefreshToken exists but UserState is missing",
+      );
+      console.log(
+        "🔄 [Middleware] Attempting to recover by redirecting to login with clean state",
+      );
+
+      const response = NextResponse.redirect(new URL("/login", request.url));
+      response.cookies.set("RefreshToken", "", { maxAge: 0, path: "/" });
+      response.cookies.set("Authorization", "", { maxAge: 0, path: "/" });
+      response.cookies.set("UserState", "", { maxAge: 0, path: "/" });
+      response.cookies.set("AuthFailure", "true", { maxAge: 60, path: "/" });
+      return response;
+    }
   }
 
   let isVerified = false;
@@ -74,8 +89,6 @@ export function middleware(request: NextRequest) {
       }
     }
   }
-
-  const normalizedPath = pathname === "/" ? "/" : pathname.replace(/\/$/, "");
 
   if (normalizedPath === googleCallbackRoute) {
     return NextResponse.next();
@@ -155,6 +168,17 @@ export function middleware(request: NextRequest) {
   }
 
   if (!isVerified) {
+    if (!userStateCookie?.value) {
+      console.warn(
+        "[Middleware] User not verified but no UserState cookie - redirecting to login",
+      );
+      const response = NextResponse.redirect(new URL("/login", request.url));
+      response.cookies.set("RefreshToken", "", { maxAge: 0, path: "/" });
+      response.cookies.set("Authorization", "", { maxAge: 0, path: "/" });
+      response.cookies.set("AuthFailure", "true", { maxAge: 60, path: "/" });
+      return response;
+    }
+
     if (normalizedPath === verifyEmailRoute) {
       return NextResponse.next();
     }

@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/dialog";
 import { format, isValid, parseISO } from "date-fns";
 import { useTranslations } from "next-intl";
-import { useLanguage } from "@/contexts/LanguageProvider";
 
 interface AdminDetailDialogProps {
   admin: Admin;
@@ -39,6 +38,7 @@ export function AdminDetailDialog({
   const tAdmin = useTranslations("superAdmin");
   const tCommon = useTranslations("common");
   const tAuth = useTranslations("auth");
+  const tFields = useTranslations("fields");
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -50,32 +50,32 @@ export function AdminDetailDialog({
         <div className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-sm font-medium text-muted-foreground">{tCommon("name")}</p>
+              <p className="text-sm font-medium text-muted-foreground">{tFields("name")}</p>
               <p className="text-base">{admin.name}</p>
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">{tCommon("email")}</p>
+              <p className="text-sm font-medium text-muted-foreground">{tFields("email")}</p>
               <p className="text-base">{admin.email}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">
-                {tCommon("username")}
+                {tFields("username")}
               </p>
               <p className="text-base">{admin.username}</p>
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">{tCommon("phone")}</p>
+              <p className="text-sm font-medium text-muted-foreground">{tFields("phoneNumber")}</p>
               <p className="text-base">{admin.phone || "N/A"}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">
-                {tCommon("gender")}
+                {tFields("gender")}
               </p>
-              <p className="text-base">{admin.gender === "MALE" ? tAuth("male") : admin.gender === "FEMALE" ? tAuth("female") : "N/A"}</p>
+              <p className="text-base">{admin.gender === "MALE" ? tFields("male") : admin.gender === "FEMALE" ? tFields("female") : "N/A"}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">
-                {tCommon("dateOfBirth")}
+                {tFields("dateOfBirth")}
               </p>
               <p className="text-base">
                 {formatSafeDate(admin.date_of_birth, "PP")}

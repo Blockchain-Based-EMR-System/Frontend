@@ -37,47 +37,47 @@ export function DoctorDetailDialog({
   open,
   onClose,
 }: DoctorDetailDialogProps) {
-  const tAuth = useTranslations("auth");
+  const tFields = useTranslations("fields");
   const tCommon = useTranslations("common");
-  const tDoctor = useTranslations("doctor"); 
+  const tAdmin = useTranslations("admin"); 
   const locale = useLocale();
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{tDoctor("doctorDetails")}</DialogTitle>
+          <DialogTitle>{tAdmin("doctorDetails")}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-sm font-medium text-muted-foreground">{tCommon("name")}</p>
+              <p className="text-sm font-medium text-muted-foreground">{tFields("name")}</p>
               <p className="text-base">{doctor.name}</p>
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">{tCommon("email")}</p>
+              <p className="text-sm font-medium text-muted-foreground">{tFields("email")}</p>
               <p className="text-base">{doctor.email}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">
-                {tCommon("username")}
+                {tFields("username")}
               </p>
               <p className="text-base">{doctor.username || "N/A"}</p>
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">{tCommon("phone")}</p>
+              <p className="text-sm font-medium text-muted-foreground">{tFields("phoneNumber")}</p>
               <p className="text-base">{doctor.phone || "N/A"}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">
-                {tCommon("gender")}
+                {tFields("gender")}
               </p>
-              <p className="text-base">{doctor.gender === "MALE" ? tAuth("male") : doctor.gender === "FEMALE" ? tAuth("female") : "N/A"}</p>
+              <p className="text-base">{doctor.gender === "MALE" ? tFields("male") : doctor.gender === "FEMALE" ? tFields("female") : "N/A"}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">
-                {tCommon("dateOfBirth")}
+                {tFields("dateOfBirth")}
               </p>
               <p className="text-base">
                 {formatSafeDate(doctor.date_of_birth, "PP")}
@@ -85,7 +85,7 @@ export function DoctorDetailDialog({
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">
-                {tDoctor("specialization")}
+                {tAdmin("specialization")}
               </p>
               <p className="text-base">{getSpecializationDisplay(doctor, locale)}</p>
             </div>

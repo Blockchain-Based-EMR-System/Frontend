@@ -5,6 +5,7 @@ export interface SignupRequest {
   name: string;
   password: string;
   phone: string;
+  rememberMe?: boolean;
 }
 
 export interface SignupResponse extends ApiResponse<User> {}

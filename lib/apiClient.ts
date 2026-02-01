@@ -22,8 +22,18 @@ export const setLoggingOut = (value: boolean) => {
 
 const clearClientCookies = () => {
   if (typeof document !== "undefined") {
-    document.cookie = `UserState=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-    document.cookie = `UserState=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`;
+    const domain = window.location.hostname;
+    
+    const clearCookie = (name: string) => {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain};`;
+      if (!domain.includes('localhost')) {
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${domain};`;
+      }
+    };
+    
+    clearCookie('UserState');
+    clearCookie('AuthFailure');
   }
 };
 
@@ -32,11 +42,12 @@ const clearAllAuthStateAndReload = () => {
     if (isLoggingOut) {
       return;
     }
-
+    
     localStorage.clear();
     sessionStorage.clear();
-    clearClientCookies();
-
+    clearClientCookies(); 
+    
+    document.cookie = `AuthFailure=true; path=/; max-age=60; SameSite=Lax`;
     window.location.replace("/login");
   }
 };

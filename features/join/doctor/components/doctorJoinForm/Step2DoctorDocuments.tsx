@@ -39,7 +39,6 @@ export function Step2DoctorDocuments({
           error={errors.graduationCertificate?.message}
           form={form}
           isLoading={isLoading}
-          t={t}
         />
 
         <FileUploadField
@@ -50,7 +49,6 @@ export function Step2DoctorDocuments({
           error={errors.membershipCard?.message}
           form={form}
           isLoading={isLoading}
-          t={t}
         />
 
         <FileUploadField
@@ -61,7 +59,6 @@ export function Step2DoctorDocuments({
           error={errors.professionalPracticeCard?.message}
           form={form}
           isLoading={isLoading}
-          t={t}
         />
       </div>
     </div>

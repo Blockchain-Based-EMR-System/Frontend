@@ -1,6 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
@@ -9,42 +10,42 @@ import {
   createStep1Schema,
   createStep2Schema,
   createStep3Schema,
+  createDoctorJoinSchema,
 } from "./doctorJoinSchema";
 import { Step1PersonalInfo } from "./Step1PersonalInfo";
 import { Step2DoctorDocuments } from "./Step2DoctorDocuments";
 import { Step3SpecializationDocs } from "./Step3SpecializationDocs";
+import { useLanguage } from "@/contexts/LanguageProvider";
 
 interface DoctorJoinFormProps {
   onSubmit: (data: DoctorJoinFormData) => Promise<void>;
   isLoading: boolean;
-  t: (key: string, values?: Record<string, any>) => string;
+  tDoctorJoining: (key: string, values?: Record<string, any>) => string;
+  tCommon: (key: string, values?: Record<string, any>) => string;
+  tFields: (key: string, values?: Record<string, any>) => string;
 }
 
 export function DoctorJoinForm({
   onSubmit,
   isLoading,
-  t,
+  tDoctorJoining,
+  tCommon,
+  tFields,
 }: DoctorJoinFormProps) {
+  const { locale } = useLanguage();
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 3;
 
   const form = useForm<DoctorJoinFormData>({
-    mode: "onChange",
+    resolver: zodResolver(createDoctorJoinSchema(tFields)),
+    mode: "onBlur",
     defaultValues: {
       fullName: "",
       email: "",
       phoneNumber: "",
       password: "",
       confirmPassword: "",
-      gender: undefined,
-      dateOfBirth: undefined,
-      graduationCertificate: null,
-      membershipCard: null,
-      professionalPracticeCard: null,
-      mastersCertificate: null,
-      fellowshipCertificate: null,
-      unionSpecializationCertificate: null,
-    },
+    } as any,
   });
 
   const validateCurrentStep = async (): Promise<boolean> => {
@@ -52,7 +53,7 @@ export function DoctorJoinForm({
     let fields: (keyof DoctorJoinFormData)[] = [];
 
     if (currentStep === 1) {
-      schema = createStep1Schema(t);
+      schema = createStep1Schema(tFields);
       fields = [
         "fullName",
         "email",
@@ -63,14 +64,14 @@ export function DoctorJoinForm({
         "dateOfBirth",
       ];
     } else if (currentStep === 2) {
-      schema = createStep2Schema(t);
+      schema = createStep2Schema(tFields);
       fields = [
         "graduationCertificate",
         "membershipCard",
         "professionalPracticeCard",
       ];
     } else if (currentStep === 3) {
-      schema = createStep3Schema(t);
+      schema = createStep3Schema(tFields);
       fields = [
         "mastersCertificate",
         "fellowshipCertificate",
@@ -98,6 +99,8 @@ export function DoctorJoinForm({
   const handleNext = async () => {
     console.log("handleNext clicked, current step:", currentStep);
     const isValid = await validateCurrentStep();
+    console.log("Validation result:", isValid);
+    console.log("Form errors:", form.formState.errors);
     if (isValid && currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
     }
@@ -175,7 +178,10 @@ export function DoctorJoinForm({
       <div className="space-y-2">
         <div className="flex items-center justify-between text-sm text-muted-foreground">
           <span>
-            {t("stepOf", { current: currentStep, total: totalSteps })}
+            {tDoctorJoining("stepOf", {
+              current: currentStep,
+              total: totalSteps,
+            })}
           </span>
         </div>
         <div className="flex gap-2">
@@ -193,13 +199,21 @@ export function DoctorJoinForm({
       {/* Form Steps */}
       <form onSubmit={handleFormSubmit}>
         {currentStep === 1 && (
-          <Step1PersonalInfo form={form} t={t} isLoading={isLoading} />
+          <Step1PersonalInfo form={form} t={tFields} isLoading={isLoading} />
         )}
         {currentStep === 2 && (
-          <Step2DoctorDocuments form={form} t={t} isLoading={isLoading} />
+          <Step2DoctorDocuments
+            form={form}
+            t={tDoctorJoining}
+            isLoading={isLoading}
+          />
         )}
         {currentStep === 3 && (
-          <Step3SpecializationDocs form={form} t={t} isLoading={isLoading} />
+          <Step3SpecializationDocs
+            form={form}
+            t={tDoctorJoining}
+            isLoading={isLoading}
+          />
         )}
 
         {/* Navigation Buttons */}
@@ -212,8 +226,8 @@ export function DoctorJoinForm({
               disabled={isLoading}
               className="flex-1"
             >
-              <ChevronLeft className="h-4 w-4 mr-2" />
-              {t("previous")}
+              {locale === "ar" ? <ChevronRight className="h-4 w-4 ml-2" /> : <ChevronLeft className="h-4 w-4 mr-2" />}
+              {tCommon("previous")}
             </Button>
           )}
 
@@ -224,8 +238,8 @@ export function DoctorJoinForm({
               disabled={isLoading}
               className="flex-1"
             >
-              {t("next")}
-              <ChevronRight className="h-4 w-4 ml-2" />
+              {tCommon("next")}
+              {locale === "ar" ? <ChevronLeft className="h-4 w-4 mr-2" /> : <ChevronRight className="h-4 w-4 ml-2" />}
             </Button>
           ) : (
             <Button
@@ -237,10 +251,10 @@ export function DoctorJoinForm({
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {t("submitting")}
+                  {tCommon("submitting")}
                 </>
               ) : (
-                t("submit")
+                tCommon("submit")
               )}
             </Button>
           )}

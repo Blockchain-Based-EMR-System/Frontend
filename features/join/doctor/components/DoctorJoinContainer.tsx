@@ -11,11 +11,16 @@ export interface DoctorJoinContainerProps {
 export interface DoctorJoinPresentationalProps {
   isLoading: boolean;
   handleJoin: (data: DoctorJoinFormData) => Promise<void>;
-  t: (key: string, values?: Record<string, any>) => string;
+  tCommon: (key: string, values?: Record<string, any>) => string;
+  tDoctorJoining: (key: string, values?: Record<string, any>) => string;
+  tFields: (key: string, values?: Record<string, any>) => string;
 }
 
 export function DoctorJoinContainer({ children }: DoctorJoinContainerProps) {
-  const t = useTranslations("doctorJoining");
+  const tDoctorJoining = useTranslations("doctorJoining");
+  const tCommon = useTranslations("common");
+  const tFields = useTranslations("fields");
+
   const joinMutation = useDoctorJoin();
 
   const handleJoin = async (data: DoctorJoinFormData) => {
@@ -27,7 +32,9 @@ export function DoctorJoinContainer({ children }: DoctorJoinContainerProps) {
       {children({
         isLoading: joinMutation.isPending,
         handleJoin,
-        t,
+        tCommon,
+        tDoctorJoining,
+        tFields,
       })}
     </>
   );

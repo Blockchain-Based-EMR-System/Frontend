@@ -28,6 +28,7 @@ export function VerifyEmailForm({
   resendCountdown,
 }: VerifyEmailFormProps) {
   const tAuth = useTranslations("auth");
+  const tCommon = useTranslations("common");
 
   const {
     setValue,
@@ -75,7 +76,7 @@ export function VerifyEmailForm({
         {isLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            {tAuth("verifying")}
+            {tCommon("verifing")}
           </>
         ) : (
           tAuth("verifyEmail")

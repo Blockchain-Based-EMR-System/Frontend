@@ -11,13 +11,14 @@ export interface ForgotPasswordContainerProps {
 export interface ForgotPasswordPresentationalProps {
   isLoading: boolean;
   handleForgotPassword: (data: ForgotPasswordFormData) => Promise<void>;
-  t: (key: string) => string;
+  tAuth: (key: string) => string;
 }
 
 export function ForgotPasswordContainer({
   children,
 }: ForgotPasswordContainerProps) {
-  const t = useTranslations("auth");
+  const tAuth = useTranslations("auth");
+  
   const forgetPasswordMutation = useForgetPassword();
 
   const handleForgotPassword = async (data: ForgotPasswordFormData) => {
@@ -31,7 +32,7 @@ export function ForgotPasswordContainer({
       {children({
         isLoading: forgetPasswordMutation.isPending,
         handleForgotPassword,
-        t,
+        tAuth,
       })}
     </>
   );

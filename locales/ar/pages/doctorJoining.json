@@ -1,0 +1,26 @@
+{
+  "title": "الانضمام كطبيب",
+  "subtitle": "أكمل تسجيلك في 3 خطوات بسيطة",
+  "step1Title": "المعلومات الشخصية",
+  "step2Title": "التحقق من انك طبيب",
+  "step3Title": "مستندات التخصص",
+  "stepOf": "الخطوة {current} من {total}",
+
+  "graduationCertificate": "شهادة التخرج",
+  "graduationCertificateDesc": "قم برفع شهادة التخرج (PDF)",
+  "membershipCard": "بطاقة النقابة",
+  "membershipCardDesc": "قم برفع بطاقة النقابة (PDF)",
+  "professionalPracticeCard": "بطاقة مزاولة المهنة",
+  "professionalPracticeCardDesc": "قم برفع بطاقة مزاولة المهنة (PDF)",
+  "mastersCertificate": "شهادة الماجستير",
+  "mastersCertificateDesc": "قم برفع شهادة الماجستير (PDF)",
+  "fellowshipCertificate": "شهادة الزمالة",
+  "fellowshipCertificateDesc": "قم برفع شهادة الزمالة (PDF)",
+  "unionSpecializationCertificate": "شهادة التخصص من النقابة",
+  "unionSpecializationCertificateDesc": "قم برفع شهادة التخصص من النقابة (PDF)",
+
+  "successTitle": "تم إرسال الطلب!",
+  "successMessage": "تم إرسال طلبك بنجاح. سنقوم بمراجعة مستنداتك والتواصل معك قريباً.",
+  "errorTitle": "فشل الإرسال",
+  "errorMessage": "فشل إرسال طلبك. يرجى المحاولة مرة أخرى."
+}

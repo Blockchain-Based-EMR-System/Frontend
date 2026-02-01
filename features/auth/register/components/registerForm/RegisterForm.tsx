@@ -27,6 +27,8 @@ export interface RegisterFormData {
 
 export function RegisterForm({ onSubmit, isLoading }: RegisterFormProps) {
   const tAuth = useTranslations("auth");
+  const tFields = useTranslations("fields");
+  const tCommon = useTranslations("common");
   const language = useLanguage();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -35,8 +37,10 @@ export function RegisterForm({ onSubmit, isLoading }: RegisterFormProps) {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
+    watch,
   } = useForm<RegisterFormData>({
-    resolver: zodResolver(createRegisterSchema(tAuth)),
+    resolver: zodResolver(createRegisterSchema(tFields)),
     defaultValues: {
       fullName: "",
       email: "",
@@ -47,6 +51,8 @@ export function RegisterForm({ onSubmit, isLoading }: RegisterFormProps) {
     },
   });
 
+  const rememberMe = watch("rememberMe");
+
   return (
     <div className="space-y-2">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -54,7 +60,7 @@ export function RegisterForm({ onSubmit, isLoading }: RegisterFormProps) {
           <Input
             id="fullName"
             type="text"
-            placeholder={tAuth("fullNamePlaceholder")}
+            placeholder={tFields("fullNamePlaceholder")}
             {...register("fullName")}
             disabled={isLoading}
             aria-invalid={!!errors.fullName}
@@ -71,7 +77,7 @@ export function RegisterForm({ onSubmit, isLoading }: RegisterFormProps) {
           <Input
             id="email"
             type="email"
-            placeholder={tAuth("emailPlaceholder")}
+            placeholder={tFields("emailPlaceholder")}
             {...register("email")}
             disabled={isLoading}
             aria-invalid={!!errors.email}
@@ -86,7 +92,7 @@ export function RegisterForm({ onSubmit, isLoading }: RegisterFormProps) {
           <Input
             id="phoneNumber"
             type="tel"
-            placeholder={tAuth("phoneNumberPlaceholder")}
+            placeholder={tFields("phoneNumberPlaceholder")}
             {...register("phoneNumber")}
             disabled={isLoading}
             aria-invalid={!!errors.phoneNumber}
@@ -105,7 +111,7 @@ export function RegisterForm({ onSubmit, isLoading }: RegisterFormProps) {
             <Input
               id="password"
               type={showPassword ? "text" : "password"}
-              placeholder={tAuth("passwordPlaceholder")}
+              placeholder={tFields("passwordPlaceholder")}
               {...register("password")}
               disabled={isLoading}
               aria-invalid={!!errors.password}
@@ -138,7 +144,7 @@ export function RegisterForm({ onSubmit, isLoading }: RegisterFormProps) {
             <Input
               id="confirmPassword"
               type={showConfirmPassword ? "text" : "password"}
-              placeholder={tAuth("confirmPasswordPlaceholder")}
+              placeholder={tFields("confirmPasswordPlaceholder")}
               {...register("confirmPassword")}
               disabled={isLoading}
               aria-invalid={!!errors.confirmPassword}
@@ -169,14 +175,17 @@ export function RegisterForm({ onSubmit, isLoading }: RegisterFormProps) {
         <div className="flex items-center space-x-2 rtl:space-x-reverse">
           <Checkbox
             id="rememberMe"
-            {...register("rememberMe")}
+            checked={rememberMe}
+            onCheckedChange={(checked) =>
+              setValue("rememberMe", checked === true)
+            }
             disabled={isLoading}
           />
           <label
             htmlFor="rememberMe"
             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
           >
-            {tAuth("rememberMe")}
+            {tFields("rememberMe")}
           </label>
         </div>
 

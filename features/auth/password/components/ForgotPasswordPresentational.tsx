@@ -18,13 +18,13 @@ import { KeyRound } from "lucide-react";
 export interface ForgotPasswordPresentationalProps {
   isLoading: boolean;
   handleForgotPassword: (data: ForgotPasswordFormData) => Promise<void>;
-  t: (key: string) => string;
+  tAuth: (key: string) => string;
 }
 
 export function ForgotPasswordPresentational({
   isLoading,
   handleForgotPassword,
-  t,
+  tAuth,
 }: ForgotPasswordPresentationalProps) {
   return (
     <div className="flex flex-1 items-center justify-center p-4">
@@ -34,10 +34,10 @@ export function ForgotPasswordPresentational({
             <KeyRound className="h-6 w-6 text-primary" />
           </div>
           <CardTitle className="text-2xl font-bold">
-            {t("forgotPassword")}
+            {tAuth("forgotPassword")}
           </CardTitle>
           <CardDescription className="text-base">
-            {t("forgotPasswordDescription")}
+            {tAuth("forgotPasswordDescription")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -48,7 +48,7 @@ export function ForgotPasswordPresentational({
         </CardContent>
         <CardFooter className="flex justify-center">
           <Link href="/login" className="text-sm text-primary hover:underline">
-            {t("backToLogin")}
+            {tAuth("backToLogin")}
           </Link>
         </CardFooter>
       </Card>

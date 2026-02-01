@@ -6,10 +6,18 @@
   "addNewAdmin": "Add New Admin",
   "noAdminsFound": "No admins found",
   "adminDetails": "Admin Details",
+
   "dashboard": "Dashboard",
   "welcomeToDashboard": "Welcome to the Super Admin Dashboard",
-  "doctors": "Doctors",
   "superAdmin": "Super Admin",
   "totalDoctors": "Total Doctors",
-  "totalAdmins": "Total Admins"
+  "totalAdmins": "Total Admins",
+
+  "doctors": "Doctors",
+  "manageDoctors": "Manage Doctors in the System",
+  "addDoctor": "Add Doctor",
+  "addingDoctor": "Adding Doctor ...",
+  "noDoctorsFound": "No doctors found.",
+  "specialization": "Specialization",
+  "doctorDetails": "Doctor Details"
 }

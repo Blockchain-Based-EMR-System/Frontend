@@ -4,16 +4,16 @@ export interface DoctorJoinFormData {
   phoneNumber: string;
   password: string;
   confirmPassword: string;
-  gender?: "MALE" | "FEMALE";
-  dateOfBirth?: Date;
+  gender: "MALE" | "FEMALE";
+  dateOfBirth: Date;
 
-  graduationCertificate: File | null;
-  membershipCard: File | null;
-  professionalPracticeCard: File | null;
+  graduationCertificate: File;
+  membershipCard: File;
+  professionalPracticeCard: File;
 
-  mastersCertificate: File | null;
-  fellowshipCertificate: File | null;
-  unionSpecializationCertificate: File | null;
+  mastersCertificate: File;
+  fellowshipCertificate: File;
+  unionSpecializationCertificate: File;
 }
 
 export interface DoctorJoinApiRequest {
@@ -22,7 +22,7 @@ export interface DoctorJoinApiRequest {
   phone: string;
   password: string;
   gender: "MALE" | "FEMALE";
-  date_of_birth: string; 
+  date_of_birth: string;
   graduationCertificate: File;
   membershipCard: File;
   professionalPracticeCard: File;

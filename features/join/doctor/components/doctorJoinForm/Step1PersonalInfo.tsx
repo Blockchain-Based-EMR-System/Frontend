@@ -14,6 +14,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { DoctorJoinFormData } from "../../types/doctorJoinTypes";
 import { useLanguage } from "@/contexts/LanguageProvider";
+import { useTranslations } from "next-intl";
 
 interface Step1PersonalInfoProps {
   form: UseFormReturn<DoctorJoinFormData>;
@@ -26,6 +27,7 @@ export function Step1PersonalInfo({
   t,
   isLoading,
 }: Step1PersonalInfoProps) {
+  const tDoctorJoining = useTranslations("doctorJoining");
   const { direction } = useLanguage();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -43,7 +45,7 @@ export function Step1PersonalInfo({
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-2xl font-bold">{t("step1Title")}</h2>
+        <h2 className="text-2xl font-bold">{tDoctorJoining("step1Title")}</h2>
       </div>
 
       <div className="space-y-4">
@@ -82,7 +84,7 @@ export function Step1PersonalInfo({
             dir={direction}
             id="phoneNumber"
             type="tel"
-            placeholder={t("phonePlaceholder")}
+            placeholder={t("phoneNumberPlaceholder")}
             {...register("phoneNumber")}
             disabled={isLoading}
             className="py-5"
@@ -99,7 +101,10 @@ export function Step1PersonalInfo({
             dir={direction}
             value={gender}
             onValueChange={(value) =>
-              setValue("gender", value as "MALE" | "FEMALE")
+              setValue("gender", value as "MALE" | "FEMALE", {
+                shouldValidate: true,
+                shouldDirty: true,
+              })
             }
             disabled={isLoading}
           >
@@ -119,7 +124,12 @@ export function Step1PersonalInfo({
         <div className="space-y-2">
           <DatePickerPopover
             date={dateOfBirth}
-            onDateChange={(date) => setValue("dateOfBirth", date as Date)}
+            onDateChange={(date) => {
+              setValue("dateOfBirth", date as Date, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+            }}
             placeholder={t("pickDateOfBirth")}
             disabled={isLoading}
             hasError={!!errors.dateOfBirth}

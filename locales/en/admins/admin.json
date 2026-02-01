@@ -1,0 +1,17 @@
+{
+    "admin": "Admin",
+    "admins": "Admins",
+
+    "dashboard": "Dashboard",
+    "showUnverifiedOnly": "Show Unverified Only",
+    "verifySuccess": "Doctor verified successfully",
+    "rejectSuccess": "Doctor rejected successfully",
+    "totalDoctors": "Total Doctors",
+    "welcomeToDashboard": "Welcome to the Admin Dashboard",
+    
+    "doctors": "Doctors",
+    "manageDoctors": "Manage Doctors in the System",
+    "noDoctorsFound": "No doctors found.",
+    "specialization": "Specialization",
+    "doctorDetails": "Doctor Details"
+}

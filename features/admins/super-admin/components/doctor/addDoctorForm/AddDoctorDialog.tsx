@@ -11,7 +11,6 @@ import {
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -24,11 +23,11 @@ import { useCreateDoctor } from "../../../query/useDoctor.query";
 import { useToast } from "@/hooks/useToast";
 import { useLanguage } from "@/contexts/LanguageProvider";
 import { CreateDoctorRequest } from "../../../types/doctorTypes";
-import { addDoctorSchema } from "./addDoctorSchema";
+import { createAddDoctorSchema } from "./addDoctorSchema";
 import { getLocalizedMessage } from "@/lib/helpers";
 import { useTranslations } from "next-intl";
 
-type AddDoctorForm = z.infer<typeof addDoctorSchema>;
+type AddDoctorForm = z.infer<ReturnType<typeof createAddDoctorSchema>>;
 
 interface AddDoctorDialogProps {
   open: boolean;
@@ -38,9 +37,9 @@ interface AddDoctorDialogProps {
 export function AddDoctorDialog({ open, onClose }: AddDoctorDialogProps) {
   const { toast } = useToast();
   const { locale, direction } = useLanguage();
-  const tDoctor = useTranslations("doctor");
   const tCommon = useTranslations("common");
-  const tAuth = useTranslations("auth");
+  const tFields = useTranslations("fields");
+  const tAdmin = useTranslations("superAdmin");
   const createDoctorMutation = useCreateDoctor();
 
   const {
@@ -51,7 +50,7 @@ export function AddDoctorDialog({ open, onClose }: AddDoctorDialogProps) {
     watch,
     reset,
   } = useForm<AddDoctorForm>({
-    resolver: zodResolver(addDoctorSchema),
+    resolver: zodResolver(createAddDoctorSchema(tFields)),
   });
 
   const gender = watch("gender");
@@ -90,22 +89,29 @@ export function AddDoctorDialog({ open, onClose }: AddDoctorDialogProps) {
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{tDoctor("addDoctor")}</DialogTitle>
+          <DialogTitle>{tAdmin("addDoctor")}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
-            <Input id="name" placeholder={tAuth("namePlaceholder")} {...register("name")} />
+            <Input
+              id="name"
+              placeholder={tFields("namePlaceholder")}
+              {...register("name")}
+            />
             {errors.name && (
-              <p className="text-sm text-destructive">
-                {errors.name.message}
-              </p>
+              <p className="text-sm text-destructive">{errors.name.message}</p>
             )}
           </div>
 
           <div className="grid grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Input id="email" type="email" placeholder={tAuth("emailPlaceholder")} {...register("email")} />
+              <Input
+                id="email"
+                type="email"
+                placeholder={tFields("emailPlaceholder")}
+                {...register("email")}
+              />
               {errors.email && (
                 <p className="text-sm text-destructive">
                   {errors.email.message}
@@ -114,7 +120,11 @@ export function AddDoctorDialog({ open, onClose }: AddDoctorDialogProps) {
             </div>
 
             <div className="space-y-2">
-              <Input id="phone" placeholder={tAuth("phoneNumberPlaceholder")} {...register("phone")} />
+              <Input
+                id="phone"
+                placeholder={tFields("phoneNumberPlaceholder")}
+                {...register("phone")}
+              />
               {errors.phone && (
                 <p className="text-sm text-destructive">
                   {errors.phone.message}
@@ -126,18 +136,18 @@ export function AddDoctorDialog({ open, onClose }: AddDoctorDialogProps) {
           <div className="grid grid-cols-2 gap-6">
             <div className="space-y-2">
               <Select
-                dir ={direction}
+                dir={direction}
                 value={gender}
                 onValueChange={(value) =>
                   setValue("gender", value as "MALE" | "FEMALE")
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={tCommon("selectGender")} />
+                  <SelectValue placeholder={tFields("selectGender")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="MALE">{tAuth("male")}</SelectItem>
-                  <SelectItem value="FEMALE">{tAuth("female")}</SelectItem>
+                  <SelectItem value="MALE">{tFields("male")}</SelectItem>
+                  <SelectItem value="FEMALE">{tFields("female")}</SelectItem>
                 </SelectContent>
               </Select>
               {errors.gender && (
@@ -153,7 +163,7 @@ export function AddDoctorDialog({ open, onClose }: AddDoctorDialogProps) {
                 onDateChange={(date) =>
                   setValue("date_of_birth", date?.toISOString() || "")
                 }
-                placeholder={tCommon("dateOfBirthPlaceholder")}
+                placeholder={tFields("pickDateOfBirth")}
                 hasError={!!errors.date_of_birth}
                 disableFutureDates
                 fromYear={1950}
@@ -172,7 +182,9 @@ export function AddDoctorDialog({ open, onClose }: AddDoctorDialogProps) {
               {tCommon("cancel")}
             </Button>
             <Button type="submit" disabled={createDoctorMutation.isPending}>
-              {createDoctorMutation.isPending ? tCommon("creating") : tDoctor("addDoctor")}
+              {createDoctorMutation.isPending
+                ? tAdmin("addingDoctor")
+                : tAdmin("addDoctor")}
             </Button>
           </div>
         </form>

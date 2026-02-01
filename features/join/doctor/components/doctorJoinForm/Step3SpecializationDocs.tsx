@@ -41,7 +41,6 @@ export function Step3SpecializationDocs({
           error={errors.mastersCertificate?.message}
           form={form}
           isLoading={isLoading}
-          t={t}
         />
 
         <FileUploadField
@@ -52,7 +51,6 @@ export function Step3SpecializationDocs({
           error={errors.fellowshipCertificate?.message}
           form={form}
           isLoading={isLoading}
-          t={t}
         />
 
         <FileUploadField
@@ -63,7 +61,6 @@ export function Step3SpecializationDocs({
           error={errors.unionSpecializationCertificate?.message}
           form={form}
           isLoading={isLoading}
-          t={t}
         />
       </div>
     </div>

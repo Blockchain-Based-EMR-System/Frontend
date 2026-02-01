@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -24,7 +23,7 @@ import { useToast } from "@/hooks/useToast";
 import { useLanguage } from "@/contexts/LanguageProvider";
 import { getLocalizedMessage } from "@/lib/helpers";
 import { CreateAdminRequest } from "../../../types/adminTypes";
-import { addAdminSchema } from "./addAdminSchema";
+import { createAddAdminSchema } from "./addAdminSchema";
 import { useTranslations } from "next-intl";
 
 interface AddAdminDialogProps {
@@ -39,6 +38,7 @@ export function AddAdminDialog({ open, onClose }: AddAdminDialogProps) {
   const tAdmin = useTranslations("superAdmin");
   const tCommon = useTranslations("common");
   const tAuth = useTranslations("auth");
+  const tFields = useTranslations("fields");
 
   const {
     register,
@@ -48,7 +48,7 @@ export function AddAdminDialog({ open, onClose }: AddAdminDialogProps) {
     watch,
     reset,
   } = useForm<CreateAdminRequest>({
-    resolver: zodResolver(addAdminSchema),
+    resolver: zodResolver(createAddAdminSchema(tFields)),
   });
 
   const gender = watch("gender");
@@ -91,7 +91,11 @@ export function AddAdminDialog({ open, onClose }: AddAdminDialogProps) {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid grid-cols-2 gap-6 mt-4">
             <div className="space-y-2">
-              <Input id="name" placeholder={tAuth("namePlaceholder")} {...register("name")} />
+              <Input
+                id="name"
+                placeholder={tFields("namePlaceholder")}
+                {...register("name")}
+              />
               {errors.name && (
                 <p className="text-sm text-destructive">
                   {errors.name.message}
@@ -100,7 +104,12 @@ export function AddAdminDialog({ open, onClose }: AddAdminDialogProps) {
             </div>
 
             <div className="space-y-2">
-              <Input id="email" type="email" placeholder={tAuth("emailPlaceholder")} {...register("email")} />
+              <Input
+                id="email"
+                type="email"
+                placeholder={tFields("emailPlaceholder")}
+                {...register("email")}
+              />
               {errors.email && (
                 <p className="text-sm text-destructive">
                   {errors.email.message}
@@ -109,7 +118,12 @@ export function AddAdminDialog({ open, onClose }: AddAdminDialogProps) {
             </div>
 
             <div className="space-y-2">
-              <Input id="password" type="password" placeholder={tAuth("passwordPlaceholder")} {...register("password")} />
+              <Input
+                id="password"
+                type="password"
+                placeholder={tFields("passwordPlaceholder")}
+                {...register("password")}
+              />
               {errors.password && (
                 <p className="text-sm text-destructive">
                   {errors.password.message}
@@ -118,7 +132,11 @@ export function AddAdminDialog({ open, onClose }: AddAdminDialogProps) {
             </div>
 
             <div className="space-y-2">
-              <Input id="phone" placeholder={tAuth("phoneNumberPlaceholder")} {...register("phone")} />
+              <Input
+                id="phone"
+                placeholder={tFields("phoneNumberPlaceholder")}
+                {...register("phone")}
+              />
               {errors.phone && (
                 <p className="text-sm text-destructive">
                   {errors.phone.message}
@@ -128,18 +146,18 @@ export function AddAdminDialog({ open, onClose }: AddAdminDialogProps) {
 
             <div className="space-y-2">
               <Select
-                dir ={direction}
+                dir={direction}
                 value={gender}
                 onValueChange={(value) =>
                   setValue("gender", value as "MALE" | "FEMALE")
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={tCommon("selectGender")} />
+                  <SelectValue placeholder={tFields("selectGender")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="MALE">{tAuth("male")}</SelectItem>
-                  <SelectItem value="FEMALE">{tAuth("female")}</SelectItem>
+                  <SelectItem value="MALE">{tFields("male")}</SelectItem>
+                  <SelectItem value="FEMALE">{tFields("female")}</SelectItem>
                 </SelectContent>
               </Select>
               {errors.gender && (
@@ -155,7 +173,7 @@ export function AddAdminDialog({ open, onClose }: AddAdminDialogProps) {
                 onDateChange={(date) =>
                   setValue("date_of_birth", date?.toISOString() || "")
                 }
-                placeholder={tCommon("dateOfBirthPlaceholder")}
+                placeholder={tFields("pickDateOfBirth")}
                 hasError={!!errors.date_of_birth}
                 disableFutureDates
                 fromYear={1950}

@@ -7,16 +7,16 @@ import { Upload, X, FileText } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
 import { DoctorJoinFormData } from "../../types/doctorJoinTypes";
 import { useLanguage } from "@/contexts/LanguageProvider";
+import { useTranslations } from "next-intl";
 
 interface FileUploadFieldProps {
   name: keyof DoctorJoinFormData;
   label: string;
   description: string;
-  file: File | null;
+  file: File | null | undefined;
   error?: string;
   form: UseFormReturn<DoctorJoinFormData>;
   isLoading: boolean;
-  t: (key: string, values?: Record<string, any>) => string;
 }
 
 export function FileUploadField({
@@ -27,22 +27,30 @@ export function FileUploadField({
   error,
   form,
   isLoading,
-  t,
 }: FileUploadFieldProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const { locale } = useLanguage();
   const { setValue } = form;
+  const tFields = useTranslations("fields");
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
-      setValue(name, selectedFile as any);
+      setValue(name, selectedFile as any, {
+        shouldValidate: true,
+        shouldDirty: true,
+        shouldTouch: true,
+      });
     }
     e.target.value = "";
   };
 
   const handleRemoveFile = () => {
-    setValue(name, null as any);
+    setValue(name, null as any, {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
+    });
     if (inputRef.current) {
       inputRef.current.value = "";
     }
@@ -93,7 +101,7 @@ export function FileUploadField({
             <Upload className="h-8 w-8 text-muted-foreground" />
             <div className="text-center">
               <p className="text-sm font-medium text-primary mb-1">
-                {t("chooseFile")}
+                {tFields("chooseFile")}
               </p>
               <p className="text-xs text-muted-foreground">
                 {locale === "ar"
