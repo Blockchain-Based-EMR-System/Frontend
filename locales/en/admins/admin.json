@@ -1,17 +1,28 @@
 {
-    "admin": "Admin",
-    "admins": "Admins",
+  "admin": "Admin",
+  "admins": "Admins",
 
-    "dashboard": "Dashboard",
-    "showUnverifiedOnly": "Show Unverified Only",
-    "verifySuccess": "Doctor verified successfully",
-    "rejectSuccess": "Doctor rejected successfully",
-    "totalDoctors": "Total Doctors",
-    "welcomeToDashboard": "Welcome to the Admin Dashboard",
-    
-    "doctors": "Doctors",
-    "manageDoctors": "Manage Doctors in the System",
-    "noDoctorsFound": "No doctors found.",
-    "specialization": "Specialization",
-    "doctorDetails": "Doctor Details"
+  "dashboard": "Dashboard",
+  "showUnverifiedOnly": "Show Unverified Only",
+  "verifySuccess": "Doctor verified successfully",
+  "rejectSuccess": "Doctor rejected successfully",
+  "totalDoctors": "Total Doctors",
+  "welcomeToDashboard": "Welcome to the Admin Dashboard",
+
+  "doctors": "Doctors",
+  "manageDoctors": "Manage Doctors in the System",
+  "noDoctorsFound": "No doctors found.",
+  "specialization": "Specialization",
+  "doctorDetails": "Doctor Details",
+
+  "certificates": "Certificates & Documents",
+  "graduationCertificate": "Graduation Certificate",
+  "membershipCard": "Membership Card",
+  "professionalPracticeCard": "Professional Practice Card",
+  "mastersCertificate": "Masters Certificate",
+  "fellowshipCertificate": "Fellowship Certificate",
+  "unionSpecializationCertificate": "Union Specialization Certificate",
+  "viewDocument": "View Document",
+  "notProvided": "Not Provided",
+  "downloadPDF": "Download PDF"
 }

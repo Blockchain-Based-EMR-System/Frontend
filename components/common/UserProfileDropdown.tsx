@@ -137,7 +137,7 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="flex items-center gap-3 h-auto p-2 hover:bg-transparent"
+                className="flex items-center gap-3 h-auto p-2 hover:bg-transparent hover:cursor-pointer"
               >
                 <span className="text-sm text-muted-foreground">
                   {tCommon("welcome")}, {user.name.split(" ")[0]}

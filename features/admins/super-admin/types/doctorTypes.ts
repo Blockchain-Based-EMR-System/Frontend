@@ -1,4 +1,4 @@
-import { Doctor, DoctorAccountStatus } from "@/types/user";
+import { Doctor } from "@/types/user";
 
 export interface CreateDoctorRequest {
   email: string;

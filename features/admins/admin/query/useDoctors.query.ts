@@ -1,4 +1,4 @@
-import {  useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale } from "next-intl";
 
 import { getDoctors, verifyDoctor } from "../api/doctor.api";
@@ -14,7 +14,7 @@ export const useDoctors = () => {
 
 export const useVerifyDoctor = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: ({ id, isVerified }: { id: string; isVerified: boolean }) =>
       verifyDoctor(id, isVerified),

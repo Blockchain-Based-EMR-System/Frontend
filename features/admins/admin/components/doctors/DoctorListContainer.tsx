@@ -24,18 +24,20 @@ export function DoctorListContainer() {
       {
         onSuccess: () => {
           toast({
-            title: isApproved ? tAdmin("verifySuccess") : tAdmin("rejectSuccess"),
+            title: isApproved
+              ? tAdmin("verifySuccess")
+              : tAdmin("rejectSuccess"),
             variant: isApproved ? "default" : "destructive",
           });
         },
-      }
+      },
     );
   };
 
   const doctors = data?.data || [];
-  
-  const filteredDoctors = showUnverifiedOnly 
-    ? doctors.filter(doc => doc.doctor?.account_status !== 'APPROVED')
+
+  const filteredDoctors = showUnverifiedOnly
+    ? doctors.filter((doc) => doc.doctor?.account_status !== "APPROVED")
     : doctors;
 
   return (

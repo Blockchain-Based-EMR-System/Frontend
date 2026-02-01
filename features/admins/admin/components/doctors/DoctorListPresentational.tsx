@@ -2,7 +2,6 @@
 
 import { Eye, ShieldCheck, Ban } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
-import { Doctor, DoctorAccountStatus, Gender } from "@/types/user";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -20,11 +19,11 @@ import {
   getAccountStatusBadge,
 } from "@/features/admins/utils";
 import { DoctorTableSkeleton } from "../../skeletons/DoctorTableSkeleton";
-import { DoctorUser } from "../../types/doctor.types";
+import { Doctor } from "@/types/user";
 
 
 interface DoctorListPresentationalProps {
-  doctors: DoctorUser[];
+  doctors: Doctor[];
   isLoading: boolean;
   onViewDoctor: (doctor: Doctor) => void;
   showUnverifiedOnly: boolean;
@@ -44,29 +43,6 @@ export function DoctorListPresentational({
   const tAdmin = useTranslations("admin");
   const tFields = useTranslations("fields");
   const locale = useLocale();
-
-  const castDoctorUserToDoctor = (doctorUser: DoctorUser): Doctor => {
-    return {
-      id: doctorUser.id,
-      name: doctorUser.name,
-      email: doctorUser.email,
-      phone: doctorUser.phone,
-      isVerified: doctorUser.isVerified,
-      username: doctorUser.username,
-      gender: doctorUser.gender as Gender | null | undefined,
-      date_of_birth: doctorUser.date_of_birth,
-      hasCompletedProfile: doctorUser.hasCompletedProfile,
-      created_at: doctorUser.created_at ?? '',
-      updated_at: doctorUser.updated_at ?? '',
-      doctor: doctorUser.doctor
-        ? {
-            specialization: doctorUser.doctor.specialization,
-            avg_time: doctorUser.doctor.avg_time,
-            account_status: doctorUser.doctor.account_status as DoctorAccountStatus,
-          }
-        : undefined,
-    };
-  };
 
   if (isLoading) {
     return <DoctorTableSkeleton/>;
@@ -123,7 +99,7 @@ export function DoctorListPresentational({
                       <TableCell>{doctor.email}</TableCell>
                       <TableCell>{doctor.phone || "N/A"}</TableCell>
                       <TableCell>
-                        {getSpecializationDisplay(castDoctorUserToDoctor(doctor), locale)}
+                        {getSpecializationDisplay((doctor), locale)}
                       </TableCell>
                       <TableCell>
                         {getAccountStatusBadge(
@@ -155,7 +131,7 @@ export function DoctorListPresentational({
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => onViewDoctor(castDoctorUserToDoctor(doctor))}
+                          onClick={() => onViewDoctor((doctor))}
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
