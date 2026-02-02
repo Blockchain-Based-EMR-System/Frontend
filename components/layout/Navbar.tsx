@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "@/components/common/LanguageSwitcher";
 import { ThemeSwitcher } from "@/components/common/ThemeSwitcher";
 import { UserProfileDropdown } from "@/components/common/UserProfileDropdown";
+import Logo from "../common/Logo";
 
 export function Navbar() {
   const tCommon = useTranslations("common");
@@ -52,8 +53,14 @@ export function Navbar() {
           className="flex items-center space-x-2 rtl:space-x-reverse"
         >
           <div className="flex items-center">
-            <span className="text-2xl font-bold bg-linear-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-              MedicBridge
+            <span className="inline-block md:hidden">
+              <Logo size={100}/>
+            </span>
+            <span className="hidden md:inline-block lg:hidden">
+              <Logo size={130}/>
+            </span>
+            <span className="hidden lg:inline-block">
+                <Logo size={160}/>
             </span>
           </div>
         </Link>

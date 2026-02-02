@@ -21,8 +21,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MedicBridge",
-  description: "Connecting Patients with Trusted Medical Professionals Worldwide",
+  title: "HoloCura",
+  description: "One Platform. Complete Care.",
 };
 
 export default async function RootLayout({

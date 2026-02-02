@@ -1,4 +1,6 @@
 import { useTranslations } from "next-intl";
+import Logo from "../common/Logo";
+import Link from "next/link";
 
 export function Footer() {
 
@@ -6,19 +8,13 @@ export function Footer() {
 
   return (
     <footer className="w-full flex flex-col gap-3 items-center border-t bg-background/50 px-4 py-6 text-center text-muted-foreground backdrop-blur-sm">
-        <p className="text-2xl font-bold bg-linear-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-            MedicBridge
-        </p>
+        <Link href={"/"} className="hover:opacity-70 transition-all duration-300 ease-in-out">
+            <Logo size={100} />
+        </Link>
         <p className="text-base">
             {tCommon("slogan")}
         </p>
         <div className="flex gap-2 items-center text-sm">
-            <p dir="ltr">
-                &copy; 2025
-                <a href="/" className="px-1 font-bold bg-linear-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-                    MedicBridge
-                </a> 
-            </p>
             <p>
                 {tCommon("allRightsReserved")}
             </p>
