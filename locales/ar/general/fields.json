@@ -7,9 +7,9 @@
   "emailPlaceholder": "أدخل البريد الإلكتروني",
   "emailRequired": "البريد الإلكتروني مطلوب",
   "invalidEmail": "عنوان البريد الإلكتروني غير صالح",
-  
+
   "username": "اسم المستخدم",
-  
+
   "emailOrUsername": "البريد الإلكتروني / اسم المستخدم",
   "emailOrUsernamePlaceholder": "أدخل بريدك الإلكتروني أو اسم المستخدم",
 
@@ -68,5 +68,45 @@
   "changeFile": "تغيير الملف",
   "fileRequired": "هذا الملف مطلوب",
   "fileTooLarge": "يجب أن يكون حجم الملف أقل من 5 ميغابايت",
-  "onlyPDFAllowed": "يسمح فقط بملفات PDF"
+  "onlyPDFAllowed": "يسمح فقط بملفات PDF",
+
+  "clinicName": "اسم العيادة",
+  "clinicNameRequired": "اسم العيادة مطلوب",
+  "clinicNameMinLength": "يجب أن يكون اسم العيادة على الأقل حرفين",
+
+  "address": "العنوان",
+  "addressRequired": "العنوان مطلوب",
+  "addressMinLength": "يجب أن يكون العنوان على الأقل 5 أحرف",
+
+  "addressMapsLink": "رابط خرائط جوجل",
+  "invalidUrl": "صيغة الرابط غير صالحة",
+
+  "openingTime": "وقت الفتح",
+  "openingTimeRequired": "وقت الفتح مطلوب",
+  "closingTime": "وقت الإغلاق",
+  "closingTimeRequired": "وقت الإغلاق مطلوب",
+  "invalidTimeFormat": "صيغة الوقت غير صالحة (HH:mm)",
+  "closingMustBeAfterOpening": "يجب أن يكون وقت الإغلاق بعد وقت الفتح",
+
+  "fees": "الرسوم",
+  "feesRequired": "الرسوم مطلوبة",
+  "feesMinValue": "يجب أن تكون الرسوم رقم موجب",
+
+  "slotDuration": "مدة الموعد",
+  "slotDurationRequired": "مدة الموعد مطلوبة",
+  "slotDurationMinValue": "يجب أن تكون مدة الموعد على الأقل 5 دقائق",
+  "slotDurationMaxValue": "يجب أن تكون مدة الموعد أقل من 120 دقيقة",
+
+  "bufferTime": "وقت الفاصل",
+  "bufferTimeRequired": "وقت الفاصل مطلوب",
+  "bufferTimeMinValue": "يجب أن يكون وقت الفاصل على الأقل 0 دقيقة",
+  "bufferTimeMaxValue": "يجب أن يكون وقت الفاصل أقل من 60 دقيقة",
+
+  "intervalStart": "بداية الفترة",
+  "intervalEnd": "نهاية الفترة",
+  "intervalStartRequired": "وقت بداية الفترة مطلوب",
+  "intervalEndRequired": "وقت نهاية الفترة مطلوب",
+  "intervalEndMustBeAfterStart": "يجب أن يكون وقت نهاية الفترة بعد وقت البداية",
+  "intervalsOverlap": "يجب ألا تتداخل فترات المواعيد الحضورية والإلكترونية",
+  "intervalOutsideWorkingHours": "يجب أن تكون فترة المواعيد الحضورية ضمن ساعات عمل العيادة"
 }

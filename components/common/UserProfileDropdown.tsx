@@ -140,7 +140,7 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
                 className="flex items-center gap-3 h-auto p-2 hover:bg-transparent hover:cursor-pointer"
               >
                 <span className="text-sm text-muted-foreground">
-                  {tCommon("welcome")}, {user.name.split(" ")[0]}
+                  {tCommon("welcome")}, {user.role === "DOCTOR" ? tCommon("doctor") + user.name.split(" ")[0] : user.name.split(" ")[0]}
                 </span>
                 <div className="relative">
                   <Avatar className="h-9 w-9 ring-2 ring-offset-2 ring-primary/20 hover:ring-primary/40 transition-all">
@@ -265,7 +265,7 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
               </AvatarFallback>
             </Avatar>
             <div className="text-center">
-              <p className="text-sm font-medium">{user.name}</p>
+              <p className="text-sm font-medium">{ user.role === "DOCTOR" ? tCommon("doctor") + user.name.split(" ")[0] : user.name.split(" ")[0]}</p>
               <p className="text-xs text-muted-foreground">{user.email}</p>
             </div>
           </div>

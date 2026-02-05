@@ -7,9 +7,9 @@
   "emailPlaceholder": "Enter the email",
   "emailRequired": "Email is required",
   "invalidEmail": "Invalid email address",
-  
+
   "username": "Username",
-  
+
   "emailOrUsername": "Email / Username",
   "emailOrUsernamePlaceholder": "Enter your email or username",
 
@@ -68,5 +68,45 @@
   "changeFile": "Change file",
   "fileRequired": "This file is required",
   "fileTooLarge": "File size must be less than 5MB",
-  "onlyPDFAllowed": "Only PDF files are allowed"
+  "onlyPDFAllowed": "Only PDF files are allowed",
+
+  "clinicName": "Clinic Name",
+  "clinicNameRequired": "Clinic name is required",
+  "clinicNameMinLength": "Clinic name must be at least 2 characters",
+
+  "address": "Address",
+  "addressRequired": "Address is required",
+  "addressMinLength": "Address must be at least 5 characters",
+
+  "addressMapsLink": "Google Maps Link",
+  "invalidUrl": "Invalid URL format",
+
+  "openingTime": "Opening Time",
+  "openingTimeRequired": "Opening time is required",
+  "closingTime": "Closing Time",
+  "closingTimeRequired": "Closing time is required",
+  "invalidTimeFormat": "Invalid time format (HH:mm)",
+  "closingMustBeAfterOpening": "Closing time must be after opening time",
+
+  "fees": "Fees",
+  "feesRequired": "Fees are required",
+  "feesMinValue": "Fees must be a positive number",
+
+  "slotDuration": "Slot Duration",
+  "slotDurationRequired": "Slot duration is required",
+  "slotDurationMinValue": "Slot duration must be at least 5 minutes",
+  "slotDurationMaxValue": "Slot duration must be less than 120 minutes",
+
+  "bufferTime": "Buffer Time",
+  "bufferTimeRequired": "Buffer time is required",
+  "bufferTimeMinValue": "Buffer time must be at least 0 minutes",
+  "bufferTimeMaxValue": "Buffer time must be less than 60 minutes",
+
+  "intervalStart": "Interval Start",
+  "intervalEnd": "Interval End",
+  "intervalStartRequired": "Interval start time is required",
+  "intervalEndRequired": "Interval end time is required",
+  "intervalEndMustBeAfterStart": "Interval end time must be after start time",
+  "intervalsOverlap": "Offline and online intervals must not overlap",
+  "intervalOutsideWorkingHours": "Offline interval must be within clinic working hours"
 }

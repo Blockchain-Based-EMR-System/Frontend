@@ -14,6 +14,8 @@
   "verifing": "Verifying...",
   "submitting": "Submitting...",
   "creating": "Creating",
+  "deleting": "Deleting...",
+  "updating": "Updating...",
 
   "error": "Error",
   "success": "Success",
@@ -49,6 +51,8 @@
   "unknown": "Unknown",
 
   "next": "Next",
-  "previous": "Previous"
+  "previous": "Previous",
+
+  "doctor": "Dr. "
 
 }
