@@ -1,7 +1,7 @@
 "use client";
 
 import { Plus, Eye } from "lucide-react";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Doctor } from "@/types/user";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,10 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  getSpecializationDisplay,
-  getAccountStatusBadge,
-} from "@/features/admins/utils";
+import { getAccountStatusBadge } from "@/features/admins/utils";
 import { DoctorTableSkeleton } from "../skeletons";
 
 interface DoctorListPresentationalProps {
@@ -35,8 +32,7 @@ export function DoctorListPresentational({
   const tAdmin = useTranslations("superAdmin");
   const tCommon = useTranslations("common");
   const tFields = useTranslations("fields");
-  const locale = useLocale();
-  
+
   if (isLoading) {
     return <DoctorTableSkeleton />;
   }
@@ -84,7 +80,7 @@ export function DoctorListPresentational({
                       <TableCell>{doctor.email}</TableCell>
                       <TableCell>{doctor.phone || "N/A"}</TableCell>
                       <TableCell>
-                        {getSpecializationDisplay(doctor, locale)}
+                        {doctor.doctor?.specialization?.value || "N/A"}
                       </TableCell>
                       <TableCell>
                         {getAccountStatusBadge(

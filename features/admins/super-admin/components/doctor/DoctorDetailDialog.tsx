@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Doctor } from "@/types/user";
 import {
   Dialog,
@@ -9,10 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { format, isValid, parseISO } from "date-fns";
-import {
-  getAccountStatusBadge,
-  getSpecializationDisplay,
-} from "@/features/admins/utils";
+import { getAccountStatusBadge } from "@/features/admins/utils";
 import { Button } from "@/components/ui/button";
 import { FileText } from "lucide-react";
 
@@ -43,7 +40,6 @@ export function DoctorDetailDialog({
   const tCommon = useTranslations("common");
   const tAdmin = useTranslations("superAdmin");
   const tFields = useTranslations("fields");
-  const locale = useLocale();
 
   const handleViewDocument = (url: string | null | undefined) => {
     if (url) {
@@ -142,7 +138,7 @@ export function DoctorDetailDialog({
                 {tAdmin("specialization")}
               </p>
               <p className="text-base">
-                {getSpecializationDisplay(doctor, locale)}
+                {doctor.doctor?.specialization?.value || "N/A"}
               </p>
             </div>
             <div>
@@ -166,7 +162,9 @@ export function DoctorDetailDialog({
                   <div className="flex items-center gap-3">
                     <FileText className="h-5 w-5 text-muted-foreground" />
                     <div className="flex gap-2">
-                      <p className="text-sm font-medium lg:max-w-[80%]">{cert.label}</p>
+                      <p className="text-sm font-medium lg:max-w-[80%]">
+                        {cert.label}
+                      </p>
                       {!cert.url && (
                         <p className="text-xs text-muted-foreground">
                           {tAdmin("notProvided")}
