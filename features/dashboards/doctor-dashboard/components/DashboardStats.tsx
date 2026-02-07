@@ -6,10 +6,10 @@ import { Building2, Calendar, CalendarCheck } from "lucide-react";
 import { useClinics } from "../query/useClinics.query";
 import { useSchedule } from "../query/useSchedule.query";
 import { useTodaySchedule } from "../query/useAppointments.query";
+import { DashboardStatsSkeleton } from "./skeletons";
 
 export function DashboardStats() {
   const t = useTranslations("doctorDashboard.stats");
-  const tCommon = useTranslations("common");
 
   const { data: clinicsData, isLoading: isLoadingClinics } = useClinics();
   const clinics = clinicsData?.data || [];
@@ -33,6 +33,10 @@ export function DashboardStats() {
 
   const todayAppointmentsCount = todayAppointments.length;
 
+  if (isLoadingClinics || isLoadingSchedule || isLoadingAppointments) {
+    return <DashboardStatsSkeleton />;
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <Card>
@@ -43,18 +47,12 @@ export function DashboardStats() {
           <Building2 className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          {isLoadingClinics ? (
-            <div className="text-2xl font-bold">{tCommon("loading")}</div>
-          ) : (
-            <>
-              <div className="text-2xl font-bold">{clinics.length}</div>
-              <p className="text-xs text-muted-foreground">
-                {t("activeClinics", { count: activeClinicsCount })}
-                {inactiveClinicsCount > 0 &&
-                  ` • ${t("inactiveClinics", { count: inactiveClinicsCount })}`}
-              </p>
-            </>
-          )}
+            <div className="text-2xl font-bold">{clinics.length}</div>
+            <p className="text-xs text-muted-foreground">
+              {t("activeClinics", { count: activeClinicsCount })}
+              {inactiveClinicsCount > 0 &&
+                ` • ${t("inactiveClinics", { count: inactiveClinicsCount })}`}
+            </p>
         </CardContent>
       </Card>
 
@@ -64,16 +62,10 @@ export function DashboardStats() {
           <Calendar className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          {isLoadingSchedule ? (
-            <div className="text-2xl font-bold">{tCommon("loading")}</div>
-          ) : (
-            <>
-              <div className="text-2xl font-bold">{workingDaysCount}</div>
-              <p className="text-xs text-muted-foreground">
-                {t("workingDays")}
-              </p>
-            </>
-          )}
+            <div className="text-2xl font-bold">{workingDaysCount}</div>
+            <p className="text-xs text-muted-foreground">
+              {t("workingDays")}
+            </p>
         </CardContent>
       </Card>
 
@@ -83,16 +75,10 @@ export function DashboardStats() {
           <CalendarCheck className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          {isLoadingAppointments ? (
-            <div className="text-2xl font-bold">{tCommon("loading")}</div>
-          ) : (
-            <>
-              <div className="text-2xl font-bold">{todayAppointmentsCount}</div>
-              <p className="text-xs text-muted-foreground">
-                {t("appointments")}
-              </p>
-            </>
-          )}
+            <div className="text-2xl font-bold">{todayAppointmentsCount}</div>
+            <p className="text-xs text-muted-foreground">
+              {t("appointments")}
+            </p>
         </CardContent>
       </Card>
     </div>

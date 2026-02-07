@@ -8,6 +8,7 @@ import { Plus, Building2 } from "lucide-react";
 import { ClinicCard } from "./ClinicCard";
 import { CreateClinicDialog } from "./CreateClinicDialog";
 import { Clinic } from "../../types/clinic.types";
+import { ClinicsTabSkeleton } from "../skeletons/ClinicsTabSkeleton";
 
 interface ClinicsTabPresentationalProps {
   clinics: Clinic[];
@@ -21,14 +22,9 @@ function ClinicsTabPresentational({
   onAddNew,
 }: ClinicsTabPresentationalProps) {
   const t = useTranslations("doctorDashboard.clinics");
-  const tCommon = useTranslations("common");
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <p className="text-muted-foreground">{tCommon("loading")}</p>
-      </div>
-    );
+    return <ClinicsTabSkeleton />;
   }
 
   if (!clinics || clinics.length === 0) {

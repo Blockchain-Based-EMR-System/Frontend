@@ -24,7 +24,7 @@ export interface ScheduleEntry {
 }
 
 export interface CreateScheduleRequest {
-  clinicId?: string;
+  clinicId: string | null;
   workingDay: DayOfWeek;
   startTime: string;
   endTime: string;
@@ -46,6 +46,73 @@ export interface DayConfiguration {
   onlineScheduleId?: string;
 }
 
+export interface DeleteScheduleResponse extends ApiResponse<{ message: string }> {}
+
+export interface CheckScheduleAppointmentsRequest {
+  scheduleId: string;
+  startDate?: string; 
+  endDate?: string; 
+}
+
+export interface CheckScheduleAppointmentsData {
+  existing: boolean;
+  numOfAppointments: number;
+}
+
+export interface CheckScheduleAppointmentsResponse extends ApiResponse<CheckScheduleAppointmentsData> {}
+
+export interface VacationCheckRequest {
+  scheduleId: string;
+  startDate: string; 
+  endDate: string; 
+}
+
+export interface VacationCheckData {
+  existing: boolean;
+  numOfAppointments: number;
+}
+
+export interface VacationCheckResponse extends ApiResponse<VacationCheckData> {}
+
+export interface SetVacationRequest {
+  scheduleId: string;
+  startDate: string; 
+  endDate: string;
+}
+
+export interface SetVacationResponse extends ApiResponse<{ message: string }> {}
+
+export interface VacationPeriod {
+  scheduleId: string;
+  dayOfWeek: string; 
+  isOnline: boolean;
+  breakStart: string; 
+  breakEnd: string; 
+  numOfAppointments: number;
+  clinicId?: string | null;
+}
+
+export interface GetVacationsResponse {
+  success: boolean;
+  message: {
+    en: string;
+    ar: string;
+  };
+  data: VacationPeriod[];
+}
+
+export interface ClearVacationRequest {
+  scheduleId: string;
+}
+
+export interface ClearVacationResponse {
+  success: boolean;
+  message: {
+    en: string;
+    ar: string;
+  };
+}
+
 export interface ScheduleFormData {
   clinicId: string | null;
   days: DayConfiguration[];
@@ -61,7 +128,7 @@ export interface CreateScheduleResponse extends ApiResponse<undefined> {
 
 export interface UpdateScheduleRequest {
   scheduleId: string;
-  clinicId?: string;
+  clinicId: string | null;
   workingDay?: DayOfWeek;
   startTime?: string;
   endTime?: string;

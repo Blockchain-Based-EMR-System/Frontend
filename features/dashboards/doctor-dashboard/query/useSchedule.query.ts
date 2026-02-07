@@ -10,6 +10,8 @@ import {
   getSchedule,
   createMultipleSchedules,
   updateSchedule,
+  getVacations,
+  clearVacation,
 } from "../api/schedule.api";
 import {
   GetScheduleResponse,
@@ -17,6 +19,9 @@ import {
   CreateScheduleResponse,
   UpdateScheduleRequest,
   UpdateScheduleResponse,
+  GetVacationsResponse,
+  ClearVacationRequest,
+  ClearVacationResponse,
 } from "../types/schedule.types";
 import { ApiError } from "@/types";
 import { toast } from "@/hooks/useToast";
@@ -25,6 +30,7 @@ import { useLanguage } from "@/contexts/LanguageProvider";
 export const scheduleKeys = {
   all: ["schedule"] as const,
   current: ["schedule", "current"] as const,
+  vacations: ["schedule", "vacations"] as const,
 };
 
 export const useSchedule = (): UseQueryResult<
@@ -107,6 +113,57 @@ export const useUpdateSchedule = (): UseMutationResult<
         locale === "ar"
           ? error.response?.data?.messageAr || "فشل تحديث الجدول"
           : error.response?.data?.messageEn || "Failed to update schedule";
+
+      toast({
+        title: locale === "ar" ? "خطأ" : "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    },
+  });
+};
+
+export const useVacations = (): UseQueryResult<
+  GetVacationsResponse,
+  AxiosError<ApiError>
+> => {
+  return useQuery({
+    queryKey: scheduleKeys.vacations,
+    queryFn: getVacations,
+  });
+};
+
+export const useClearVacation = (): UseMutationResult<
+  ClearVacationResponse,
+  AxiosError<ApiError>,
+  ClearVacationRequest
+> => {
+  const { locale } = useLanguage();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: clearVacation,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: scheduleKeys.vacations });
+      queryClient.invalidateQueries({ queryKey: scheduleKeys.all });
+
+      const successMessage =
+        locale === "ar"
+          ? "تم إلغاء الإجازة بنجاح"
+          : "Vacation cleared successfully";
+
+      toast({
+        title: locale === "ar" ? "نجاح" : "Success",
+        description: successMessage,
+      });
+    },
+    onError: (error: any) => {
+      console.error("Clear vacation error:", error);
+
+      const errorMessage =
+        locale === "ar"
+          ? error.response?.data?.message?.ar || "فشل إلغاء الإجازة"
+          : error.response?.data?.message?.en || "Failed to clear vacation";
 
       toast({
         title: locale === "ar" ? "خطأ" : "Error",

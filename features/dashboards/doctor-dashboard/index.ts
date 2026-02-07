@@ -10,8 +10,13 @@ export { ClinicSelector } from "./components/schedule/ClinicSelector";
 export { DayConfigCard } from "./components/schedule/DayConfigCard";
 export { TimeIntervalPicker } from "./components/schedule/TimeIntervalPicker";
 export { AppointmentTypeSelector } from "./components/schedule/AppointmentTypeSelector";
+export { DeleteScheduleDialog } from "./components/schedule/DeleteScheduleDialog";
+
+export { VacationTab } from "./components/vacation/VacationTab";
 
 export { AppointmentsTab } from "./components/appointments/AppointmentsTab";
+
+export * from "./components/skeletons";
 export { AppointmentCard } from "./components/appointments/AppointmentCard";
 export { RescheduleAppointmentDialog } from "./components/appointments/RescheduleAppointmentDialog";
 export { CancelAppointmentDialog } from "./components/appointments/CancelAppointmentDialog";
