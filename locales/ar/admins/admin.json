@@ -4,8 +4,15 @@
 
   "dashboard": "لوحة التحكم",
   "showUnverifiedOnly": "عرض غير المعتمدين فقط",
+  "verify": "تفعيل",
+  "reject": "رفض",
   "verifySuccess": "تم تفعيل الطبيب بنجاح",
   "rejectSuccess": "تم رفض الطبيب بنجاح",
+  "verificationError": "فشل تحديث حالة الطبيب",
+  "confirmVerify": "تأكيد التفعيل",
+  "confirmReject": "تأكيد الرفض",
+  "verifyMessage": "هل أنت متأكد من تفعيل هذا الطبيب؟ سيتم السماح له باستخدام النظام.",
+  "rejectMessage": "هل أنت متأكد من رفض هذا الطبيب؟ لن يتمكن من الوصول إلى النظام.",
   "totalDoctors": "مجموع الأطباء",
   "welcomeToDashboard": "مرحبا بك في لوحة تحكم المسؤول",
 

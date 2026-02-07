@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 
 import { DoctorListPresentational } from "./DoctorListPresentational";
 import { DoctorDetailDialog } from "./DoctorDetailDialog";
+import { ConfirmVerificationDialog } from "./ConfirmVerificationDialog";
 import { useDoctors, useVerifyDoctor } from "../../query/useDoctors.query";
 import { useToast } from "@/hooks/useToast";
 
@@ -13,14 +14,26 @@ export function DoctorListContainer() {
   const { data, isLoading } = useDoctors();
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [showUnverifiedOnly, setShowUnverifiedOnly] = useState(false);
+  const [doctorToVerify, setDoctorToVerify] = useState<{
+    doctor: Doctor;
+    action: "verify" | "reject";
+  } | null>(null);
 
   const { mutate: verifyDoctor } = useVerifyDoctor();
   const { toast } = useToast();
   const tAdmin = useTranslations("admin");
 
-  const handleVerify = (id: string, isApproved: boolean) => {
+  const handleVerifyClick = (doctor: Doctor, action: "verify" | "reject") => {
+    setDoctorToVerify({ doctor, action });
+  };
+
+  const confirmVerification = () => {
+    if (!doctorToVerify) return;
+
+    const isApproved = doctorToVerify.action === "verify";
+
     verifyDoctor(
-      { id, isVerified: isApproved },
+      { id: doctorToVerify.doctor.id, isVerified: isApproved },
       {
         onSuccess: () => {
           toast({
@@ -28,6 +41,13 @@ export function DoctorListContainer() {
               ? tAdmin("verifySuccess")
               : tAdmin("rejectSuccess"),
             variant: isApproved ? "default" : "destructive",
+          });
+          setDoctorToVerify(null);
+        },
+        onError: () => {
+          toast({
+            title: tAdmin("verificationError"),
+            variant: "destructive",
           });
         },
       },
@@ -48,7 +68,7 @@ export function DoctorListContainer() {
         onViewDoctor={setSelectedDoctor}
         showUnverifiedOnly={showUnverifiedOnly}
         setShowUnverifiedOnly={setShowUnverifiedOnly}
-        onVerify={handleVerify}
+        onVerifyClick={handleVerifyClick}
       />
 
       {selectedDoctor && (
@@ -56,6 +76,16 @@ export function DoctorListContainer() {
           doctor={selectedDoctor}
           open={!!selectedDoctor}
           onClose={() => setSelectedDoctor(null)}
+        />
+      )}
+
+      {doctorToVerify && (
+        <ConfirmVerificationDialog
+          doctor={doctorToVerify.doctor}
+          action={doctorToVerify.action}
+          open={!!doctorToVerify}
+          onClose={() => setDoctorToVerify(null)}
+          onConfirm={confirmVerification}
         />
       )}
     </>

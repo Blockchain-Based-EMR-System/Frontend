@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, ShieldCheck, Ban } from "lucide-react";
+import { Eye, CheckCircle, XCircle } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -21,14 +21,13 @@ import {
 import { DoctorTableSkeleton } from "../../skeletons/DoctorTableSkeleton";
 import { Doctor } from "@/types/user";
 
-
 interface DoctorListPresentationalProps {
   doctors: Doctor[];
   isLoading: boolean;
   onViewDoctor: (doctor: Doctor) => void;
   showUnverifiedOnly: boolean;
   setShowUnverifiedOnly: (show: boolean) => void;
-  onVerify: (id: string, isApproved: boolean) => void;
+  onVerifyClick: (doctor: Doctor, action: "verify" | "reject") => void;
 }
 
 export function DoctorListPresentational({
@@ -37,7 +36,7 @@ export function DoctorListPresentational({
   onViewDoctor,
   showUnverifiedOnly,
   setShowUnverifiedOnly,
-  onVerify,
+  onVerifyClick,
 }: DoctorListPresentationalProps) {
   const tCommon = useTranslations("common");
   const tAdmin = useTranslations("admin");
@@ -45,7 +44,7 @@ export function DoctorListPresentational({
   const locale = useLocale();
 
   if (isLoading) {
-    return <DoctorTableSkeleton/>;
+    return <DoctorTableSkeleton />;
   }
 
   return (
@@ -58,12 +57,16 @@ export function DoctorListPresentational({
           <p className="text-muted-foreground">{tAdmin("manageDoctors")}</p>
         </div>
         <div className="flex items-center space-x-2">
-            <Checkbox 
-                id="show-unverified" 
-                checked={showUnverifiedOnly}
-                onCheckedChange={(checked) => setShowUnverifiedOnly(checked as boolean)}
-            />
-            <Label htmlFor="show-unverified">{tAdmin("showUnverifiedOnly")}</Label>
+          <Checkbox
+            id="show-unverified"
+            checked={showUnverifiedOnly}
+            onCheckedChange={(checked) =>
+              setShowUnverifiedOnly(checked as boolean)
+            }
+          />
+          <Label htmlFor="show-unverified">
+            {tAdmin("showUnverifiedOnly")}
+          </Label>
         </div>
       </div>
 
@@ -99,7 +102,7 @@ export function DoctorListPresentational({
                       <TableCell>{doctor.email}</TableCell>
                       <TableCell>{doctor.phone || "N/A"}</TableCell>
                       <TableCell>
-                        {getSpecializationDisplay((doctor), locale)}
+                        {getSpecializationDisplay(doctor, locale)}
                       </TableCell>
                       <TableCell>
                         {getAccountStatusBadge(
@@ -108,30 +111,30 @@ export function DoctorListPresentational({
                         )}
                       </TableCell>
                       <TableCell className="text-right">
-                        {doctor.doctor?.account_status === 'PENDING' && (
+                        {doctor.doctor?.account_status === "PENDING" && (
                           <>
-                             <Button
+                            <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => onVerify(doctor.id, true)}
-                              title={tCommon("verify")}
+                              onClick={() => onVerifyClick(doctor, "verify")}
+                              title={tAdmin("verify")}
                             >
-                              <ShieldCheck className="h-4 w-4 text-green-600" />
+                              <CheckCircle className="h-4 w-4 text-green-600" />
                             </Button>
-                             <Button
+                            <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => onVerify(doctor.id, false)}
-                              title={tCommon("reject")}
+                              onClick={() => onVerifyClick(doctor, "reject")}
+                              title={tAdmin("reject")}
                             >
-                              <Ban className="h-4 w-4 text-red-600" />
+                              <XCircle className="h-4 w-4 text-red-600" />
                             </Button>
                           </>
                         )}
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => onViewDoctor((doctor))}
+                          onClick={() => onViewDoctor(doctor)}
                         >
                           <Eye className="h-4 w-4" />
                         </Button>

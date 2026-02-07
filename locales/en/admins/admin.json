@@ -4,8 +4,15 @@
 
   "dashboard": "Dashboard",
   "showUnverifiedOnly": "Show Unverified Only",
+  "verify": "Verify",
+  "reject": "Reject",
   "verifySuccess": "Doctor verified successfully",
   "rejectSuccess": "Doctor rejected successfully",
+  "verificationError": "Failed to update doctor status",
+  "confirmVerify": "Confirm Verification",
+  "confirmReject": "Confirm Rejection",
+  "verifyMessage": "Are you sure you want to verify this doctor? They will be approved to use the system.",
+  "rejectMessage": "Are you sure you want to reject this doctor? They will not be able to access the system.",
   "totalDoctors": "Total Doctors",
   "welcomeToDashboard": "Welcome to the Admin Dashboard",
 
