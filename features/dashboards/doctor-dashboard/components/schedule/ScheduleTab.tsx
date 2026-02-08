@@ -104,7 +104,9 @@ function ScheduleTabPresentational({
 
         {/* Working Days Title */}
         <div className="pt-4">
-          <h3 className="text-lg font-semibold mb-4">{t("selectWorkingDays")}</h3>
+          <h3 className="text-lg font-semibold mb-4">
+            {t("selectWorkingDays")}
+          </h3>
         </div>
 
         {/* Day Configuration Cards */}
@@ -165,7 +167,8 @@ export function ScheduleTab({ clinics }: ScheduleTabProps) {
   const [pendingDeleteDay, setPendingDeleteDay] = useState<DayOfWeek | null>(
     null,
   );
-  const [deleteAppointmentCount, setDeleteAppointmentCount] = useState<number>(0);
+  const [deleteAppointmentCount, setDeleteAppointmentCount] =
+    useState<number>(0);
   const [isCheckingAppointments, setIsCheckingAppointments] = useState(false);
 
   const { data: scheduleData, isLoading: isLoadingSchedule } = useSchedule();
@@ -303,25 +306,22 @@ export function ScheduleTab({ clinics }: ScheduleTabProps) {
   const handleDayConfigChange = (index: number, config: DayConfiguration) => {
     const oldConfig = dayConfigs[index];
 
-    if (
-      oldConfig.isActive &&
-      !config.isActive &&
-      oldConfig.scheduleId
-    ) {
+    if (oldConfig.isActive && !config.isActive && oldConfig.scheduleId) {
       setSchedulesToDelete((prev) => {
-        const exists = prev.some(item => item.scheduleId === oldConfig.scheduleId);
+        const exists = prev.some(
+          (item) => item.scheduleId === oldConfig.scheduleId,
+        );
         if (exists) return prev;
-        return [...prev, { scheduleId: oldConfig.scheduleId!, day: config.day }];
+        return [
+          ...prev,
+          { scheduleId: oldConfig.scheduleId!, day: config.day },
+        ];
       });
     }
 
-    if (
-      !oldConfig.isActive &&
-      config.isActive &&
-      oldConfig.scheduleId
-    ) {
-      setSchedulesToDelete((prev) => 
-        prev.filter(item => item.scheduleId !== oldConfig.scheduleId)
+    if (!oldConfig.isActive && config.isActive && oldConfig.scheduleId) {
+      setSchedulesToDelete((prev) =>
+        prev.filter((item) => item.scheduleId !== oldConfig.scheduleId),
       );
     }
 
@@ -386,13 +386,13 @@ export function ScheduleTab({ clinics }: ScheduleTabProps) {
       try {
         setIsCheckingAppointments(true);
         const checkPromises = schedulesToDelete.map(({ scheduleId }) =>
-          checkScheduleAppointments({ scheduleId })
+          checkScheduleAppointments({ scheduleId }),
         );
         const checkResults = await Promise.all(checkPromises);
-        
+
         const totalAppointments = checkResults.reduce(
           (sum, result) => sum + (result.data?.numOfAppointments || 0),
-          0
+          0,
         );
 
         setIsCheckingAppointments(false);
@@ -400,7 +400,7 @@ export function ScheduleTab({ clinics }: ScheduleTabProps) {
         if (totalAppointments > 0) {
           setDeleteAppointmentCount(totalAppointments);
           setShowDeleteDialog(true);
-          return; 
+          return;
         }
       } catch (error) {
         console.error("Failed to check appointments:", error);
@@ -449,7 +449,7 @@ export function ScheduleTab({ clinics }: ScheduleTabProps) {
           promises.push(
             updateSchedule({
               scheduleId: config.scheduleId,
-              clinicId: isOnline ? null : (selectedClinicId || null),
+              clinicId: isOnline ? null : selectedClinicId || null,
               workingDay: config.day,
               startTime: interval.start,
               endTime: interval.end,
@@ -461,7 +461,7 @@ export function ScheduleTab({ clinics }: ScheduleTabProps) {
         } else {
           promises.push(
             createSchedule({
-              clinicId: isOnline ? null : (selectedClinicId || null),
+              clinicId: isOnline ? null : selectedClinicId || null,
               workingDay: config.day,
               startTime: interval.start,
               endTime: interval.end,
@@ -502,17 +502,21 @@ export function ScheduleTab({ clinics }: ScheduleTabProps) {
     } catch (error: any) {
       setIsSaving(false);
       console.error("Failed to update schedule:", error);
-      
-      const isDuplicateError = error?.response?.status === 500 && 
-        (error?.message?.includes("Unique constraint") || 
-         error?.response?.data?.message?.includes("already exists") ||
-         error?.response?.data?.messageEn?.includes("already exists"));
-      
+
+      const isDuplicateError =
+        error?.response?.status === 500 &&
+        (error?.message?.includes("Unique constraint") ||
+          error?.response?.data?.message?.includes("already exists") ||
+          error?.response?.data?.messageEn?.includes("already exists"));
+
       if (isDuplicateError) {
         toast({
-          title: locale === "ar" ? "خطأ - جدول موجود بالفعل" : "Error - Schedule Already Exists",
+          title:
+            locale === "ar"
+              ? "خطأ - جدول موجود بالفعل"
+              : "Error - Schedule Already Exists",
           description:
-            locale === "ar" 
+            locale === "ar"
               ? "يوجد جدول لهذا اليوم في هذه العيادة. يرجى تحديث الصفحة لرؤية جميع الجداول."
               : "A schedule for this day at this clinic already exists. Please refresh the page to see all schedules.",
           variant: "destructive",
@@ -522,7 +526,9 @@ export function ScheduleTab({ clinics }: ScheduleTabProps) {
         toast({
           title: locale === "ar" ? "خطأ" : "Error",
           description:
-            locale === "ar" ? "فشل في تحديث الجدول" : "Failed to update schedule",
+            locale === "ar"
+              ? "فشل في تحديث الجدول"
+              : "Failed to update schedule",
           variant: "destructive",
         });
       }
