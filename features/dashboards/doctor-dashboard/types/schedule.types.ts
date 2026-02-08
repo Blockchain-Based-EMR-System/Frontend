@@ -82,22 +82,30 @@ export interface SetVacationRequest {
 
 export interface SetVacationResponse extends ApiResponse<{ message: string }> {}
 
-export interface VacationPeriod {
+export type VacationStatus = "UPCOMING" | "CURRENT" | "ENDED";
+
+export interface VacationDetail {
+  vacationId: string;
   scheduleId: string;
-  dayOfWeek: string; 
+  clinicId: string | null;
+  clinicName: string | null;
+  clinicAddress: string | null;
+  dayOfWeek: string;
   isOnline: boolean;
-  breakStart: string; 
-  breakEnd: string; 
-  numOfAppointments: number;
-  clinicId?: string | null;
+  status: VacationStatus;
+  cancelledAppointments: number;
+}
+
+export interface VacationPeriod {
+  breakStart: string;
+  breakEnd: string;
+  vacations: VacationDetail[];
 }
 
 export interface GetVacationsResponse {
   success: boolean;
-  message: {
-    en: string;
-    ar: string;
-  };
+  messageEn: string;
+  messageAr: string;
   data: VacationPeriod[];
 }
 
@@ -111,6 +119,17 @@ export interface ClearVacationResponse {
     en: string;
     ar: string;
   };
+}
+
+export interface CancelVacationRequest {
+  vacationId: string;
+  scheduleId: string;
+}
+
+export interface CancelVacationResponse {
+  success: boolean;
+  messageEn: string;
+  messageAr: string;
 }
 
 export interface ScheduleFormData {

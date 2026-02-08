@@ -14,47 +14,41 @@ import {
   ChevronUp,
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageProvider";
-import { useVacations, useClearVacation } from "../../query/useSchedule.query";
+import { useVacations } from "../../query/useSchedule.query";
 import { VacationPeriod } from "../../types/schedule.types";
 import { VacationDetailDialog } from "./VacationDetailDialog";
-import { ClearVacationDialog } from "./ClearVacationDialog";
-import {
-  format,
-  parseISO,
-  isAfter,
-  isBefore,
-  isWithinInterval,
-} from "date-fns";
 import { cn } from "@/lib/utils";
+import {
+  formatDate,
+  convertDayResponseToNormalFormat,
+  sortDays,
+} from "./helpers";
+import { VacationHistorySkeleton } from "../skeletons/VacationHistorySkeleton";
 
 const INITIAL_DISPLAY_COUNT = 5;
 
 export function VacationHistory() {
   const t = useTranslations("doctorDashboard.vacation");
+  const tDays = useTranslations("doctorDashboard.schedule.days");
   const { locale } = useLanguage();
   const [showAll, setShowAll] = useState(false);
   const [selectedVacation, setSelectedVacation] =
     useState<VacationPeriod | null>(null);
-  const [vacationToClear, setVacationToClear] = useState<VacationPeriod | null>(
-    null,
-  );
 
   const { data: vacationsData, isLoading } = useVacations();
-  const clearVacationMutation = useClearVacation();
 
   const vacations = vacationsData?.data || [];
 
   const { currentOrUpcoming, past } = useMemo(() => {
-    const now = new Date();
     const current: VacationPeriod[] = [];
     const past: VacationPeriod[] = [];
 
     vacations.forEach((vacation) => {
-      const endDate = parseISO(vacation.breakEnd);
-      if (
-        isAfter(endDate, now) ||
-        format(endDate, "yyyy-MM-dd") === format(now, "yyyy-MM-dd")
-      ) {
+      const hasActiveVacation = vacation.vacations.some(
+        (v) => v.status === "UPCOMING" || v.status === "CURRENT",
+      );
+
+      if (hasActiveVacation) {
         current.push(vacation);
       } else {
         past.push(vacation);
@@ -67,47 +61,27 @@ export function VacationHistory() {
     return { currentOrUpcoming: current, past };
   }, [vacations]);
 
-  const displayedVacations = showAll
-    ? [...currentOrUpcoming, ...past]
-    : [...currentOrUpcoming, ...past].slice(0, INITIAL_DISPLAY_COUNT);
   const hasMore =
     currentOrUpcoming.length + past.length > INITIAL_DISPLAY_COUNT;
 
-  const formatDate = (dateStr: string) => {
-    try {
-      const date = parseISO(dateStr);
-      return format(date, locale === "ar" ? "d MMMM yyyy" : "MMMM d, yyyy");
-    } catch {
-      return dateStr;
-    }
-  };
-
   const isActive = (vacation: VacationPeriod) => {
-    const now = new Date();
-    const start = parseISO(vacation.breakStart);
-    const end = parseISO(vacation.breakEnd);
-    return isWithinInterval(now, { start, end });
+    return vacation.vacations.some((v) => v.status === "CURRENT");
   };
 
-  const handleClearVacation = () => {
-    if (!vacationToClear) return;
-    clearVacationMutation.mutate({ scheduleId: vacationToClear.scheduleId });
-    setVacationToClear(null);
+  const getTotalCancelledAppointments = (vacation: VacationPeriod) => {
+    return vacation.vacations.reduce(
+      (total, v) => total + v.cancelledAppointments,
+      0,
+    );
+  };
+
+  const getUniqueDays = (vacation: VacationPeriod) => {
+    const uniqueDays = new Set(vacation.vacations.map((v) => v.dayOfWeek));
+    return sortDays(Array.from(uniqueDays));
   };
 
   if (isLoading) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("history")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">
-            {t("settingVacation")}
-          </p>
-        </CardContent>
-      </Card>
-    );
+    return <VacationHistorySkeleton />;
   }
 
   if (vacations.length === 0) {
@@ -140,16 +114,18 @@ export function VacationHistory() {
               <h3 className="text-sm font-semibold text-muted-foreground">
                 {t("currentVacation")}
               </h3>
-              {currentOrUpcoming.map((vacation) => (
+              {currentOrUpcoming.map((vacation, index) => (
                 <VacationCard
-                  key={vacation.scheduleId}
+                  key={`${vacation.breakStart}-${vacation.breakEnd}-${index}`}
                   vacation={vacation}
                   isActive={isActive(vacation)}
-                  formatDate={formatDate}
+                  formatDate={(date) => formatDate(date, locale)}
+                  getTotalCancelledAppointments={getTotalCancelledAppointments}
+                  getUniqueDays={getUniqueDays}
                   onViewDetails={() => setSelectedVacation(vacation)}
-                  onClear={() => setVacationToClear(vacation)}
                   locale={locale}
                   t={t}
+                  tDays={tDays}
                 />
               ))}
             </div>
@@ -161,25 +137,20 @@ export function VacationHistory() {
               <h3 className="text-sm font-semibold text-muted-foreground">
                 {t("pastVacations")}
               </h3>
-              {past
-                .slice(
-                  0,
-                  showAll
-                    ? undefined
-                    : INITIAL_DISPLAY_COUNT - currentOrUpcoming.length,
-                )
-                .map((vacation) => (
-                  <VacationCard
-                    key={vacation.scheduleId}
-                    vacation={vacation}
-                    isActive={false}
-                    formatDate={formatDate}
-                    onViewDetails={() => setSelectedVacation(vacation)}
-                    onClear={null}
-                    locale={locale}
-                    t={t}
-                  />
-                ))}
+              {past.map((vacation, index) => (
+                <VacationCard
+                  key={`${vacation.breakStart}-${vacation.breakEnd}-${index}`}
+                  vacation={vacation}
+                  isActive={false}
+                  formatDate={(date) => formatDate(date, locale)}
+                  getTotalCancelledAppointments={getTotalCancelledAppointments}
+                  getUniqueDays={getUniqueDays}
+                  onViewDetails={() => setSelectedVacation(vacation)}
+                  locale={locale}
+                  t={t}
+                  tDays={tDays}
+                />
+              ))}
             </div>
           )}
 
@@ -217,16 +188,6 @@ export function VacationHistory() {
           onOpenChange={() => setSelectedVacation(null)}
         />
       )}
-
-      {vacationToClear && (
-        <ClearVacationDialog
-          vacation={vacationToClear}
-          open={!!vacationToClear}
-          onOpenChange={() => setVacationToClear(null)}
-          onConfirm={handleClearVacation}
-          isClearing={clearVacationMutation.isPending}
-        />
-      )}
     </>
   );
 }
@@ -235,21 +196,28 @@ interface VacationCardProps {
   vacation: VacationPeriod;
   isActive: boolean;
   formatDate: (date: string) => string;
+  getTotalCancelledAppointments: (vacation: VacationPeriod) => number;
+  getUniqueDays: (vacation: VacationPeriod) => string[];
   onViewDetails: () => void;
-  onClear: (() => void) | null;
   locale: string;
   t: any;
+  tDays: any;
 }
 
 function VacationCard({
   vacation,
   isActive,
   formatDate,
+  getTotalCancelledAppointments,
+  getUniqueDays,
   onViewDetails,
-  onClear,
   locale,
   t,
+  tDays,
 }: VacationCardProps) {
+  const totalCancelled = getTotalCancelledAppointments(vacation);
+  const uniqueDays = getUniqueDays(vacation);
+
   return (
     <Card
       className={cn(
@@ -257,76 +225,59 @@ function VacationCard({
         isActive && "border-blue-500 bg-blue-50 dark:bg-blue-950",
       )}
     >
-      <CardContent className="p-3">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex-1 space-y-1">
-            {/* Type Badge */}
-            <div className="flex items-center gap-2 flex-wrap">
-              <Badge
-                className={cn(
-                  "text-xs",
-                  vacation.isOnline
-                    ? "bg-blue-500 hover:bg-blue-600"
-                    : "bg-purple-500 hover:bg-purple-600",
-                )}
-              >
-                {vacation.isOnline ? (
-                  <>
-                    <Video className="h-3 w-3 mr-1" />
-                    {t("onlineOnly")}
-                  </>
-                ) : (
-                  <>
-                    <MapPin className="h-3 w-3 mr-1" />
-                    {vacation.dayOfWeek}
-                  </>
-                )}
+      <CardContent className="p-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1 space-y-2">
+            {/* Active Badge */}
+            {isActive && (
+              <Badge className="bg-green-500 hover:bg-green-600 text-xs">
+                {t("activeNow")}
               </Badge>
-              {isActive && (
-                <Badge className="bg-green-500 hover:bg-green-600 text-xs">
-                  {t("activeNow")}
-                </Badge>
-              )}
+            )}
+
+            {/* Date Range */}
+            <div className="flex items-center gap-2 text-sm">
+              <Calendar className="h-4 w-4 text-muted-foreground" />
+              <span className="font-semibold">
+                {formatDate(vacation.breakStart)} -{" "}
+                {formatDate(vacation.breakEnd)}
+              </span>
             </div>
 
-            {/* Dates */}
-            <p className="text-sm font-medium">
-              {formatDate(vacation.breakStart)} -{" "}
-              {formatDate(vacation.breakEnd)}
-            </p>
+            {/* Days Off */}
+            <div className="flex items-start gap-2 text-sm">
+              <span className="text-muted-foreground font-medium">
+                {t("daysOff")}:
+              </span>
+              <div className="flex flex-wrap gap-1">
+                {uniqueDays.map((day) => (
+                  <Badge key={day} variant="outline" className="text-xs">
+                    {tDays(convertDayResponseToNormalFormat(day))}
+                  </Badge>
+                ))}
+              </div>
+            </div>
 
-            {/* Appointments Count */}
-            {vacation.numOfAppointments > 0 && (
-              <div className="flex items-center gap-1 text-xs text-orange-600 dark:text-orange-400">
-                <AlertCircle className="h-3 w-3" />
-                <span>
-                  {vacation.numOfAppointments} {t("appointmentsCancelled")}
+            {/* Total Appointments Cancelled */}
+            {totalCancelled > 0 && (
+              <div className="flex items-center gap-1 text-sm text-orange-600 dark:text-orange-400">
+                <AlertCircle className="h-4 w-4" />
+                <span className="font-medium">
+                  {totalCancelled} {t("appointmentsCancelled")}
                 </span>
               </div>
             )}
           </div>
 
-          {/* Actions */}
-          <div className="flex flex-col gap-1">
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-7 text-xs px-2"
-              onClick={onViewDetails}
-            >
-              {t("viewDetails")}
-            </Button>
-            {onClear && (
-              <Button
-                variant="destructive"
-                size="sm"
-                className="h-7 text-xs px-2"
-                onClick={onClear}
-              >
-                {t("clearVacation")}
-              </Button>
-            )}
-          </div>
+          {/* View Details Button */}
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 text-xs px-3"
+            onClick={onViewDetails}
+          >
+            {t("viewDetails")}
+          </Button>
         </div>
       </CardContent>
     </Card>

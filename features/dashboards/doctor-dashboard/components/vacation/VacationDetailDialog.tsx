@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   Dialog,
@@ -8,12 +9,32 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { Calendar, MapPin, Video, Clock, AlertCircle } from "lucide-react";
-import { VacationPeriod } from "../../types/schedule.types";
-import { format, parseISO } from "date-fns";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Calendar,
+  MapPin,
+  Video,
+  AlertCircle,
+  X,
+  Building2,
+} from "lucide-react";
+import { VacationPeriod, VacationDetail } from "../../types/schedule.types";
 import { useLanguage } from "@/contexts/LanguageProvider";
 import { cn } from "@/lib/utils";
+import { CancelVacationDialog } from "./CancelVacationDialog";
+import {
+  convertDayResponseToNormalFormat,
+  formatDate,
+  sortDays,
+} from "./helpers";
 
 interface VacationDetailDialogProps {
   vacation: VacationPeriod;
@@ -27,160 +48,154 @@ export function VacationDetailDialog({
   onOpenChange,
 }: VacationDetailDialogProps) {
   const t = useTranslations("doctorDashboard.vacation");
+  const tDays = useTranslations("doctorDashboard.schedule.days");
   const { locale } = useLanguage();
+  const [vacationToCancel, setVacationToCancel] =
+    useState<VacationDetail | null>(null);
 
-  const formatDate = (dateStr: string) => {
-    try {
-      const date = parseISO(dateStr);
-      return format(date, locale === "ar" ? "d MMMM yyyy" : "MMMM d, yyyy");
-    } catch {
-      return dateStr;
-    }
-  };
+  const totalCancelled = vacation.vacations.reduce(
+    (sum, v) => sum + v.cancelledAppointments,
+    0,
+  );
 
-  const formatTime = (timeStr: string) => {
-    try {
-      return format(new Date(`2000-01-01T${timeStr}`), "h:mm a");
-    } catch {
-      return timeStr;
-    }
-  };
+  const sortedVacations = [...vacation.vacations].sort((a, b) => {
+    const daysInOrder = sortDays([a.dayOfWeek, b.dayOfWeek]);
+    return daysInOrder.indexOf(a.dayOfWeek) - daysInOrder.indexOf(b.dayOfWeek);
+  });
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle>{t("vacationDetails")}</DialogTitle>
-        </DialogHeader>
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{t("vacationDetails")}</DialogTitle>
+          </DialogHeader>
 
-        <div className="space-y-4">
-          {/* Type Badge */}
-          <div className="flex items-center gap-2">
-            <Badge
-              className={cn(
-                "text-sm",
-                vacation.isOnline
-                  ? "bg-blue-500 hover:bg-blue-600"
-                  : "bg-purple-500 hover:bg-purple-600",
-              )}
-            >
-              {vacation.isOnline ? (
-                <>
-                  <Video className="h-3 w-3 mr-1" />
-                  {t("onlineOnly")}
-                </>
-              ) : (
-                <>
-                  <MapPin className="h-3 w-3 mr-1" />
-                  {t("offlineOnly")}
-                </>
-              )}
-            </Badge>
+          <div className="space-y-4">
+            {/* Date Range Summary */}
+            <div className="bg-muted p-4 rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <Calendar className="h-5 w-5 text-muted-foreground" />
+                <span className="font-semibold text-lg">
+                  {formatDate(vacation.breakStart, locale)} -{" "}
+                  {formatDate(vacation.breakEnd, locale)}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <AlertCircle className="h-4 w-4" />
+                <span>
+                  {t("totalAppointmentsCancelled")}:{" "}
+                  <strong className="text-orange-600">{totalCancelled}</strong>
+                </span>
+              </div>
+            </div>
+
+            {/* Vacation Details Table */}
+            <div className="border rounded-lg overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t("dayOfWeek")}</TableHead>
+                    <TableHead>{t("sessionType")}</TableHead>
+                    <TableHead>{t("clinicDetails")}</TableHead>
+                    <TableHead className="text-center">
+                      {t("appointmentsCancelled")}
+                    </TableHead>
+                    <TableHead className="text-center">{t("action")}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {sortedVacations.map((vacationDetail) => (
+                    <TableRow key={vacationDetail.vacationId}>
+                      <TableCell className="font-medium">
+                        {tDays(
+                          convertDayResponseToNormalFormat(
+                            vacationDetail.dayOfWeek,
+                          ),
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          className={cn(
+                            "text-xs",
+                            vacationDetail.isOnline
+                              ? "bg-blue-500 hover:bg-blue-600"
+                              : "bg-purple-500 hover:bg-purple-600",
+                          )}
+                        >
+                          {vacationDetail.isOnline ? (
+                            <div className="flex items-center gap-2">
+                              <Video className="h-3 w-3 mr-1" />
+                              {t("online")}
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-2">
+                              <Building2 className="h-3 w-3 mr-1" />
+                              {t("offline")}
+                            </div>
+                          )}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {!vacationDetail.isOnline &&
+                        vacationDetail.clinicName ? (
+                          <div className="text-sm">
+                            <p className="font-medium">
+                              {vacationDetail.clinicName}
+                            </p>
+                            {vacationDetail.clinicAddress && (
+                              <p className="text-muted-foreground text-xs">
+                                {vacationDetail.clinicAddress}
+                              </p>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-muted-foreground text-sm">
+                            -
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <span
+                          className={cn(
+                            "font-semibold",
+                            vacationDetail.cancelledAppointments > 0
+                              ? "text-orange-600"
+                              : "text-muted-foreground",
+                          )}
+                        >
+                          {vacationDetail.cancelledAppointments}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {vacationDetail.status !== "ENDED" && (
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            className="h-7 text-xs px-2"
+                            onClick={() => setVacationToCancel(vacationDetail)}
+                          >
+                            <X className="h-3 w-3 mr-1" />
+                            {t("cancel")}
+                          </Button>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </div>
+        </DialogContent>
+      </Dialog>
 
-          {/* Date Range */}
-          <Card>
-            <CardContent className="p-3">
-              <div className="flex items-center gap-2 text-sm">
-                <Calendar className="h-4 w-4 text-muted-foreground" />
-                <div>
-                  <p className="font-medium">{t("fromDate")}:</p>
-                  <p>{formatDate(vacation.breakStart)}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 text-sm mt-2">
-                <Calendar className="h-4 w-4 text-muted-foreground" />
-                <div>
-                  <p className="font-medium">{t("toDate")}:</p>
-                  <p>{formatDate(vacation.breakEnd)}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Affected Schedules */}
-          <div>
-            <h3 className="text-sm font-semibold mb-2">
-              {t("affectedSchedules")}
-            </h3>
-            <Card>
-              <CardContent className="p-3 space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">
-                    {t("dayOfWeek")}:
-                  </span>
-                  <span className="font-medium">{vacation.dayOfWeek}</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">
-                    {t("sessionType")}:
-                  </span>
-                  <Badge
-                    variant={vacation.isOnline ? "default" : "secondary"}
-                    className="text-xs"
-                  >
-                    {vacation.isOnline ? t("onlineOnly") : t("offline")}
-                  </Badge>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">
-                    {t("timeSlot")}:
-                  </span>
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    <span className="font-medium">
-                      {formatTime(vacation.breakStart.split("T")[1])} -{" "}
-                      {formatTime(vacation.breakEnd.split("T")[1])}
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Appointments Cancelled */}
-          <Card
-            className={
-              vacation.numOfAppointments > 0
-                ? "border-orange-300 bg-orange-50 dark:bg-orange-950"
-                : ""
-            }
-          >
-            <CardContent className="p-3">
-              <div className="flex items-center gap-2">
-                <AlertCircle
-                  className={cn(
-                    "h-4 w-4",
-                    vacation.numOfAppointments > 0
-                      ? "text-orange-600"
-                      : "text-muted-foreground",
-                  )}
-                />
-                <div>
-                  <p className="text-sm font-medium">
-                    {t("appointmentsCancelled")}
-                  </p>
-                  <p
-                    className={cn(
-                      "text-lg font-bold",
-                      vacation.numOfAppointments > 0
-                        ? "text-orange-600"
-                        : "text-muted-foreground",
-                    )}
-                  >
-                    {vacation.numOfAppointments}
-                  </p>
-                  {vacation.numOfAppointments === 0 && (
-                    <p className="text-xs text-muted-foreground">
-                      {t("noAppointments")}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </DialogContent>
-    </Dialog>
+      {vacationToCancel && (
+        <CancelVacationDialog
+          vacationDetail={vacationToCancel}
+          open={!!vacationToCancel}
+          onOpenChange={() => setVacationToCancel(null)}
+        />
+      )}
+    </>
   );
 }

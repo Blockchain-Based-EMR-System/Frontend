@@ -176,7 +176,18 @@
     "sessionType": "نوع الجلسة",
     "timeSlot": "الفترة الزمنية",
     "cancel": "إلغاء",
-    "clearing": "جاري الإلغاء..."
+    "clearing": "جاري الإلغاء...",
+    "daysOff": "أيام العطلة",
+    "totalAppointmentsCancelled": "إجمالي المواعيد الملغاة",
+    "clinicDetails": "تفاصيل العيادة",
+    "clinicName": "اسم العيادة",
+    "action": "إجراء",
+    "cancelVacationTitle": "إلغاء يوم الإجازة",
+    "cancelVacationDescription": "هل أنت متأكد أنك تريد إلغاء هذا اليوم من الإجازة؟",
+    "cancelVacationWarning": "سيؤدي هذا إلى جعل هذا الجدول متاحاً للمواعيد مرة أخرى",
+    "confirmCancel": "نعم، إلغاء الإجازة",
+    "cancelling": "جاري الإلغاء...",
+    "back": "رجوع"
   },
 
   "appointments": {

@@ -14,6 +14,8 @@ import {
   GetVacationsResponse,
   ClearVacationRequest,
   ClearVacationResponse,
+  CancelVacationRequest,
+  CancelVacationResponse,
 } from "../types/schedule.types";
 
 export const getSchedule = async (): Promise<GetScheduleResponse> => {
@@ -124,5 +126,17 @@ export const clearVacation = async (
     data,
   );
   console.log("[API] Vacation cleared response:", response);
+  return response;
+};
+
+export const cancelVacation = async (
+  data: CancelVacationRequest,
+): Promise<CancelVacationResponse> => {
+  console.log("[API] Cancelling vacation:", JSON.stringify(data, null, 2));
+  const response = await api.patch<CancelVacationResponse>(
+    "/appointments/doctor/vacation/cancel",
+    data,
+  );
+  console.log("[API] Vacation cancelled response:", response);
   return response;
 };

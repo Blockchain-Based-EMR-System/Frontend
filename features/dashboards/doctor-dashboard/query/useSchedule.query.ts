@@ -12,6 +12,7 @@ import {
   updateSchedule,
   getVacations,
   clearVacation,
+  cancelVacation,
 } from "../api/schedule.api";
 import {
   GetScheduleResponse,
@@ -22,6 +23,8 @@ import {
   GetVacationsResponse,
   ClearVacationRequest,
   ClearVacationResponse,
+  CancelVacationRequest,
+  CancelVacationResponse,
 } from "../types/schedule.types";
 import { ApiError } from "@/types";
 import { toast } from "@/hooks/useToast";
@@ -164,6 +167,47 @@ export const useClearVacation = (): UseMutationResult<
         locale === "ar"
           ? error.response?.data?.message?.ar || "فشل إلغاء الإجازة"
           : error.response?.data?.message?.en || "Failed to clear vacation";
+
+      toast({
+        title: locale === "ar" ? "خطأ" : "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    },
+  });
+};
+
+export const useCancelVacation = (): UseMutationResult<
+  CancelVacationResponse,
+  AxiosError<ApiError>,
+  CancelVacationRequest
+> => {
+  const { locale } = useLanguage();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: cancelVacation,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: scheduleKeys.vacations });
+      queryClient.invalidateQueries({ queryKey: scheduleKeys.all });
+
+      const successMessage =
+        locale === "ar"
+          ? "تم إلغاء الإجازة بنجاح"
+          : "Vacation cancelled successfully";
+
+      toast({
+        title: locale === "ar" ? "نجاح" : "Success",
+        description: successMessage,
+      });
+    },
+    onError: (error: any) => {
+      console.error("Cancel vacation error:", error);
+
+      const errorMessage =
+        locale === "ar"
+          ? error.response?.data?.messageAr || "فشل إلغاء الإجازة"
+          : error.response?.data?.messageEn || "Failed to cancel vacation";
 
       toast({
         title: locale === "ar" ? "خطأ" : "Error",
