@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import {
@@ -30,6 +30,7 @@ import {
 } from "@/features/user";
 import { getRoleDashboardPath } from "@/lib/auth";
 import { useLanguage } from "@/contexts/LanguageProvider";
+import { ImageCropDialog } from "@/components/common/ImageCropDialog";
 
 interface UserProfileDropdownProps {
   user: User;
@@ -46,6 +47,8 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
 
   const updateProfilePictureMutation = useUpdateProfilePicture();
   const deleteProfilePictureMutation = useDeleteProfilePicture();
+
+  const [imageToCrop, setImageToCrop] = useState<string | null>(null);
 
   const dashboardUrl = getRoleDashboardPath(user.role);
 
@@ -90,11 +93,21 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
       return;
     }
 
-    updateProfilePictureMutation.mutate(file);
+    // Show cropper instead of directly uploading
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImageToCrop(reader.result as string);
+    };
+    reader.readAsDataURL(file);
 
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+  };
+
+  const handleCropComplete = (croppedImage: File) => {
+    updateProfilePictureMutation.mutate(croppedImage);
+    setImageToCrop(null);
   };
 
   const handleDeleteImage = () => {
@@ -140,13 +153,17 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
                 className="flex items-center gap-3 h-auto p-2 hover:bg-transparent hover:cursor-pointer"
               >
                 <span className="text-sm text-muted-foreground">
-                  {tCommon("welcome")}, {user.role === "DOCTOR" ? tCommon("doctor") + user.name.split(" ")[0] : user.name.split(" ")[0]}
+                  {tCommon("welcome")},{" "}
+                  {user.role === "DOCTOR"
+                    ? tCommon("doctor") + user.name.split(" ")[0]
+                    : user.name.split(" ")[0]}
                 </span>
                 <div className="relative">
                   <Avatar className="h-9 w-9 ring-2 ring-offset-2 ring-primary/20 hover:ring-primary/40 transition-all">
                     <AvatarImage
                       src={user.profilePicture || undefined}
                       alt={user.name}
+                      className="object-cover"
                     />
                     <AvatarFallback className="bg-primary/10 text-primary font-semibold">
                       {getInitials(user.name)}
@@ -167,6 +184,7 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
                       <AvatarImage
                         src={user.profilePicture || undefined}
                         alt={user.name}
+                        className="object-cover"
                       />
                       <AvatarFallback className="bg-primary/10 text-primary font-semibold text-base">
                         {getInitials(user.name)}
@@ -194,10 +212,16 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
                     >
                       <Upload className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
                       {updateProfilePictureMutation.isPending
-                        ? language.locale === "en" ? "Uploading..." : "جاري الرفع..."
+                        ? language.locale === "en"
+                          ? "Uploading..."
+                          : "جاري الرفع..."
                         : user.profilePicture
-                          ? language.locale === "en" ? "Change" : "تغيير"
-                          : language.locale === "en" ? "Upload" : "رفع"}
+                          ? language.locale === "en"
+                            ? "Change"
+                            : "تغيير"
+                          : language.locale === "en"
+                            ? "Upload"
+                            : "رفع"}
                     </Button>
                     {user.profilePicture && (
                       <Button
@@ -259,13 +283,18 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
               <AvatarImage
                 src={user.profilePicture || undefined}
                 alt={user.name}
+                className="object-cover"
               />
               <AvatarFallback className="bg-primary/10 text-primary font-semibold">
                 {getInitials(user.name)}
               </AvatarFallback>
             </Avatar>
             <div className="text-center">
-              <p className="text-sm font-medium">{ user.role === "DOCTOR" ? tCommon("doctor") + user.name.split(" ")[0] : user.name.split(" ")[0]}</p>
+              <p className="text-sm font-medium">
+                {user.role === "DOCTOR"
+                  ? tCommon("doctor") + user.name.split(" ")[0]
+                  : user.name.split(" ")[0]}
+              </p>
               <p className="text-xs text-muted-foreground">{user.email}</p>
             </div>
           </div>
@@ -284,10 +313,16 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
             >
               <Upload className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
               {updateProfilePictureMutation.isPending
-                ? language.locale === "en" ? "Uploading..." : "جاري الرفع..."
+                ? language.locale === "en"
+                  ? "Uploading..."
+                  : "جاري الرفع..."
                 : user.profilePicture
-                  ? language.locale === "en" ? "Change" : "تغيير"
-                  : language.locale === "en" ? "Upload" : "رفع"}
+                  ? language.locale === "en"
+                    ? "Change"
+                    : "تغيير"
+                  : language.locale === "en"
+                    ? "Upload"
+                    : "رفع"}
             </Button>
             {user.profilePicture && (
               <Button
@@ -343,6 +378,17 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
           </div>
         </div>
       </div>
+
+      {/* Image Crop Dialog */}
+      {imageToCrop && (
+        <ImageCropDialog
+          image={imageToCrop}
+          open={!!imageToCrop}
+          onClose={() => setImageToCrop(null)}
+          onCropComplete={handleCropComplete}
+          locale={language.locale}
+        />
+      )}
     </>
   );
 }
