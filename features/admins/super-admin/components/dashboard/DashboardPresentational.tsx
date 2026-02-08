@@ -1,19 +1,20 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Stethoscope } from "lucide-react";
+import { Users, Stethoscope, Building2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 interface DashboardPresentationalProps {
   adminsCount: number;
   doctorsCount: number;
+  clinicsCount: number;
 }
 
 export function DashboardPresentational({
   adminsCount,
   doctorsCount,
+  clinicsCount,
 }: DashboardPresentationalProps) {
-
   const tAdmin = useTranslations("superAdmin");
   const stats = [
     {
@@ -30,18 +31,25 @@ export function DashboardPresentational({
       color: "text-green-600",
       bgColor: "bg-green-100 dark:bg-green-900/20",
     },
+    {
+      title: "totalClinics",
+      value: clinicsCount,
+      icon: Building2,
+      color: "text-purple-600",
+      bgColor: "bg-purple-100 dark:bg-purple-900/20",
+    },
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">{tAdmin("dashboard")}</h1>
-        <p className="text-muted-foreground">
-          {tAdmin("welcomeToDashboard")}
-        </p>
+        <h1 className="text-3xl font-bold tracking-tight">
+          {tAdmin("dashboard")}
+        </h1>
+        <p className="text-muted-foreground">{tAdmin("welcomeToDashboard")}</p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {stats.map((stat) => (
           <Card key={stat.title}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
