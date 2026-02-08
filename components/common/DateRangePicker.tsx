@@ -2,6 +2,7 @@
 
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
+import { ar, enUS } from "date-fns/locale";
 import { DateRange } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
@@ -12,6 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useLanguage } from "@/contexts/LanguageProvider";
 
 interface DateRangePickerProps {
   date: DateRange | undefined;
@@ -30,6 +32,10 @@ export function DateRangePicker({
   minDate,
   maxDate,
 }: DateRangePickerProps) {
+
+  const { locale } = useLanguage();
+  const dateLocale = locale === "ar" ? ar : enUS;
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -45,10 +51,10 @@ export function DateRangePicker({
           {date?.from ? (
             date.to ? (
               <>
-                {format(date.from, "PPP")} - {format(date.to, "PPP")}
+                {format(date.from, "PPP", { locale: dateLocale })} - {format(date.to, "PPP", { locale: dateLocale })}
               </>
             ) : (
-              format(date.from, "PPP")
+              format(date.from, "PPP", { locale: dateLocale })
             )
           ) : (
             <span>{placeholder}</span>
@@ -63,6 +69,7 @@ export function DateRangePicker({
           selected={date}
           onSelect={onDateChange}
           numberOfMonths={2}
+          locale={dateLocale}
           disabled={(day) => {
             if (minDate && day < minDate) return true;
             if (maxDate && day > maxDate) return true;

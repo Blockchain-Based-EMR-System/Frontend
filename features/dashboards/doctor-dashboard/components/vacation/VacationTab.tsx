@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/dialog";
 import { VacationTabSkeleton } from "../skeletons/VacationTabSkeleton";
 import { VacationHistory } from "./VacationHistory";
+import { sortDays } from "./helpers";
 
 interface GroupedSchedule {
   label: string;
@@ -202,6 +203,16 @@ export function VacationTab({ clinics }: VacationTabProps) {
     }
   };
 
+  const sortedGroupedSchedules = useMemo(() => {
+    return groupedSchedules.map((group) => ({
+      ...group,
+      schedules: group.schedules.sort((a, b) => {
+        const daysInOrder = sortDays([a.dayOfWeek, b.dayOfWeek]);
+        return daysInOrder.indexOf(a.dayOfWeek) - daysInOrder.indexOf(b.dayOfWeek);
+      }),
+    }));
+  }, [groupedSchedules]);
+
   if (isLoading) {
     return <VacationTabSkeleton />;
   }
@@ -239,7 +250,7 @@ export function VacationTab({ clinics }: VacationTabProps) {
         {/* Schedule Vacation View */}
         {activeView === "schedule" && (
           <>
-            {groupedSchedules.length === 0 ? (
+            {sortedGroupedSchedules.length === 0 ? (
               <Card>
                 <CardContent className="flex flex-col items-center justify-center py-12 text-center">
                   <CalendarIcon className="h-16 w-16 text-muted-foreground mb-4" />
@@ -281,7 +292,7 @@ export function VacationTab({ clinics }: VacationTabProps) {
                     {t("selectSchedulesTitle")}
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {groupedSchedules.map((group) => (
+                    {sortedGroupedSchedules.map((group) => (
                       <Card
                         key={group.clinicId || "online"}
                         className="overflow-hidden"

@@ -176,7 +176,18 @@
     "sessionType": "Session Type",
     "timeSlot": "Time Slot",
     "cancel": "Cancel",
-    "clearing": "Clearing..."
+    "clearing": "Clearing...",
+    "daysOff": "Days Off",
+    "totalAppointmentsCancelled": "Total Appointments Cancelled",
+    "clinicDetails": "Clinic Details",
+    "clinicName": "Clinic Name",
+    "action": "Action",
+    "cancelVacationTitle": "Cancel Vacation Day",
+    "cancelVacationDescription": "Are you sure you want to cancel this vacation day?",
+    "cancelVacationWarning": "This will make this schedule available for appointments again",
+    "confirmCancel": "Yes, Cancel Vacation",
+    "cancelling": "Cancelling...",
+    "back": "Back"
   },
 
   "appointments": {
