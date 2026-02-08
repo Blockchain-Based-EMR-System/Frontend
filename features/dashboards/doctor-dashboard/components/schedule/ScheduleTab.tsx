@@ -176,7 +176,7 @@ export function ScheduleTab({ clinics }: ScheduleTabProps) {
       isActive: false,
       slotDuration: 30,
       bufferTime: 5,
-      appointmentType: "offline",
+      appointmentType: "online",
       offlineInterval: undefined,
       onlineInterval: undefined,
     })),
@@ -294,6 +294,8 @@ export function ScheduleTab({ clinics }: ScheduleTabProps) {
       prev.map((config) => ({
         ...config,
         appointmentType: clinicId ? "offline" : "online",
+        offlineInterval: clinicId ? config.offlineInterval : undefined,
+        onlineInterval: !clinicId ? config.onlineInterval : undefined,
       })),
     );
   };

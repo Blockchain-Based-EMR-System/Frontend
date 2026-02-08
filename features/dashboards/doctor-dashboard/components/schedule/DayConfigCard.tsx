@@ -45,10 +45,22 @@ export function DayConfigCard({
   ) => {
     const intervalKey =
       type === "offline" ? "offlineInterval" : "onlineInterval";
-    const currentInterval = config[intervalKey] || {
-      start: "09:00",
-      end: "17:00",
-    };
+    
+    let currentInterval = config[intervalKey];
+    
+    if (!currentInterval) {
+      if (type === "offline") {
+        currentInterval = {
+          start: clinicOpeningTime || "09:00",
+          end: clinicClosingTime || "17:00",
+        };
+      } else {
+        currentInterval = {
+          start: "09:00",
+          end: "17:00",
+        };
+      }
+    }
 
     onChange({
       ...config,
