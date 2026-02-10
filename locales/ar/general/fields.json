@@ -59,6 +59,7 @@
   "invalidDate": "تاريخ غير صالح",
 
   "rememberMe": "تذكرني",
+  "specialization": "التخصص",
 
   "uploadPDF": "رفع ملف PDF",
   "chooseFile": "اختر ملف",
@@ -88,9 +89,9 @@
   "invalidTimeFormat": "صيغة الوقت غير صالحة (HH:mm)",
   "closingMustBeAfterOpening": "يجب أن يكون وقت الإغلاق بعد وقت الفتح",
 
-  "fees": "الرسوم",
-  "feesRequired": "الرسوم مطلوبة",
-  "feesMinValue": "يجب أن تكون الرسوم رقم موجب",
+  "fees": "سعر الكشف",
+  "feesRequired": "سعر الكشف مطلوب",
+  "feesMinValue": "يجب أن يكون سعر الكشف رقم موجب",
 
   "slotDuration": "مدة الموعد",
   "slotDurationRequired": "مدة الموعد مطلوبة",

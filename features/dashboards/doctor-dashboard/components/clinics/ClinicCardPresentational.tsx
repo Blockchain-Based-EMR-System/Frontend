@@ -20,6 +20,7 @@ import {
 import { useTranslations } from "next-intl";
 import { Clinic } from "../../types/clinic.types";
 import { useLanguage } from "@/contexts/LanguageProvider";
+import { getTimeIn12HourFormat } from "@/lib/helpers";
 
 interface ClinicCardPresentationalProps {
   clinic: Clinic;
@@ -87,7 +88,13 @@ export function ClinicCardPresentational({
           <div className="flex-1">
             <p className="text-muted-foreground">{tCard("hours")}</p>
             <p className="font-medium">
-              {clinic.opening_at} - {clinic.closing_at}
+              <span dir="ltr">
+                {getTimeIn12HourFormat(clinic.opening_at)}
+              </span>
+              {" - "}
+              <span dir="ltr">
+                {getTimeIn12HourFormat(clinic.closing_at)}
+              </span>
             </p>
           </div>
         </div>

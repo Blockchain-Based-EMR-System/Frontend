@@ -25,7 +25,6 @@ export const formatDate = (dateStr: string, locale: string) => {
   }
 };
 
-// Sort days of the week in proper order (Sunday -> Saturday)
 export const sortDays = (days: string[]): string[] => {
   const dayOrder: Record<string, number> = {
     SUNDAY: 0,

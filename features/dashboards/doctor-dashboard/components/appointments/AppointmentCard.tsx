@@ -15,7 +15,6 @@ import {
   MapPin,
   Video,
   Building2,
-  Calendar as CalendarIcon,
   CalendarClock,
   X,
   CheckCircle2,
@@ -26,6 +25,7 @@ import { Appointment } from "../../types/appointment.types";
 import { RescheduleAppointmentDialog } from "@/features/dashboards/doctor-dashboard/components/appointments/RescheduleAppointmentDialog";
 import { CancelAppointmentDialog } from "@/features/dashboards/doctor-dashboard/components/appointments/CancelAppointmentDialog";
 import { cn } from "@/lib/utils";
+import { getTimeIn12HourFormat } from "@/lib/helpers";
 
 interface AppointmentCardProps {
   appointment: Appointment;
@@ -121,7 +121,13 @@ export function AppointmentCard({
           <div className="flex items-center gap-2 text-sm">
             <Clock className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
             <span className="font-medium">
-              {appointment.start_time} - {appointment.end_time}
+              <span dir="ltr">
+                {getTimeIn12HourFormat(appointment.start_time)}
+              </span>
+              {" - "}
+              <span dir="ltr">
+                {getTimeIn12HourFormat(appointment.end_time)}
+              </span>
             </span>
             <span className="text-xs text-muted-foreground">
               ({appointment.slot_duration}m)

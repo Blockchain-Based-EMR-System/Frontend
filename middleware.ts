@@ -36,10 +36,12 @@ export function middleware(request: NextRequest) {
     "/forgot-password",
     "/reset-password",
     "/join/doctor",
+    "/clinics",
   ];
   const completeProfileRoute = "/complete-profile";
   const verifyEmailRoute = "/verify-email";
   const dashboardRoute = "/dashboard";
+  const schedulingRoute = "/clinics/schedule";
   const googleCallbackRoute = "/google-callback";
   const authRoutes = [
     "/login",
@@ -92,6 +94,20 @@ export function middleware(request: NextRequest) {
 
   if (normalizedPath === googleCallbackRoute) {
     return NextResponse.next();
+  }
+
+  if (normalizedPath === schedulingRoute) {
+    if (!hasAuthToken) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+
+    const scheduleNavCookie = request.cookies.get("ScheduleNavigation");
+    if (!scheduleNavCookie?.value || scheduleNavCookie.value !== "valid") {
+      console.warn(
+        "⚠️ [Middleware] Direct access to schedule page without proper navigation",
+      );
+      return NextResponse.redirect(new URL("/clinics", request.url));
+    }
   }
 
   if (!hasAuthToken) {

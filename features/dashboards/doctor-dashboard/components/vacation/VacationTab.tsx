@@ -30,6 +30,7 @@ import {
 import { VacationTabSkeleton } from "../skeletons/VacationTabSkeleton";
 import { VacationHistory } from "./VacationHistory";
 import { sortDays } from "./helpers";
+import { getTimeIn12HourFormat } from "@/lib/helpers";
 
 interface GroupedSchedule {
   label: string;
@@ -329,7 +330,13 @@ export function VacationTab({ clinics }: VacationTabProps) {
                                     )}
                                   </p>
                                   <p className="text-xs text-muted-foreground">
-                                    {schedule.startTime} - {schedule.endTime}
+                                    <span dir="ltr">
+                                      {getTimeIn12HourFormat(schedule.startTime)}
+                                    </span>
+                                    {" - "}
+                                    <span dir="ltr">
+                                      {getTimeIn12HourFormat(schedule.endTime)}
+                                    </span>
                                   </p>
                                 </div>
                               </div>

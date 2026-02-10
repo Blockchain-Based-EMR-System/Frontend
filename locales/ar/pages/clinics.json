@@ -1,0 +1,107 @@
+{
+  "pageTitle": "حجز موعد",
+  "viewClinics": "العيادات",
+  "viewDoctors": "الأطباء",
+
+  "filters": "الفلاتر",
+  "filterByGender": "تصفية حسب الجنس",
+  "male": "ذكر",
+  "female": "أنثى",
+  "allGenders": "جميع الأجناس",
+
+  "filterByFees": "تصفية حسب السعر",
+  "minFees": "الحد الأدنى للسعر",
+  "maxFees": "الحد الأقصى للسعر",
+  "selectMinFees": "اختر الحد الأدنى للسعر",
+  "selectMaxFees": "اختر الحد الأقصى للسعر",
+
+  "filterByAvailability": "التوفر",
+  "onlineOnly": "أونلاين فقط",
+  "offlineOnly": "حضوري فقط",
+  "allAvailability": "الكل",
+
+  "filterByPayment": "خيارات الدفع",
+  "canPayOnline": "الدفع الإلكتروني متاح",
+  "allPaymentOptions": "جميع الخيارات",
+
+  "clearFilters": "مسح الفلاتر",
+  "applyFilters": "تطبيق الفلاتر",
+
+  "doctorCard": {
+    "specialization": "التخصص",
+    "age": "العمر",
+    "yearsOld": "سنة",
+    "fees": "سعر الكشف",
+    "egp": "جنيه",
+    "online": "استشارة أونلاين",
+    "viewSchedule": "عرض المواعيد",
+    "clinics": "العيادات",
+    "clinic": "عيادة"
+  },
+
+  "clinicCard": {
+    "doctors": "الأطباء",
+    "doctor": "طبيب",
+    "address": "العنوان",
+    "phone": "الهاتف",
+    "hours": "ساعات العمل",
+    "to": "إلى",
+    "onlinePayment": "الدفع الإلكتروني متاح",
+    "viewAllDoctors": "عرض جميع الأطباء",
+    "viewSchedule": "عرض المواعيد"
+  },
+
+  "schedule": {
+    "title": "جدول الطبيب",
+    "doctorInfo": "معلومات الطبيب",
+    "clinicInfo": "معلومات العيادة",
+    "onlineConsultation": "استشارة أونلاين",
+    "selectDate": "اختر التاريخ",
+    "availableDates": "التواريخ المتاحة",
+    "availableSlots": "المواعيد المتاحة",
+    "noAvailableDates": "لا توجد تواريخ متاحة",
+    "noAvailableSlots": "لا توجد مواعيد متاحة في هذا اليوم",
+    "selectDateFirst": "الرجاء اختيار تاريخ لعرض المواعيد المتاحة",
+    "bookNow": "احجز الآن",
+    "unavailable": "غير متاح",
+    "loading": "جاري التحميل...",
+    "online": "أونلاين",
+    "offline": "حضوري"
+  },
+
+  "bookingModal": {
+    "title": "تأكيد الموعد",
+    "confirmMessage": "هل أنت متأكد من حجز هذا الموعد؟",
+    "doctorLabel": "الطبيب",
+    "clinicLabel": "العيادة",
+    "dateLabel": "التاريخ",
+    "timeLabel": "الوقت",
+    "feesLabel": "سعر الكشف",
+    "typeLabel": "النوع",
+    "onlineConsultation": "استشارة أونلاين",
+    "clinicVisit": "زيارة عيادة",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد الحجز",
+    "booking": "جاري الحجز..."
+  },
+
+  "authModal": {
+    "title": "يجب تسجيل الدخول",
+    "message": "يجب عليك تسجيل الدخول لحجز موعد. يرجى تسجيل الدخول أو إنشاء حساب للمتابعة.",
+    "signIn": "تسجيل الدخول",
+    "signUp": "إنشاء حساب",
+    "cancel": "إلغاء"
+  },
+
+  "noDoctorsFound": "لم يتم العثور على أطباء",
+  "noClinicsFound": "لم يتم العثور على عيادات",
+  "noResultsWithFilters": "لم يتم العثور على نتائج بالفلاتر الحالية. حاول تعديل معايير البحث.",
+
+  "errors": {
+    "loadingDoctors": "فشل تحميل الأطباء",
+    "loadingClinics": "فشل تحميل العيادات",
+    "loadingSchedule": "فشل تحميل الجدول",
+    "bookingFailed": "فشل حجز الموعد",
+    "tryAgain": "يرجى المحاولة مرة أخرى"
+  }
+}

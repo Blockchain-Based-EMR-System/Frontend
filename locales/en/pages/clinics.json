@@ -1,0 +1,107 @@
+{
+  "pageTitle": "Book Appointment",
+  "viewClinics": "Clinics",
+  "viewDoctors": "Doctors",
+
+  "filters": "Filters",
+  "filterByGender": "Filter by Gender",
+  "male": "Male",
+  "female": "Female",
+  "allGenders": "All Genders",
+
+  "filterByFees": "Filter by Fees",
+  "minFees": "Minimum Fees",
+  "maxFees": "Maximum Fees",
+  "selectMinFees": "Select minimum fees",
+  "selectMaxFees": "Select maximum fees",
+
+  "filterByAvailability": "Availability",
+  "onlineOnly": "Online Only",
+  "offlineOnly": "Offline Only",
+  "allAvailability": "All",
+
+  "filterByPayment": "Payment Options",
+  "canPayOnline": "Can Pay Online",
+  "allPaymentOptions": "All Options",
+
+  "clearFilters": "Clear Filters",
+  "applyFilters": "Apply Filters",
+
+  "doctorCard": {
+    "specialization": "Specialization",
+    "age": "Age",
+    "yearsOld": "years old",
+    "fees": "Fees",
+    "egp": "EGP",
+    "online": "Online Consultation",
+    "viewSchedule": "View Schedule",
+    "clinics": "Clinics",
+    "clinic": "Clinic"
+  },
+
+  "clinicCard": {
+    "doctors": "Doctors",
+    "doctor": "Doctor",
+    "address": "Address",
+    "phone": "Phone",
+    "hours": "Working Hours",
+    "to": "to",
+    "onlinePayment": "Online Payment Available",
+    "viewAllDoctors": "View All Doctors",
+    "viewSchedule": "View Schedule"
+  },
+
+  "schedule": {
+    "title": "Doctor Schedule",
+    "doctorInfo": "Doctor Information",
+    "clinicInfo": "Clinic Information",
+    "onlineConsultation": "Online Consultation",
+    "selectDate": "Select Date",
+    "availableDates": "Available Dates",
+    "availableSlots": "Available Time Slots",
+    "noAvailableDates": "No available dates",
+    "noAvailableSlots": "No available slots for this date",
+    "selectDateFirst": "Please select a date to view available slots",
+    "bookNow": "Book Now",
+    "unavailable": "Unavailable",
+    "loading": "Loading...",
+    "online": "Online",
+    "offline": "Offline"
+  },
+
+  "bookingModal": {
+    "title": "Confirm Appointment",
+    "confirmMessage": "Are you sure you want to book this appointment?",
+    "doctorLabel": "Doctor",
+    "clinicLabel": "Clinic",
+    "dateLabel": "Date",
+    "timeLabel": "Time",
+    "feesLabel": "Consultation Fees",
+    "typeLabel": "Type",
+    "onlineConsultation": "Online Consultation",
+    "clinicVisit": "Clinic Visit",
+    "cancel": "Cancel",
+    "confirm": "Confirm Booking",
+    "booking": "Booking..."
+  },
+
+  "authModal": {
+    "title": "Authentication Required",
+    "message": "You need to be logged in to book an appointment. Please sign in or create an account to continue.",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "cancel": "Cancel"
+  },
+
+  "noDoctorsFound": "No doctors found",
+  "noClinicsFound": "No clinics found",
+  "noResultsWithFilters": "No results found with the current filters. Try adjusting your search criteria.",
+
+  "errors": {
+    "loadingDoctors": "Failed to load doctors",
+    "loadingClinics": "Failed to load clinics",
+    "loadingSchedule": "Failed to load schedule",
+    "bookingFailed": "Failed to book appointment",
+    "tryAgain": "Please try again later"
+  }
+}

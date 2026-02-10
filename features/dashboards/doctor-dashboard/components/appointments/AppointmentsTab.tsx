@@ -12,7 +12,7 @@ import { useLanguage } from "@/contexts/LanguageProvider";
 import { AppointmentsTabSkeleton } from "../skeletons";
 import { Appointment } from "../../types/appointment.types";
 
-const USE_DUMMY_DATA = true;
+const USE_DUMMY_DATA = false;
 
 const DUMMY_APPOINTMENTS: Appointment[] = [
   {
