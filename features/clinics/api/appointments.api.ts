@@ -41,8 +41,8 @@ export const getClinics = async (
 
   params.append("lang", lang);
 
-  if (filters?.payOnline !== undefined)
-    params.append("payOnline", filters.payOnline.toString());
+  if (filters?.canPayOnline !== undefined)
+    params.append("canPayOnline", filters.canPayOnline.toString());
 
   const queryString = params.toString();
   const endpoint = `/appointments/clinics?${queryString}`;
@@ -72,13 +72,20 @@ export const getAvailableDays = async (
   doctorId: string,
   clinicId?: string | null,
 ): Promise<AvailableDaysResponse> => {
+  console.log("📡 API Call - getAvailableDays");
+  console.log("📡 Doctor ID:", doctorId);
+  console.log("📡 Clinic ID:", clinicId);
+
   const params = new URLSearchParams();
-  if (clinicId !== undefined) {
-    params.append("clinicId", clinicId === null ? "null" : clinicId);
+  // Only append clinicId if it has an actual value (not null, not undefined)
+  if (clinicId !== undefined && clinicId !== null) {
+    params.append("clinicId", clinicId);
   }
 
   const queryString = params.toString();
   const endpoint = `/appointments/doctor/${doctorId}/available-days${queryString ? `?${queryString}` : ""}`;
+
+  console.log("📡 Full endpoint:", endpoint);
 
   return api.get<AvailableDaysResponse>(endpoint);
 };
@@ -90,8 +97,9 @@ export const getAvailableSlots = async (
 ): Promise<AvailableSlotsResponse> => {
   const params = new URLSearchParams();
   params.append("date", date);
-  if (clinicId !== undefined) {
-    params.append("clinicId", clinicId === null ? "null" : clinicId);
+  // Only append clinicId if it has an actual value (not null, not undefined)
+  if (clinicId !== undefined && clinicId !== null) {
+    params.append("clinicId", clinicId);
   }
 
   const queryString = params.toString();

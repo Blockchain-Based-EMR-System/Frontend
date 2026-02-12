@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   ClinicWithDoctors,
   SimpleDoctorInClinic,
-} from "../types/appointments.types";
+} from "../../types/appointments.types";
 import {
   MapPin,
   Phone,
@@ -21,7 +21,7 @@ import {
   Building2,
 } from "lucide-react";
 import { useAppointmentNavigationStore } from "@/stores/useAppointmentNavigationStore";
-import { AuthRequiredModal } from "./AuthRequiredModal";
+import { AuthRequiredModal } from "../AuthRequiredModal";
 import { useUserStore } from "@/stores/useUserStore";
 import { getTimeIn12HourFormat } from "@/lib/helpers";
 import Link from "next/link";
@@ -64,7 +64,7 @@ export function ClinicCard({ clinic }: ClinicCardProps) {
     setSelectedDoctor(doctorWithClinics);
     setSelectedClinic(clinic);
 
-    document.cookie = "ScheduleNavigation=valid; path=/; max-age=300"; 
+    document.cookie = "ScheduleNavigation=valid; path=/; max-age=300";
     router.push("/clinics/schedule");
   };
 
@@ -149,7 +149,7 @@ export function ClinicCard({ clinic }: ClinicCardProps) {
                       <div className="flex items-center gap-3 flex-1">
                         <Avatar className="h-12 w-12">
                           <AvatarImage
-                            src={doctor.profilePic || ""}
+                            src={doctor.profilePic || undefined}
                             alt={doctor.name}
                           />
                           <AvatarFallback>

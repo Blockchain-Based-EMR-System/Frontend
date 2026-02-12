@@ -41,6 +41,7 @@ export function Step1PersonalInfo({
 
   const dateOfBirth = watch("dateOfBirth");
   const gender = watch("gender");
+  const availabilityType = watch("availability_type");
 
   return (
     <div className="space-y-4">
@@ -118,6 +119,38 @@ export function Step1PersonalInfo({
           </Select>
           {errors.gender && (
             <p className="text-sm text-destructive">{errors.gender.message}</p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Select
+            dir={direction}
+            value={availabilityType}
+            onValueChange={(value) =>
+              setValue(
+                "availability_type",
+                value as "ONLINE" | "OFFLINE" | "BOTH",
+                {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                },
+              )
+            }
+            disabled={isLoading}
+          >
+            <SelectTrigger className="py-5">
+              <SelectValue placeholder={t("selectAvailabilityType")} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ONLINE">{t("online")}</SelectItem>
+              <SelectItem value="OFFLINE">{t("offline")}</SelectItem>
+              <SelectItem value="BOTH">{t("both")}</SelectItem>
+            </SelectContent>
+          </Select>
+          {errors.availability_type && (
+            <p className="text-sm text-destructive">
+              {errors.availability_type.message}
+            </p>
           )}
         </div>
 

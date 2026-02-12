@@ -153,7 +153,7 @@ export function Sidebar({
 
         {/* Page Content */}
         <main className="flex-1 bg-muted/10 overflow-x-hidden overflow-y-auto">
-          <div className="container mx-auto p-6 md:p-8 min-w-0">{children}</div>
+          <div className="container mx-auto p-6 md:p-8 min-w-0 max-w-7xl">{children}</div>
         </main>
       </div>
     </div>

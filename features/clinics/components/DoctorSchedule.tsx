@@ -57,14 +57,17 @@ export function DoctorSchedule() {
 
   const isOnline = !selectedClinic;
 
+  console.log("📅 DoctorSchedule - Selected Doctor:", selectedDoctor);
+  console.log("📅 Doctor ID:", selectedDoctor?.id);
+  console.log("📅 Selected Clinic:", selectedClinic);
+  console.log("📅 Clinic ID:", selectedClinic?.id);
+  console.log("📅 Is Online:", isOnline);
+
   const {
     data: daysData,
     isLoading: isLoadingDays,
     isError: isErrorDays,
-  } = useAvailableDays(
-    selectedDoctor?.id || "",
-    selectedClinic?.id || null, 
-  );
+  } = useAvailableDays(selectedDoctor?.id || "", selectedClinic?.id || null);
 
   const {
     data: slotsData,
@@ -73,7 +76,7 @@ export function DoctorSchedule() {
   } = useAvailableSlots(
     selectedDoctor?.id || "",
     selectedDate || "",
-    selectedClinic?.id || null, 
+    selectedClinic?.id || null,
   );
 
   const availableDays = daysData?.data || [];
@@ -138,7 +141,7 @@ export function DoctorSchedule() {
             <div className="flex gap-4">
               <Avatar className="h-20 w-20">
                 <AvatarImage
-                  src={selectedDoctor.profilePic || ""}
+                  src={selectedDoctor.profilePic || undefined}
                   alt={selectedDoctor.name}
                 />
                 <AvatarFallback>
@@ -149,9 +152,11 @@ export function DoctorSchedule() {
                 <h2 className="text-2xl font-bold">
                   {tCommon("doctor")} {selectedDoctor.name}
                 </h2>
-                <p className="text-muted-foreground">
-                  {tFields("specialization")}: {selectedDoctor.specialization}
-                </p>
+                {selectedDoctor.specialization && (
+                  <p className="text-muted-foreground">
+                    {tFields("specialization")}: {selectedDoctor.specialization}
+                  </p>
+                )}
                 <p className="text-muted-foreground">
                   {tFields("fees")}: {selectedDoctor.fees} {tCommon("egp")}
                 </p>
@@ -339,30 +344,21 @@ export function DoctorSchedule() {
                     variant={slot.available ? "outline" : "ghost"}
                     disabled={!slot.available}
                     className={cn(
-                      "flex-col h-auto py-3 relative",
-                      !slot.available && "opacity-50 cursor-not-allowed",
+                      "flex-col h-auto py-3 relative cursor-pointer",
+                      !slot.available &&
+                        "opacity-50 cursor-not-allowed border border-muted-foreground/30",
                     )}
                     onClick={() => handleSlotClick(slot)}
                   >
-                    <div className="text-sm font-semibold" dir="ltr">
+                    <div
+                      className={`text-sm font-semibold ${!slot.available ? "line-through text-muted-foreground" : ""}`}
+                      dir="ltr"
+                    >
                       {getTimeIn12HourFormat(slot.start)}
                     </div>
                     <div className="text-xs text-muted-foreground" dir="ltr">
                       {getTimeIn12HourFormat(slot.end)}
                     </div>
-                    {slot.online && (
-                      <Badge
-                        variant="secondary"
-                        className="absolute -top-1 -right-1 text-[10px] px-1 py-0"
-                      >
-                        {t("online")}
-                      </Badge>
-                    )}
-                    {!slot.available && (
-                      <div className="text-[10px] text-muted-foreground">
-                        {t("unavailable")}
-                      </div>
-                    )}
                   </Button>
                 ))}
               </div>

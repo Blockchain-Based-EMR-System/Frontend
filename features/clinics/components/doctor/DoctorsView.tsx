@@ -7,9 +7,9 @@ import {
   parseAsBoolean,
   useQueryStates,
 } from "nuqs";
-import { useDoctors } from "../query/appointments.query";
+import { useDoctors } from "../../query/appointments.query";
 import { DoctorCard } from "./DoctorCard";
-import { DoctorCardSkeleton } from "../skeletons";
+import { DoctorCardSkeleton } from "../../skeletons";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 
@@ -71,7 +71,11 @@ export function DoctorsView() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {doctors.map((doctor) => (
-        <DoctorCard key={doctor.id} doctor={doctor} />
+        <DoctorCard
+          key={doctor.id}
+          doctor={doctor}
+          hideOnlineButton={filters.isOnline === false}
+        />
       ))}
     </div>
   );

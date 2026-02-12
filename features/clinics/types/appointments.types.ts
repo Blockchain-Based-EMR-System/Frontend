@@ -20,6 +20,7 @@ export interface DoctorInClinic {
   phone: string;
   fees: number;
   profilePic: string | null;
+  is_online?: boolean;
 }
 
 export interface SimpleDoctorInClinic {
@@ -34,6 +35,7 @@ export interface SimpleDoctorInClinic {
 
 export interface DoctorWithClinics extends DoctorInClinic {
   clinics: Clinic[];
+  is_online?: boolean;
 }
 
 export interface ClinicWithDoctors extends Clinic {
@@ -74,5 +76,5 @@ export interface DoctorFilters {
 }
 
 export interface ClinicFilters {
-  payOnline?: boolean; 
+  canPayOnline?: boolean;
 }

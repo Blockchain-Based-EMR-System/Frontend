@@ -12,13 +12,13 @@ export function ClinicsFilters() {
   const { direction } = useLanguage();
   const t = useTranslations("clinics");
   const [filters, setFilters] = useQueryStates({
-    payOnline: parseAsBoolean,
+    canPayOnline: parseAsBoolean,
   });
 
-  const hasFilters = filters.payOnline !== null;
+  const hasFilters = filters.canPayOnline !== null;
 
   const clearFilters = () => {
-    setFilters({ payOnline: null });
+    setFilters({ canPayOnline: null });
   };
 
   return (
@@ -29,15 +29,15 @@ export function ClinicsFilters() {
           dir={direction}
           className="mt-2"
           value={
-            filters.payOnline === true
+            filters.canPayOnline === true
               ? "online"
-              : filters.payOnline === false
+              : filters.canPayOnline === false
                 ? "offline"
                 : "all"
           }
           onValueChange={(value) =>
             setFilters({
-              payOnline:
+              canPayOnline:
                 value === "online" ? true : value === "offline" ? false : null,
             })
           }

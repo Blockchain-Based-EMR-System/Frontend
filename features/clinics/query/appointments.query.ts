@@ -1,6 +1,7 @@
 import {
   useQuery,
   useMutation,
+  useQueryClient,
   UseQueryResult,
   UseMutationResult,
 } from "@tanstack/react-query";
@@ -36,7 +37,7 @@ export const useDoctors = (
   return useQuery({
     queryKey: ["doctors", locale, filters],
     queryFn: () => getDoctors(locale, filters),
-    staleTime: 5 * 60 * 1000, 
+    staleTime: 5 * 60 * 1000,
   });
 };
 
@@ -72,7 +73,7 @@ export const useAvailableDays = (
     queryKey: ["available-days", doctorId, clinicId],
     queryFn: () => getAvailableDays(doctorId, clinicId),
     enabled: !!doctorId,
-    staleTime: 2 * 60 * 1000, 
+    staleTime: 2 * 60 * 1000,
   });
 };
 
@@ -95,6 +96,7 @@ export const useBookAppointment = (): UseMutationResult<
   BookAppointmentRequest
 > => {
   const { locale } = useLanguage();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: bookAppointment,
@@ -108,6 +110,9 @@ export const useBookAppointment = (): UseMutationResult<
         title: locale === "ar" ? "نجح" : "Success",
         description: successMessage,
       });
+
+      queryClient.invalidateQueries({ queryKey: ["available-slots"] });
+      queryClient.invalidateQueries({ queryKey: ["available-days"] });
     },
     onError: (error) => {
       const errorMessage =

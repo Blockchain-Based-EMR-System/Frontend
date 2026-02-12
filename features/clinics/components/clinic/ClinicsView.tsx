@@ -2,20 +2,20 @@
 
 import { useTranslations } from "next-intl";
 import { parseAsBoolean, useQueryStates } from "nuqs";
-import { useClinics } from "../query/appointments.query";
+import { useClinics } from "../../query/appointments.query";
 import { ClinicCard } from "./ClinicCard";
-import { ClinicCardSkeleton } from "../skeletons";
+import { ClinicCardSkeleton } from "../../skeletons";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 
 export function ClinicsView() {
   const t = useTranslations("clinics");
   const [filters] = useQueryStates({
-    payOnline: parseAsBoolean,
+    canPayOnline: parseAsBoolean,
   });
 
   const { data, isLoading, isError } = useClinics({
-    payOnline: filters.payOnline ?? undefined,
+    canPayOnline: filters.canPayOnline ?? undefined,
   });
 
   const clinics = data?.data || [];
@@ -46,7 +46,7 @@ export function ClinicsView() {
       <Alert>
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>
-          {filters.payOnline !== null
+          {filters.canPayOnline !== null
             ? t("noResultsWithFilters")
             : t("noClinicsFound")}
         </AlertDescription>

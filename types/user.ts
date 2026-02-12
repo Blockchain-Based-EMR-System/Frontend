@@ -28,6 +28,21 @@ export interface User {
   profilePicture?: string | null;
   created_at: string;
   updated_at: string;
+  doctor?: {
+    specialization: {
+      key: string;
+      value: string;
+    };
+    avg_time: string | null;
+    account_status: DoctorAccountStatus;
+    availability_type?: "ONLINE" | "OFFLINE" | "BOTH";
+    mastersCertificateUrl?: string | null;
+    graduationCertificateUrl?: string | null;
+    fellowshipCertificateUrl?: string | null;
+    professionalPracticeCardUrl?: string | null;
+    membershipCardUrl?: string | null;
+    unionSpecializationCertificateUrl?: string | null;
+  };
 }
 
 export interface Doctor extends User {

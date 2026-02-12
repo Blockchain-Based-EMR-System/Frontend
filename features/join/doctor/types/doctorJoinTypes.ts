@@ -6,6 +6,7 @@ export interface DoctorJoinFormData {
   confirmPassword: string;
   gender: "MALE" | "FEMALE";
   dateOfBirth: Date;
+  availability_type: "ONLINE" | "OFFLINE" | "BOTH";
 
   graduationCertificate: File;
   membershipCard: File;
@@ -23,6 +24,7 @@ export interface DoctorJoinApiRequest {
   password: string;
   gender: "MALE" | "FEMALE";
   date_of_birth: string;
+  availability_type: "ONLINE" | "OFFLINE" | "BOTH";
   graduationCertificate: File;
   membershipCard: File;
   professionalPracticeCard: File;

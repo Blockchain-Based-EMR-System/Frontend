@@ -7,19 +7,23 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { DoctorWithClinics } from "../types/appointments.types";
+import { DoctorWithClinics } from "../../types/appointments.types";
 import { MapPin, Building2, Video } from "lucide-react";
 import { useAppointmentNavigationStore } from "@/stores/useAppointmentNavigationStore";
 import { useState } from "react";
-import { AuthRequiredModal } from "./AuthRequiredModal";
+import { AuthRequiredModal } from "../AuthRequiredModal";
 import { useUserStore } from "@/stores/useUserStore";
 import { useLanguage } from "@/contexts/LanguageProvider";
 
 interface DoctorCardProps {
   doctor: DoctorWithClinics;
+  hideOnlineButton?: boolean;
 }
 
-export function DoctorCard({ doctor }: DoctorCardProps) {
+export function DoctorCard({
+  doctor,
+  hideOnlineButton = false,
+}: DoctorCardProps) {
   const t = useTranslations("clinics.doctorCard");
   const tCommon = useTranslations("common");
   const { locale } = useLanguage();
@@ -39,7 +43,7 @@ export function DoctorCard({ doctor }: DoctorCardProps) {
     setSelectedDoctor(doctor);
     setSelectedClinic(selectedClinic || null);
 
-    document.cookie = "ScheduleNavigation=valid; path=/; max-age=300"; 
+    document.cookie = "ScheduleNavigation=valid; path=/; max-age=300";
     router.push("/clinics/schedule");
   };
 
@@ -52,7 +56,7 @@ export function DoctorCard({ doctor }: DoctorCardProps) {
     setSelectedDoctor(doctor);
     setSelectedClinic(null);
 
-    document.cookie = "ScheduleNavigation=valid; path=/; max-age=300"; 
+    document.cookie = "ScheduleNavigation=valid; path=/; max-age=300";
     router.push("/clinics/schedule");
   };
 
@@ -71,7 +75,10 @@ export function DoctorCard({ doctor }: DoctorCardProps) {
         <CardContent className="p-6">
           <div className="flex gap-4">
             <Avatar className="h-20 w-20">
-              <AvatarImage src={doctor.profilePic || ""} alt={doctor.name} />
+              <AvatarImage
+                src={doctor.profilePic || undefined}
+                alt={doctor.name}
+              />
               <AvatarFallback>{getInitials(doctor.name)}</AvatarFallback>
             </Avatar>
 
@@ -133,16 +140,20 @@ export function DoctorCard({ doctor }: DoctorCardProps) {
                     </div>
                   </Button>
                 ))}
-
-                <Button
-                  className="w-full hover:cursor-pointer"
-                  variant="default"
-                  onClick={handleOnlineClick}
-                >
-                  <Video className="h-4 w-4 mr-2" />
-                  {t("online")}
-                </Button>
               </div>
+            </div>
+          )}
+
+          {doctor.is_online && !hideOnlineButton && (
+            <div className="mt-4">
+              <Button
+                className="w-full hover:cursor-pointer"
+                variant="default"
+                onClick={handleOnlineClick}
+              >
+                <Video className="h-4 w-4 mr-2" />
+                {t("online")}
+              </Button>
             </div>
           )}
         </CardContent>

@@ -1,0 +1,65 @@
+{
+  "title": "Settings",
+  "updateProfile": "Update Profile",
+  "changePassword": "Change Password",
+
+  "profileSection": {
+    "title": "Profile Information",
+    "description": "Update your personal information",
+    "name": "Full Name",
+    "namePlaceholder": "Enter your full name",
+    "phone": "Phone Number",
+    "phonePlaceholder": "Enter your phone number",
+    "gender": "Gender",
+    "selectGender": "Select your gender",
+    "male": "Male",
+    "female": "Female",
+    "dateOfBirth": "Date of Birth",
+    "pickDateOfBirth": "Pick your date of birth",
+    "profilePicture": "Profile Picture",
+    "uploadImage": "Upload Image",
+    "removeImage": "Remove Image",
+    "availabilityType": "Availability Type",
+    "selectAvailabilityType": "Select availability type",
+    "online": "Online",
+    "offline": "Offline",
+    "both": "Both",
+    "saveChanges": "Save Changes",
+    "updating": "Updating...",
+    "updateSuccess": "Profile updated successfully",
+    "updateError": "Failed to update profile"
+  },
+
+  "passwordSection": {
+    "title": "Change Password",
+    "description": "Update your password to keep your account secure",
+    "verifyPasswordDescription": "Please enter your current password before setting a new one.",
+    "currentPassword": "Current Password",
+    "currentPasswordPlaceholder": "Enter your current password",
+    "newPassword": "New Password",
+    "newPasswordPlaceholder": "Enter your new password",
+    "confirmPassword": "Confirm New Password",
+    "confirmPasswordPlaceholder": "Confirm your new password",
+    "verifyPassword": "Verify Password",
+    "changePassword": "Change Password",
+    "verifying": "Verifying...",
+    "changing": "Changing...",
+    "passwordVerified": "Password verified successfully",
+    "passwordChanged": "Password changed successfully",
+    "passwordMismatch": "Passwords don't match",
+    "passwordRequired": "Password is required",
+    "passwordTooShort": "Password must be at least 8 characters",
+    "incorrectPassword": "Current password is incorrect"
+  },
+
+  "validation": {
+    "nameRequired": "Full name is required",
+    "nameMinLength": "Name must be at least 2 characters",
+    "phoneRequired": "Phone number is required",
+    "phoneLength": "Phone number must be 11 digits",
+    "phoneFormat": "Invalid phone number format",
+    "genderRequired": "Gender is required",
+    "dateOfBirthRequired": "Date of birth is required",
+    "availabilityTypeRequired": "Availability type is required"
+  }
+}

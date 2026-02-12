@@ -110,16 +110,17 @@ export function BookAppointmentModal({
             </>
           )}
 
-          <div className="flex items-center">
             {isOnline && (
               <>
-                <Video className="h-4 w-4 text-primary" />
-                <Badge variant="secondary">{t("onlineConsultation")}</Badge>
+              <Separator />
+              <div className="flex items-center gap-2 text-primary p-2 rounded-md bg-primary/10">
+                <Video className="h-4 w-4" />
+                <p>{t("onlineConsultation")}</p>
+              </div>
               </>
             )}
-            <Separator />
-          </div>
 
+          <Separator />
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
               <div className="text-sm font-medium text-muted-foreground flex items-center gap-2">

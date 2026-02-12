@@ -31,7 +31,29 @@ export function DayConfigCard({
   const dayName = t(`days.${config.day}`);
 
   const handleActiveChange = (checked: boolean) => {
-    onChange({ ...config, isActive: checked });
+    if (checked) {
+      const updates: Partial<DayConfiguration> = {
+        isActive: true,
+      };
+
+      if (hasClinic && !config.offlineInterval) {
+        updates.offlineInterval = {
+          start: clinicOpeningTime || "09:00",
+          end: clinicClosingTime || "17:00",
+        };
+      }
+
+      if (!hasClinic && !config.onlineInterval) {
+        updates.onlineInterval = {
+          start: "09:00",
+          end: "17:00",
+        };
+      }
+
+      onChange({ ...config, ...updates });
+    } else {
+      onChange({ ...config, isActive: checked });
+    }
   };
 
   const handleFieldChange = (field: keyof DayConfiguration, value: any) => {
@@ -45,9 +67,9 @@ export function DayConfigCard({
   ) => {
     const intervalKey =
       type === "offline" ? "offlineInterval" : "onlineInterval";
-    
+
     let currentInterval = config[intervalKey];
-    
+
     if (!currentInterval) {
       if (type === "offline") {
         currentInterval = {
@@ -132,7 +154,6 @@ export function DayConfigCard({
             </div>
           </div>
 
-          {/* Time Interval Picker - Offline for clinics, Online for "Online Only" */}
           {hasClinic ? (
             <TimeIntervalPicker
               key={`offline-interval-${config.day}`}

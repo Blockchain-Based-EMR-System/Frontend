@@ -109,5 +109,12 @@
   "intervalEndRequired": "وقت نهاية الفترة مطلوب",
   "intervalEndMustBeAfterStart": "يجب أن يكون وقت نهاية الفترة بعد وقت البداية",
   "intervalsOverlap": "يجب ألا تتداخل فترات المواعيد الحضورية والإلكترونية",
-  "intervalOutsideWorkingHours": "يجب أن تكون فترة المواعيد الحضورية ضمن ساعات عمل العيادة"
+  "intervalOutsideWorkingHours": "يجب أن تكون فترة المواعيد الحضورية ضمن ساعات عمل العيادة",
+
+  "availabilityType": "نوع التوفر",
+  "selectAvailabilityType": "اختر نوع التوفر",
+  "availabilityTypeRequired": "نوع التوفر مطلوب",
+  "online": "عبر الإنترنت",
+  "offline": "في العيادة",
+  "both": "كلاهما"
 }

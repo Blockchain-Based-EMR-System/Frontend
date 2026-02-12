@@ -34,6 +34,9 @@ export const createStep1Schema = (t: (key: string) => string) => {
       dateOfBirth: z.date({
         message: t("dateOfBirthRequired"),
       }),
+      availability_type: z.enum(["ONLINE", "OFFLINE", "BOTH"], {
+        message: t("availabilityTypeRequired"),
+      }),
     })
     .refine((data) => data.password === data.confirmPassword, {
       message: t("passwordMismatch"),
@@ -77,6 +80,9 @@ export const createDoctorJoinSchema = (t: (key: string) => string) => {
       }),
       dateOfBirth: z.date({
         message: t("dateOfBirthRequired"),
+      }),
+      availability_type: z.enum(["ONLINE", "OFFLINE", "BOTH"], {
+        message: t("availabilityTypeRequired"),
       }),
       graduationCertificate: fileSchema(t),
       membershipCard: fileSchema(t),

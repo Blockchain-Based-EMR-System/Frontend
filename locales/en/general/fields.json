@@ -109,5 +109,12 @@
   "intervalEndRequired": "Interval end time is required",
   "intervalEndMustBeAfterStart": "Interval end time must be after start time",
   "intervalsOverlap": "Offline and online intervals must not overlap",
-  "intervalOutsideWorkingHours": "Offline interval must be within clinic working hours"
+  "intervalOutsideWorkingHours": "Offline interval must be within clinic working hours",
+
+  "availabilityType": "Availability Type",
+  "selectAvailabilityType": "Select your availability type",
+  "availabilityTypeRequired": "Availability type is required",
+  "online": "Online",
+  "offline": "Offline",
+  "both": "Both"
 }

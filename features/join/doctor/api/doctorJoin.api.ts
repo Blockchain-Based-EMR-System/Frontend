@@ -26,6 +26,10 @@ export const submitDoctorJoin = async (
     );
   }
 
+  if (formData.availability_type) {
+    apiFormData.append("availability_type", formData.availability_type);
+  }
+
   if (formData.graduationCertificate) {
     apiFormData.append("graduationCertificate", formData.graduationCertificate);
   }
