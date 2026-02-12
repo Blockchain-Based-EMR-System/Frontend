@@ -49,6 +49,11 @@ export function middleware(request: NextRequest) {
     "/forgot-password",
     "/reset-password",
   ];
+  const settingsRoutes = [
+    "/settings",
+    "/settings/profile",
+    "/settings/change-password",
+  ];
 
   const normalizedPath = pathname === "/" ? "/" : pathname.replace(/\/$/, "");
 
@@ -107,6 +112,12 @@ export function middleware(request: NextRequest) {
         "⚠️ [Middleware] Direct access to schedule page without proper navigation",
       );
       return NextResponse.redirect(new URL("/clinics", request.url));
+    }
+  }
+
+  if (settingsRoutes.some((route) => normalizedPath.startsWith(route))) {
+    if (!hasAuthToken) {
+      return NextResponse.redirect(new URL("/login", request.url));
     }
   }
 
