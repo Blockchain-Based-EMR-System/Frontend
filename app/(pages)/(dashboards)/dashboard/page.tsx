@@ -1,14 +1,17 @@
 "use client";
 
-import { DashboardContainer } from "@/features/dashboards/dashboard/components/DashboardContainer";
-import { DashboardPresentational } from "@/features/dashboards/dashboard/components/DashboardPresentational";
+import {
+  DashboardContainer,
+  DashboardPresentational,
+  PatientDashboardLayout,
+} from "@/features/dashboards/dashboard";
 
 export default function DashboardPage() {
   return (
-    <>
+    <PatientDashboardLayout>
       <DashboardContainer>
         {(props) => <DashboardPresentational {...props} />}
       </DashboardContainer>
-    </>
+    </PatientDashboardLayout>
   );
 }

@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useLogout } from "@/features/auth/login";
 import { getRoleDashboardPath } from "@/lib/auth";
+import { getInitials } from "@/lib/helpers";
 
 interface UserProfileDropdownProps {
   user: User;
@@ -28,15 +29,6 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
   const logoutMutation = useLogout();
 
   const dashboardUrl = getRoleDashboardPath(user.role);
-
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
 
   const handleLogout = () => {
     logoutMutation.mutate();

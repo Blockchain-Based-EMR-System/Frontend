@@ -42,6 +42,7 @@ import { useUserStore } from "@/stores/useUserStore";
 import { useToast } from "@/hooks/useToast";
 import { format } from "date-fns";
 import { Loader2, Upload, Trash2 } from "lucide-react";
+import { getInitials } from "@/lib/helpers";
 
 type ProfileFormValues = {
   name: string;
@@ -170,15 +171,6 @@ export function UpdateProfileForm() {
     }
 
     updateProfileMutation.mutate(payload);
-  };
-
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
   };
 
   return (

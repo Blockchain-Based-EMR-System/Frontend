@@ -330,12 +330,12 @@ export function VacationTab({ clinics }: VacationTabProps) {
                                     )}
                                   </p>
                                   <p className="text-xs text-muted-foreground">
-                                    <span dir="ltr">
-                                      {getTimeIn12HourFormat(schedule.startTime)}
+                                    <span>
+                                      {getTimeIn12HourFormat(schedule.startTime, locale)}
                                     </span>
                                     {" - "}
-                                    <span dir="ltr">
-                                      {getTimeIn12HourFormat(schedule.endTime)}
+                                    <span>
+                                      {getTimeIn12HourFormat(schedule.endTime, locale)}
                                     </span>
                                   </p>
                                 </div>
