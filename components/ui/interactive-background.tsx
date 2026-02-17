@@ -4,6 +4,52 @@ import { useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
 import type p5Types from "p5";
 
+class Particle {
+  pos: p5Types.Vector;
+  vel: p5Types.Vector;
+  size: number;
+  p: p5Types;
+
+  constructor(p: p5Types) {
+    this.p = p;
+    this.pos = p.createVector(p.random(p.width), p.random(p.height));
+    this.vel = p.createVector(p.random(-0.5, 0.5), p.random(-0.5, 0.5));
+    this.size = p.random(2, 4);
+  }
+
+  move(mouseDistance: number) {
+    this.pos.add(this.vel);
+
+    // Check edges
+    if (this.pos.x < 0 || this.pos.x > this.p.width) {
+      this.vel.x *= -1;
+      if (this.pos.x < 0) this.pos.x = 0;
+      if (this.pos.x > this.p.width) this.pos.x = this.p.width;
+    }
+    if (this.pos.y < 0 || this.pos.y > this.p.height) {
+      this.vel.y *= -1;
+      if (this.pos.y < 0) this.pos.y = 0;
+      if (this.pos.y > this.p.height) this.pos.y = this.p.height;
+    }
+
+    // Mouse interaction
+    const d = this.p.dist(this.pos.x, this.pos.y, this.p.mouseX, this.p.mouseY);
+    if (d < mouseDistance) {
+      const repulsion = this.p.createVector(this.pos.x - this.p.mouseX, this.pos.y - this.p.mouseY);
+      repulsion.normalize();
+      repulsion.mult(0.05);
+      this.vel.add(repulsion);
+    }
+    this.vel.limit(2);
+  }
+
+  display(color: p5Types.Color) {
+    this.p.noStroke();
+    this.p.fill(color);
+    this.p.ellipse(this.pos.x, this.pos.y, this.size, this.size);
+  }
+}
+
 const InteractiveBackground = () => {
   const { theme, systemTheme } = useTheme();
   const renderRef = useRef<HTMLDivElement>(null);
@@ -17,50 +63,6 @@ const InteractiveBackground = () => {
       try {
         p5Module = await import("p5");
         const P5 = p5Module.default;
-
-        class Particle {
-          pos: p5Types.Vector;
-          vel: p5Types.Vector;
-          size: number;
-          p: p5Types;
-
-          constructor(p: p5Types) {
-            this.p = p;
-            this.pos = p.createVector(p.random(p.width), p.random(p.height));
-            this.vel = p.createVector(p.random(-0.5, 0.5), p.random(-0.5, 0.5));
-            this.size = p.random(2, 4);
-          }
-
-          move(mouseDistance: number) {
-            this.pos.add(this.vel);
-
-            if (this.pos.x < 0 || this.pos.x > this.p.width) {
-              this.vel.x *= -1;
-              if (this.pos.x < 0) this.pos.x = 0;
-              if (this.pos.x > this.p.width) this.pos.x = this.p.width;
-            }
-            if (this.pos.y < 0 || this.pos.y > this.p.height) {
-              this.vel.y *= -1;
-              if (this.pos.y < 0) this.pos.y = 0;
-              if (this.pos.y > this.p.height) this.pos.y = this.p.height;
-            }
-
-            const d = this.p.dist(this.pos.x, this.pos.y, this.p.mouseX, this.p.mouseY);
-            if (d < mouseDistance) {
-              const repulsion = this.p.createVector(this.pos.x - this.p.mouseX, this.pos.y - this.p.mouseY);
-              repulsion.normalize();
-              repulsion.mult(0.05);
-              this.vel.add(repulsion);
-            }
-            this.vel.limit(2);
-          }
-
-          display(color: p5Types.Color) {
-            this.p.noStroke();
-            this.p.fill(color);
-            this.p.ellipse(this.pos.x, this.pos.y, this.size, this.size);
-          }
-        }
 
         const sketch = (p: p5Types) => {
           const particles: Particle[] = [];
@@ -91,8 +93,6 @@ const InteractiveBackground = () => {
           };
 
           p.setup = () => {
-            const canvas = p.createCanvas(p.windowWidth, p.windowHeight);
-            
             for (let i = 0; i < particleCount; i++) {
               particles.push(new Particle(p));
             }
