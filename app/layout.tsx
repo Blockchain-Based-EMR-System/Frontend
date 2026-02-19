@@ -9,6 +9,7 @@ import { LanguageProvider } from "@/contexts/LanguageProvider";
 import { QueryProvider } from "@/contexts/QueryProvider";
 import { Toaster } from "@/components/ui/toaster";
 import { Navbar, Footer } from "@/components/layout";
+import InteractiveBackground from "@/components/ui/interactive-background";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -49,7 +50,8 @@ export default async function RootLayout({
             <ThemeProvider>
               <LanguageProvider initialLocale={locale}>
                 <NuqsAdapter>
-                  <div className="flex flex-col min-h-screen bg-linear-to-br from-background to-muted">
+                  <InteractiveBackground />
+                  <div className="flex flex-col min-h-screen">
                     <Navbar />
                     <main className="grow flex flex-col">{children}</main>
                   </div>
