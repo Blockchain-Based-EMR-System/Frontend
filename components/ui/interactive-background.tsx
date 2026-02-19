@@ -93,6 +93,8 @@ const InteractiveBackground = () => {
           };
 
           p.setup = () => {
+            p.createCanvas(p.windowWidth, p.windowHeight);
+            
             for (let i = 0; i < particleCount; i++) {
               particles.push(new Particle(p));
             }
