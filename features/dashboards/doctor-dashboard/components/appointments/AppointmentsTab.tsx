@@ -4,7 +4,13 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, ChevronLeft, ChevronRight, Building2, Video } from "lucide-react";
+import {
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  Building2,
+  Video,
+} from "lucide-react";
 import { useDailySchedule } from "../../query/useAppointments.query";
 import { AppointmentCard } from "@/features/dashboards/doctor-dashboard/components/appointments/AppointmentCard";
 import { DatePickerPopover } from "@/components/common/DatePickerPopover";
@@ -117,7 +123,10 @@ export function AppointmentsTab({}: AppointmentsTabProps) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   const formatDateForAPI = (date: Date): string => {
-    return date.toISOString().split("T")[0];
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
   };
 
   const formattedDate = formatDateForAPI(selectedDate);
@@ -176,7 +185,7 @@ export function AppointmentsTab({}: AppointmentsTabProps) {
       <div>
         <h2 className="text-2xl font-bold mb-4">{t("title")}</h2>
 
-       <div className="flex items-center gap-4 mb-4 text-sm text-muted-foreground">
+        <div className="flex items-center gap-4 mb-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1.5">
             <Video className="h-4 w-4" />
             <span>{t("online")}</span>
@@ -194,7 +203,11 @@ export function AppointmentsTab({}: AppointmentsTabProps) {
               size="icon"
               onClick={navigateToPreviousDay}
             >
-              {locale === "en"? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+              {locale === "en" ? (
+                <ChevronLeft className="h-4 w-4" />
+              ) : (
+                <ChevronRight className="h-4 w-4" />
+              )}
             </Button>
             <div className="min-w-[250px] text-center">
               <p className="font-semibold">
@@ -205,7 +218,11 @@ export function AppointmentsTab({}: AppointmentsTabProps) {
               )}
             </div>
             <Button variant="outline" size="icon" onClick={navigateToNextDay}>
-              {locale === "en"? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+              {locale === "en" ? (
+                <ChevronRight className="h-4 w-4" />
+              ) : (
+                <ChevronLeft className="h-4 w-4" />
+              )}
             </Button>
           </div>
 

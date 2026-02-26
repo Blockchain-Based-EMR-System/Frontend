@@ -113,6 +113,7 @@ export const useBookAppointment = (): UseMutationResult<
 
       queryClient.invalidateQueries({ queryKey: ["available-slots"] });
       queryClient.invalidateQueries({ queryKey: ["available-days"] });
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
     },
     onError: (error) => {
       const errorMessage =
