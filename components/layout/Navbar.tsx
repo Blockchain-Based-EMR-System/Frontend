@@ -69,7 +69,7 @@ export function Navbar() {
         <div className="hidden lg:flex items-center space-x-6 rtl:space-x-reverse">
           {/* Nav Links */}
           {navLinks.map((link) => {
-            const isActive = pathname === link.href;
+            const isActive = pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href));
             return (
               <Link
                 key={link.href}

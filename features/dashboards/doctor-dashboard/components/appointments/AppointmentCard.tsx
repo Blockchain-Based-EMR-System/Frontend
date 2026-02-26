@@ -26,6 +26,7 @@ import { RescheduleAppointmentDialog } from "@/features/dashboards/doctor-dashbo
 import { CancelAppointmentDialog } from "@/features/dashboards/doctor-dashboard/components/appointments/CancelAppointmentDialog";
 import { cn } from "@/lib/utils";
 import { getTimeIn12HourFormat } from "@/lib/helpers";
+import { useLanguage } from "@/contexts/LanguageProvider";
 
 interface AppointmentCardProps {
   appointment: Appointment;
@@ -38,6 +39,7 @@ export function AppointmentCard({
 }: AppointmentCardProps) {
   const t = useTranslations("doctorDashboard.appointments");
   const tCommon = useTranslations("common");
+  const { locale } = useLanguage();
 
   const [isRescheduleOpen, setIsRescheduleOpen] = useState(false);
   const [isCancelOpen, setIsCancelOpen] = useState(false);
@@ -121,12 +123,12 @@ export function AppointmentCard({
           <div className="flex items-center gap-2 text-sm">
             <Clock className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
             <span className="font-medium">
-              <span dir="ltr">
-                {getTimeIn12HourFormat(appointment.start_time)}
+              <span>
+                {getTimeIn12HourFormat(appointment.start_time, locale)}
               </span>
               {" - "}
-              <span dir="ltr">
-                {getTimeIn12HourFormat(appointment.end_time)}
+              <span>
+                {getTimeIn12HourFormat(appointment.end_time, locale)}
               </span>
             </span>
             <span className="text-xs text-muted-foreground">

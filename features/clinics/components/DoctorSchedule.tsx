@@ -32,7 +32,7 @@ import {
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageProvider";
-import { getTimeIn12HourFormat } from "@/lib/helpers";
+import { getTimeIn12HourFormat, getInitials } from "@/lib/helpers";
 
 export function DoctorSchedule() {
   const t = useTranslations("clinics.schedule");
@@ -85,15 +85,6 @@ export function DoctorSchedule() {
   const availableSlots = selectedClinic
     ? allSlots.filter((slot) => !slot.online)
     : allSlots;
-
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
 
   const handleSlotClick = (slot: TimeSlot) => {
     if (!slot.available) return;
@@ -188,12 +179,12 @@ export function DoctorSchedule() {
               <div className="flex items-center gap-2 text-sm">
                 <Clock className="h-4 w-4 text-muted-foreground" />
                 <span className="flex gap-1">
-                  <span dir="ltr">
-                    {getTimeIn12HourFormat(selectedClinic.opening_at)}
+                  <span>
+                    {getTimeIn12HourFormat(selectedClinic.opening_at, locale)}
                   </span>{" "}
                   -
-                  <span dir="ltr">
-                    {getTimeIn12HourFormat(selectedClinic.closing_at)}
+                  <span>
+                    {getTimeIn12HourFormat(selectedClinic.closing_at, locale)}
                   </span>
                 </span>
               </div>
@@ -352,12 +343,11 @@ export function DoctorSchedule() {
                   >
                     <div
                       className={`text-sm font-semibold ${!slot.available ? "line-through text-muted-foreground" : ""}`}
-                      dir="ltr"
                     >
-                      {getTimeIn12HourFormat(slot.start)}
+                      {getTimeIn12HourFormat(slot.start, locale)}
                     </div>
-                    <div className="text-xs text-muted-foreground" dir="ltr">
-                      {getTimeIn12HourFormat(slot.end)}
+                    <div className="text-xs text-muted-foreground">
+                      {getTimeIn12HourFormat(slot.end, locale)}
                     </div>
                   </Button>
                 ))}

@@ -88,12 +88,12 @@ export function ClinicCardPresentational({
           <div className="flex-1">
             <p className="text-muted-foreground">{tCard("hours")}</p>
             <p className="font-medium">
-              <span dir="ltr">
-                {getTimeIn12HourFormat(clinic.opening_at)}
+              <span>
+                {getTimeIn12HourFormat(clinic.opening_at, locale)}
               </span>
               {" - "}
-              <span dir="ltr">
-                {getTimeIn12HourFormat(clinic.closing_at)}
+              <span>
+                {getTimeIn12HourFormat(clinic.closing_at, locale)}
               </span>
             </p>
           </div>

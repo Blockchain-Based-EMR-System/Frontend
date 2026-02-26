@@ -26,6 +26,7 @@ export interface User {
   hasCompletedProfile: boolean;
   role?: Role;
   profilePicture?: string | null;
+  photo_url?: string | null;
   created_at: string;
   updated_at: string;
   doctor?: {

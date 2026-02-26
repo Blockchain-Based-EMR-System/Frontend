@@ -52,6 +52,9 @@ export function Sidebar({
   const [isExpanded, setIsExpanded] = useState(true);
   const [mounted, setMounted] = useState(false);
 
+  // Find current page name from navigation items
+  const currentPage = navigationItems.find((item) => pathname === item.href);
+
   useEffect(() => {
     setMounted(true);
     const saved = localStorage.getItem("sidebarExpanded");
@@ -145,15 +148,31 @@ export function Sidebar({
               </nav>
             </SheetContent>
           </Sheet>
-          <div className="flex items-center gap-2">
-            <TitleIcon className="h-6 w-6 text-primary" />
-            <span className="text-lg font-semibold">{t(titleNameKey)}</span>
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <TitleIcon className="h-6 w-6 text-primary shrink-0" />
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="text-base font-semibold shrink-0">
+                {t(titleNameKey)}
+              </span>
+              {currentPage && (
+                <>
+                  <span className="text-base text-muted-foreground shrink-0 px-2">
+                  /
+                  </span>
+                  <span className="text-sm font-medium text-muted-foreground truncate">
+                    {t(currentPage.nameKey)}
+                  </span>
+                </>
+              )}
+            </div>
           </div>
         </header>
 
         {/* Page Content */}
         <main className="flex-1 bg-muted/10 overflow-x-hidden overflow-y-auto">
-          <div className="container mx-auto p-6 md:p-8 min-w-0 max-w-7xl">{children}</div>
+          <div className="container mx-auto p-6 md:p-8 min-w-0 max-w-7xl">
+            {children}
+          </div>
         </main>
       </div>
     </div>

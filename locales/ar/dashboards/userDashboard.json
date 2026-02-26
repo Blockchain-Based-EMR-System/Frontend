@@ -10,5 +10,45 @@
   "totalRecords": "إجمالي السجلات",
   "pendingReviews": "المراجعات المعلقة",
   "todayAppointments": "مواعيد اليوم",
-  "welcomeBack": "مرحبًا بعودتك"
+  "welcomeBack": "مرحبًا بعودتك",
+
+  "todaysAppointment": "موعد اليوم",
+  "noAppointmentsToday": "لا توجد مواعيد اليوم",
+  "noAppointmentsTodayDesc": "ليس لديك أي مواعيد اليوم. احجز موعدًا لرؤية طبيب.",
+
+  "appointmentsTab": "المواعيد",
+  "upcoming": "القادمة",
+  "history": "السابقة",
+  "noUpcomingAppointments": "لا توجد مواعيد قادمة",
+  "noUpcomingAppointmentsDesc": "ليس لديك أي مواعيد قادمة. احجز موعدًا لرؤية طبيب.",
+  "noPastAppointments": "لا توجد مواعيد سابقة",
+  "noPastAppointmentsDesc": "سيظهر سجل مواعيدك هنا.",
+
+  "appointmentWith": "موعد مع",
+  "onlineConsultation": "استشارة عبر الإنترنت",
+  "inClinic": "موعد في العيادة",
+  "appointmentTime": "وقت الموعد",
+  "location": "الموقع",
+  "viewOnMap": "عرض على الخريطة",
+
+  "cancel": "إلغاء",
+  "reschedule": "إعادة جدولة",
+  "cancelAppointment": "إلغاء الموعد",
+  "cancelAppointmentConfirm": "هل أنت متأكد من رغبتك في إلغاء هذا الموعد؟",
+  "cancelAppointmentWarning": "لا يمكن التراجع عن هذا الإجراء.",
+  "cancelling": "جاري الإلغاء...",
+
+  "rescheduleAppointment": "إعادة جدولة الموعد",
+  "selectNewDate": "اختر تاريخًا ووقتًا جديدين لموعدك",
+  "rescheduling": "جاري إعادة الجدولة...",
+  "currentAppointment": "الموعد الحالي",
+  "newAppointment": "الموعد الجديد",
+
+  "scheduled": "محجوز",
+  "confirmed": "مؤكد",
+  "completed": "مكتمل",
+  "cancelled": "ملغى",
+  "rescheduled": "معاد جدولته",
+
+  "bookAppointment": "حجز موعد"
 }

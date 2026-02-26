@@ -42,6 +42,7 @@ import { useUserStore } from "@/stores/useUserStore";
 import { useToast } from "@/hooks/useToast";
 import { format } from "date-fns";
 import { Loader2, Upload, Trash2 } from "lucide-react";
+import { getInitials } from "@/lib/helpers";
 
 type ProfileFormValues = {
   name: string;
@@ -142,7 +143,7 @@ export function UpdateProfileForm() {
   };
 
   const handleDeleteImage = () => {
-    if (!user?.profilePicture) {
+    if (!user?.photo_url && !user?.profilePicture) {
       toast({
         title: locale === "en" ? "No image to delete" : "لا توجد صورة لحذفها",
         description:
@@ -172,15 +173,6 @@ export function UpdateProfileForm() {
     updateProfileMutation.mutate(payload);
   };
 
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
   return (
     <>
       <Card>
@@ -194,7 +186,7 @@ export function UpdateProfileForm() {
             <div className="flex flex-col items-center gap-4 pb-6 border-b">
               <Avatar className="h-24 w-24">
                 <AvatarImage
-                  src={user?.profilePicture || undefined}
+                  src={user?.photo_url || user?.profilePicture || undefined}
                   alt={user?.name}
                 />
                 <AvatarFallback className="bg-primary/10 text-primary font-semibold text-3xl">
@@ -218,7 +210,7 @@ export function UpdateProfileForm() {
                   )}
                   {t("profileSection.uploadImage")}
                 </Button>
-                {user?.profilePicture && (
+                {(user?.photo_url || user?.profilePicture) && (
                   <Button
                     type="button"
                     variant="outline"

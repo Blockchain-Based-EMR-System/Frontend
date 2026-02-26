@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useLogout } from "@/features/auth/login";
 import { getRoleDashboardPath } from "@/lib/auth";
+import { getInitials } from "@/lib/helpers";
 
 interface UserProfileDropdownProps {
   user: User;
@@ -28,15 +29,6 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
   const logoutMutation = useLogout();
 
   const dashboardUrl = getRoleDashboardPath(user.role);
-
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
 
   const handleLogout = () => {
     logoutMutation.mutate();
@@ -61,7 +53,7 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
                 </span>
                 <Avatar className="h-9 w-9 ring-2 ring-offset-2 ring-primary/20 hover:ring-primary/40 transition-all">
                   <AvatarImage
-                    src={user.profilePicture || undefined}
+                    src={user.photo_url || user.profilePicture || undefined}
                     alt={user.name}
                     className="object-cover"
                   />
@@ -77,7 +69,7 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
                 <div className="flex items-center gap-3">
                   <Avatar className="h-12 w-12">
                     <AvatarImage
-                      src={user.profilePicture || undefined}
+                      src={user.photo_url || user.profilePicture || undefined}
                       alt={user.name}
                       className="object-cover"
                     />
@@ -136,7 +128,7 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
           <div className="flex flex-col items-center gap-2">
             <Avatar className="h-12 w-12 ring-2 ring-offset-2 ring-primary/20">
               <AvatarImage
-                src={user.profilePicture || undefined}
+                src={user.photo_url || user.profilePicture || undefined}
                 alt={user.name}
                 className="object-cover"
               />

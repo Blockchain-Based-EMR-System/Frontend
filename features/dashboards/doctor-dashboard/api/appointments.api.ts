@@ -9,9 +9,13 @@ import {
 export const getDailySchedule = async (
   date: string,
 ): Promise<DailyScheduleResponse> => {
-  return api.get<DailyScheduleResponse>(
+  console.log(`📅 Fetching daily schedule for date: ${date}`);
+  const data = await api.get<DailyScheduleResponse>(
     `/appointments/doctor/daily-schedule?date=${date}`,
   );
+  console.log("📅 Daily schedule response data:", data);
+  return data;
+
 };
 
 export const getTodaySchedule = async (): Promise<DailyScheduleResponse> => {

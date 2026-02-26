@@ -23,7 +23,7 @@ import {
 import { useAppointmentNavigationStore } from "@/stores/useAppointmentNavigationStore";
 import { AuthRequiredModal } from "../AuthRequiredModal";
 import { useUserStore } from "@/stores/useUserStore";
-import { getTimeIn12HourFormat } from "@/lib/helpers";
+import { getTimeIn12HourFormat, getInitials } from "@/lib/helpers";
 import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageProvider";
 
@@ -68,15 +68,6 @@ export function ClinicCard({ clinic }: ClinicCardProps) {
     router.push("/clinics/schedule");
   };
 
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
   return (
     <>
       <Card className="hover:shadow-lg transition-shadow">
@@ -116,12 +107,12 @@ export function ClinicCard({ clinic }: ClinicCardProps) {
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-muted-foreground" />
               <span className="flex gap-1">
-                <span dir="ltr">
-                  {getTimeIn12HourFormat(clinic.opening_at)}{" "}
+                <span>
+                  {getTimeIn12HourFormat(clinic.opening_at, locale)}{" "}
                 </span>
                 {t("to")}
-                <span dir="ltr">
-                  {getTimeIn12HourFormat(clinic.closing_at)}
+                <span >
+                  {getTimeIn12HourFormat(clinic.closing_at, locale)}
                 </span>
               </span>
             </div>

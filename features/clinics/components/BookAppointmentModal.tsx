@@ -12,7 +12,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
   DoctorWithClinics,
@@ -139,11 +138,11 @@ export function BookAppointmentModal({
                 {t("timeLabel")}
               </div>
               <div className="text-base font-semibold">
-                <span dir="ltr">
-                  {getTimeIn12HourFormat(selectedSlot.start)}
+                <span>
+                  {getTimeIn12HourFormat(selectedSlot.start, locale)}
                 </span>
                 {" - "}
-                <span dir="ltr">{getTimeIn12HourFormat(selectedSlot.end)}</span>
+                <span>{getTimeIn12HourFormat(selectedSlot.end, locale)}</span>
               </div>
             </div>
           </div>

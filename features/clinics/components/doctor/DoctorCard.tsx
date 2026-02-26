@@ -14,6 +14,7 @@ import { useState } from "react";
 import { AuthRequiredModal } from "../AuthRequiredModal";
 import { useUserStore } from "@/stores/useUserStore";
 import { useLanguage } from "@/contexts/LanguageProvider";
+import { getInitials } from "@/lib/helpers";
 
 interface DoctorCardProps {
   doctor: DoctorWithClinics;
@@ -58,15 +59,6 @@ export function DoctorCard({
 
     document.cookie = "ScheduleNavigation=valid; path=/; max-age=300";
     router.push("/clinics/schedule");
-  };
-
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
   };
 
   return (
