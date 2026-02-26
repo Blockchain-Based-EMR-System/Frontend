@@ -1,0 +1,26 @@
+{
+  "title": "الانضمام كممرض/ة",
+  "subtitle": "أكمل تسجيلك في خطوتين بسيطتين",
+  "step1Title": "المعلومات الشخصية",
+  "step2Title": "الخبرة والمستندات",
+  "stepOf": "الخطوة {current} من {total}",
+
+  "nationalCard": "بطاقة الرقم القومي",
+  "nationalCardDesc": "قم برفع صورة بطاقة الرقم القومي (PDF)",
+  "bonusFile": "رخصة التمريض / مستند داعم",
+  "bonusFileDesc": "قم برفع أي مستند داعم إضافي (PDF، اختياري)",
+
+  "yearsOfExperience": "سنوات الخبرة",
+  "yearsOfExperiencePlaceholder": "عدد السنوات التي عملت فيها كممرض/ة، مثلاً 3",
+  "yearsOfExperienceRequired": "سنوات الخبرة مطلوبة",
+  "yearsOfExperienceMin": "يجب أن تكون سنوات الخبرة 0 على الأقل",
+  "yearsOfExperienceMax": "يجب أن تكون سنوات الخبرة 50 على الأكثر",
+
+  "brief": "نبذة شخصية",
+  "briefPlaceholder": "اكتب نبذة قصيرة عن نفسك (اختياري)",
+
+  "successTitle": "تم إرسال الطلب!",
+  "successMessage": "تم إرسال طلبك بنجاح. سنقوم بمراجعة مستنداتك والتواصل معك قريباً.",
+  "errorTitle": "فشل الإرسال",
+  "errorMessage": "فشل إرسال طلبك. يرجى المحاولة مرة أخرى."
+}

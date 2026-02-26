@@ -36,6 +36,7 @@ export function middleware(request: NextRequest) {
     "/forgot-password",
     "/reset-password",
     "/join/doctor",
+    "/join/nurse",
     "/clinics",
   ];
   const completeProfileRoute = "/complete-profile";

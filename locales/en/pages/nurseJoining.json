@@ -1,0 +1,26 @@
+{
+  "title": "Join as a Nurse",
+  "subtitle": "Complete your registration in 2 simple steps",
+  "step1Title": "Personal Information",
+  "step2Title": "Experience & Documents",
+  "stepOf": "Step {current} of {total}",
+
+  "nationalCard": "National ID Card",
+  "nationalCardDesc": "Upload your national ID card (PDF)",
+  "bonusFile": "Nursing License / Supporting Document",
+  "bonusFileDesc": "Upload any additional supporting document (PDF, optional)",
+
+  "yearsOfExperience": "Years of Experience",
+  "yearsOfExperiencePlaceholder": "Number of years you have worked as a nurse, e.g. 3",
+  "yearsOfExperienceRequired": "Years of experience is required",
+  "yearsOfExperienceMin": "Years of experience must be at least 0",
+  "yearsOfExperienceMax": "Years of experience must be at most 50",
+
+  "brief": "Brief / Bio",
+  "briefPlaceholder": "Write a short bio about yourself (optional)",
+
+  "successTitle": "Application Submitted!",
+  "successMessage": "Your application has been submitted successfully. We will review your documents and get back to you soon.",
+  "errorTitle": "Submission Failed",
+  "errorMessage": "Failed to submit your application. Please try again."
+}
