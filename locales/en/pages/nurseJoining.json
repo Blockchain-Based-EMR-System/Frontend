@@ -22,5 +22,21 @@
   "successTitle": "Application Submitted!",
   "successMessage": "Your application has been submitted successfully. We will review your documents and get back to you soon.",
   "errorTitle": "Submission Failed",
-  "errorMessage": "Failed to submit your application. Please try again."
+  "errorMessage": "Failed to submit your application. Please try again.",
+
+  "announcementsTitle": "Available Job Announcements",
+  "announcementsSubtitle": "Browse and apply to available nursing positions",
+  "apply": "Apply",
+  "applied": "Applied",
+  "applying": "Applying...",
+  "noAnnouncements": "No announcements available",
+  "noAnnouncementsDesc": "Check back later for new job postings.",
+  "requirements": "Requirements",
+  "workingSchedule": "Working Schedule",
+  "requiredGender": "Required Gender",
+  "maxAge": "Max Age",
+  "yearsOfExperienceReq": "Min. Experience",
+  "notes": "Notes",
+  "viewOnMaps": "View on Maps",
+  "years": "years"
 }

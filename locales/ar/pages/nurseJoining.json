@@ -22,5 +22,21 @@
   "successTitle": "تم إرسال الطلب!",
   "successMessage": "تم إرسال طلبك بنجاح. سنقوم بمراجعة مستنداتك والتواصل معك قريباً.",
   "errorTitle": "فشل الإرسال",
-  "errorMessage": "فشل إرسال طلبك. يرجى المحاولة مرة أخرى."
+  "errorMessage": "فشل إرسال طلبك. يرجى المحاولة مرة أخرى.",
+
+  "announcementsTitle": "إعلانات الوظائف المتاحة",
+  "announcementsSubtitle": "تصفح وتقدم للوظائف التمريضية المتاحة",
+  "apply": "تقدم",
+  "applied": "تم التقدم",
+  "applying": "جاري التقديم...",
+  "noAnnouncements": "لا توجد إعلانات",
+  "noAnnouncementsDesc": "تفقد لاحقاً للاطلاع على وظائف جديدة.",
+  "requirements": "المتطلبات",
+  "workingSchedule": "جدول العمل",
+  "requiredGender": "الجنس المطلوب",
+  "maxAge": "السن الأقصى",
+  "yearsOfExperienceReq": "الخبرة الدنيا",
+  "notes": "ملاحظات",
+  "viewOnMaps": "عرض على الخريطة",
+  "years": "سنوات"
 }
