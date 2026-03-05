@@ -62,6 +62,7 @@ export function DoctorJoinForm({
         "confirmPassword",
         "gender",
         "dateOfBirth",
+        "availability_type",
       ];
     } else if (currentStep === 2) {
       schema = createStep2Schema(tFields);
