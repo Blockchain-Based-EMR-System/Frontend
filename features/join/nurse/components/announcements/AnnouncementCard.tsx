@@ -17,10 +17,11 @@ import {
   User,
   CalendarDays,
   FileText,
-  ExternalLink,
   Loader2,
+  Building2,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLanguage } from "@/contexts/LanguageProvider";
+import { getTimeIn12HourFormat } from "@/lib/helpers";
 
 interface AnnouncementCardProps {
   announcement: NurseAnnouncement;
@@ -28,21 +29,9 @@ interface AnnouncementCardProps {
   isApplying: boolean;
   onApply: (announcementId: string) => void;
   t: (key: string, values?: Record<string, any>) => string;
+  tDoctorDashboard: (key: string, values?: Record<string, any>) => string;
   tCommon: (key: string, values?: Record<string, any>) => string;
-}
-
-const DAY_ORDER = [
-  "MONDAY",
-  "TUESDAY",
-  "WEDNESDAY",
-  "THURSDAY",
-  "FRIDAY",
-  "SATURDAY",
-  "SUNDAY",
-];
-
-function formatDay(day: string): string {
-  return day.charAt(0) + day.slice(1).toLowerCase();
+  tFields: (key: string, values?: Record<string, any>) => string;
 }
 
 export function AnnouncementCard({
@@ -52,6 +41,8 @@ export function AnnouncementCard({
   onApply,
   t,
   tCommon,
+  tDoctorDashboard,
+  tFields
 }: AnnouncementCardProps) {
   const {
     doctor,
@@ -63,17 +54,14 @@ export function AnnouncementCard({
     notes,
   } = announcement;
 
-  const sortedDays = [...working_days].sort(
-    (a, b) =>
-      DAY_ORDER.indexOf(a.day_of_week) - DAY_ORDER.indexOf(b.day_of_week),
-  );
-
   const doctorInitials = doctor.name
     .split(" ")
     .slice(0, 2)
     .map((n) => n[0])
     .join("")
     .toUpperCase();
+
+  const {locale} = useLanguage();
 
   return (
     <Card className="flex flex-col h-full hover:shadow-md transition-shadow">
@@ -93,7 +81,7 @@ export function AnnouncementCard({
               {doctor.name}
             </p>
             <div className="flex items-center gap-1 text-sm text-muted-foreground mt-0.5">
-              <MapPin className="h-3.5 w-3.5 shrink-0" />
+              <Building2 className="h-3.5 w-3.5 shrink-0 mt-0.5" />
               <span className="truncate">{clinic.name}</span>
             </div>
           </div>
@@ -103,17 +91,18 @@ export function AnnouncementCard({
         <div className="flex items-start gap-1.5 text-sm text-muted-foreground mt-2">
           <MapPin className="h-3.5 w-3.5 shrink-0 mt-0.5" />
           <span className="line-clamp-2">{clinic.address}</span>
-          {clinic.address_maps_link && (
-            <a
-              href={clinic.address_maps_link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="shrink-0 text-primary hover:underline flex items-center gap-0.5"
-            >
-              <ExternalLink className="h-3 w-3" />
-            </a>
-          )}
         </div>
+        {clinic.address_maps_link && (
+          <a
+            href={clinic.address_maps_link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-fit shrink-0 text-primary text-sm hover:underline underline-offset-8 flex items-center gap-1.5"
+          >
+            <MapPin className="h-3 w-3" />
+            {locale === "ar" ? "الاتجاهات" : "Directions"}
+          </a>
+        )}
       </CardHeader>
 
       <Separator />
@@ -126,15 +115,15 @@ export function AnnouncementCard({
             {t("workingSchedule")}
           </p>
           <div className="space-y-1.5">
-            {sortedDays.map((wd) => (
+            {working_days.map((wd) => (
               <div
                 key={wd.day_of_week}
                 className="flex items-center justify-between text-sm"
               >
-                <span className="font-medium">{formatDay(wd.day_of_week)}</span>
+                <span className="font-medium">{tDoctorDashboard(`schedule.days.${wd.day_of_week.toLowerCase()}`)}</span>
                 <span className="text-muted-foreground flex items-center gap-1">
                   <Clock className="h-3 w-3" />
-                  {wd.start_time} – {wd.end_time}
+                  {getTimeIn12HourFormat(wd.start_time, locale)} – {getTimeIn12HourFormat(wd.end_time, locale)}
                 </span>
               </div>
             ))}
@@ -158,18 +147,18 @@ export function AnnouncementCard({
                   <Badge variant="outline" className="text-xs">
                     {t("requiredGender")}:{" "}
                     {gender === "MALE"
-                      ? (tCommon("male" as any) ?? "Male")
-                      : (tCommon("female" as any) ?? "Female")}
+                      ? (tFields("male" as any) ?? "Male")
+                      : (tFields("female" as any) ?? "Female")}
                   </Badge>
                 )}
                 {max_age != null && (
                   <Badge variant="outline" className="text-xs">
-                    {t("maxAge")}: {max_age}
+                    {t("maxAge")}: {max_age} {locale === "ar" ? "سنة" : "years"}
                   </Badge>
                 )}
                 {years_of_experience != null && (
                   <Badge variant="outline" className="text-xs">
-                    {t("yearsOfExperienceReq")}: {years_of_experience}+{" "}
+                    {t("yearsOfExperienceReq")}: {years_of_experience}{" "}
                     {t("years")}
                   </Badge>
                 )}

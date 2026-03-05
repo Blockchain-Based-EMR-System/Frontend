@@ -35,7 +35,7 @@
   "workingSchedule": "جدول العمل",
   "requiredGender": "الجنس المطلوب",
   "maxAge": "السن الأقصى",
-  "yearsOfExperienceReq": "الخبرة الدنيا",
+  "yearsOfExperienceReq": "الحد الأدنى للخبرة",
   "notes": "ملاحظات",
   "viewOnMaps": "عرض على الخريطة",
   "years": "سنوات"

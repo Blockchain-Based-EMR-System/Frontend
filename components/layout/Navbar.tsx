@@ -10,6 +10,7 @@ import {
   Stethoscope,
   HeartPulse,
   Bell,
+  LucideIcon,
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useUserStore } from "@/stores/useUserStore";
@@ -25,6 +26,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+type NavLink = {
+  href: string;
+  label: string;
+  icon?: LucideIcon | null;
+};
 
 export function Navbar() {
   const tCommon = useTranslations("common");
@@ -55,9 +62,12 @@ export function Navbar() {
   const isJoinDoctorPage = pathname.startsWith("/join/doctor");
   const isJoinNursePage = pathname.startsWith("/join/nurse");
 
-  const navLinks = [
-    { href: "/clinics", label: tCommon("clinics") },
-    { href: "/contact", label: tCommon("contactUs") },
+  const navLinks: NavLink[] = [
+    { href: "/clinics", label: tCommon("clinics"), icon: null },
+    ...(isNurse
+      ? [{ href: "/announcements", label: tCommon("announcements"), icon: Bell }]
+      : []),
+    { href: "/contact", label: tCommon("contactUs"), icon: null },
   ];
 
   return (
@@ -105,7 +115,11 @@ export function Navbar() {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary focus:outline-none ${isJoinPage ? "text-primary underline underline-offset-8" : ""}`}>
+              <button
+                className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary focus:outline-none ${
+                  isJoinPage ? "text-primary underline underline-offset-8" : ""
+                }`}
+              >
                 {tCommon("join")}
                 <ChevronDown className="h-4 w-4" />
               </button>
@@ -114,37 +128,31 @@ export function Navbar() {
               <DropdownMenuItem asChild>
                 <Link
                   href="/join/doctor"
-                  className={`flex items-center gap-2 cursor-pointer ${isJoinDoctorPage ? "text-primary" : ""}`}
+                  className={`flex items-center gap-2 cursor-pointer ${
+                    isJoinDoctorPage ? "text-primary" : ""
+                  }`}
                 >
-                  <Stethoscope className={`h-4 w-4 ${isJoinDoctorPage ? "text-primary" : ""}`} />
+                  <Stethoscope
+                    className={`h-4 w-4 ${isJoinDoctorPage ? "text-primary" : ""}`}
+                  />
                   {tCommon("joinAsDoctor")}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link
                   href="/join/nurse"
-                  className={`flex items-center gap-2 cursor-pointer ${isJoinNursePage ? "text-primary" : ""}`}
+                  className={`flex items-center gap-2 cursor-pointer ${
+                    isJoinNursePage ? "text-primary" : ""
+                  }`}
                 >
-                  <HeartPulse className={`h-4 w-4 ${isJoinNursePage ? "text-primary" : ""}`} />
+                  <HeartPulse
+                    className={`h-4 w-4 ${isJoinNursePage ? "text-primary" : ""}`}
+                  />
                   {tCommon("joinAsNurse")}
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-
-          {isNurse && (
-            <Link
-              href="/announcements"
-              className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary ${
-                pathname.startsWith("/announcements")
-                  ? "text-primary underline underline-offset-8"
-                  : ""
-              }`}
-            >
-              <Bell className="h-4 w-4" />
-              {tCommon("announcements")}
-            </Link>
-          )}
 
           {/* Auth Section */}
           {isAuthenticated && user ? (
@@ -221,16 +229,20 @@ export function Navbar() {
               {/* Navigation Links */}
               <div className="flex flex-col space-y-3 px-2">
                 {navLinks.map((link) => {
-                  const isActive = pathname === link.href;
+                  const isActive =
+                    pathname === link.href ||
+                    (link.href !== "/" && pathname.startsWith(link.href));
+                  const Icon = link.icon;
                   return (
                     <Link
                       key={link.href}
                       href={link.href}
                       onClick={() => setIsOpen(false)}
-                      className={`text-sm flex items-center px-2 py-1 rounded-lg hover:bg-accent transition-colors ${
+                      className={`text-sm flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-accent transition-colors ${
                         isActive ? "text-primary font-semibold" : ""
                       }`}
                     >
+                      {Icon && <Icon className="h-4 w-4" />}
                       <span className="font-medium">{link.label}</span>
                     </Link>
                   );
@@ -261,23 +273,6 @@ export function Navbar() {
                   <HeartPulse className="h-4 w-4" />
                   <span className="font-medium">{tCommon("joinAsNurse")}</span>
                 </Link>
-
-                {isNurse && (
-                  <Link
-                    href="/announcements"
-                    onClick={() => setIsOpen(false)}
-                    className={`text-sm flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-accent transition-colors ${
-                      pathname.startsWith("/announcements")
-                        ? "text-primary font-semibold"
-                        : ""
-                    }`}
-                  >
-                    <Bell className="h-4 w-4" />
-                    <span className="font-medium">
-                      {tCommon("announcements")}
-                    </span>
-                  </Link>
-                )}
               </div>
             </div>
           </div>

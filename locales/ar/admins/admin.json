@@ -14,6 +14,7 @@
   "verifyMessage": "هل أنت متأكد من تفعيل هذا الطبيب؟ سيتم السماح له باستخدام النظام.",
   "rejectMessage": "هل أنت متأكد من رفض هذا الطبيب؟ لن يتمكن من الوصول إلى النظام.",
   "totalDoctors": "مجموع الأطباء",
+  "totalNurses": "مجموع الممرضين",
   "welcomeToDashboard": "مرحبا بك في لوحة تحكم المسؤول",
 
   "doctors": "الأطباء",
@@ -56,5 +57,21 @@
   "unionSpecializationCertificate": "شهادة تخصص النقابة",
   "viewDocument": "عرض المستند",
   "notProvided": "غير متوفر",
-  "downloadPDF": "تحميل PDF"
+  "downloadPDF": "تحميل PDF",
+
+  "nurses": "الممرضات",
+  "manageNurses": "إدارة حسابات الممرضات",
+  "noNursesFound": "لا توجد ممرضات.",
+  "nurseDetails": "تفاصيل الممرضة",
+  "verifyNurseSuccess": "تم التحقق من الممرضة بنجاح",
+  "rejectNurseSuccess": "تم رفض الممرضة بنجاح",
+  "nurseVerificationError": "فشل تحديث حالة الممرضة",
+  "confirmVerifyNurse": "تأكيد التحقق من الممرضة",
+  "confirmRejectNurse": "تأكيد رفض الممرضة",
+  "verifyNurseMessage": "هل أنت متأكد من التحقق من هذه الممرضة؟ سيتم قبولها في النظام.",
+  "rejectNurseMessage": "هل أنت متأكد من رفض هذه الممرضة؟ لن تتمكن من الوصول إلى النظام.",
+  "yearsOfExperience": "سنوات الخبرة",
+  "brief": "نبذة",
+  "nationalCard": "البطاقة الوطنية",
+  "bonusFile": "ملف إضافي"
 }

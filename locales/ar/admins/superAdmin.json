@@ -12,6 +12,7 @@
   "superAdmin": "المسؤول الأعلى",
   "totalDoctors": "إجمالي الأطباء",
   "totalAdmins": "إجمالي المسؤولين",
+  "totalNurses": "إجمالي الممرضين",
 
   "doctors": "الأطباء",
   "manageDoctors": "إدارة الأطباء في النظام",
@@ -46,5 +47,14 @@
   "unionSpecializationCertificate": "شهادة تخصص النقابة",
   "viewDocument": "عرض المستند",
   "notProvided": "غير متوفر",
-  "downloadPDF": "تحميل PDF"
+  "downloadPDF": "تحميل PDF",
+
+  "nurses": "الممرضات",
+  "manageNurses": "إدارة حسابات الممرضات",
+  "noNursesFound": "لا توجد ممرضات.",
+  "nurseDetails": "تفاصيل الممرضة",
+  "yearsOfExperience": "سنوات الخبرة",
+  "brief": "نبذة",
+  "nationalCard": "البطاقة الوطنية",
+  "bonusFile": "ملف إضافي"
 }

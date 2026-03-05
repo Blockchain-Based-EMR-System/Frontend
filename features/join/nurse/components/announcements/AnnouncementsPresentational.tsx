@@ -45,6 +45,8 @@ export interface AnnouncementsPresentationalProps {
   onApply: (announcementId: string) => void;
   t: (key: string, values?: Record<string, any>) => string;
   tCommon: (key: string, values?: Record<string, any>) => string;
+  tDoctorDashboard: (key: string, values?: Record<string, any>) => string;
+  tFields: (key: string, values?: Record<string, any>) => string;
 }
 
 export function AnnouncementsPresentational({
@@ -55,6 +57,8 @@ export function AnnouncementsPresentational({
   onApply,
   t,
   tCommon,
+  tDoctorDashboard,
+  tFields
 }: AnnouncementsPresentationalProps) {
   return (
     <div className="container mx-auto px-4 py-8 lg:max-w-7xl">
@@ -92,6 +96,8 @@ export function AnnouncementsPresentational({
               onApply={onApply}
               t={t}
               tCommon={tCommon}
+              tDoctorDashboard={tDoctorDashboard}
+              tFields={tFields}
             />
           ))}
         </div>

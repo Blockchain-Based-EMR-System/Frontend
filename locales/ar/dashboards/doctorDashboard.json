@@ -5,6 +5,7 @@
   "scheduleTab": "إعدادات المواعيد",
   "appointmentsTab": "المواعيد",
   "vacationTab": "الإجازة",
+  "announcementsTab": "توظيف ممرضات",
 
   "clinics": {
     "title": "عياداتي",
@@ -230,6 +231,59 @@
     "schedule": "الجدول",
     "workingDays": "أيام العمل",
     "today": "اليوم",
-    "appointments": "المواعيد"
+    "appointments": "المواعيد",
+    "announcements": "توظيف ممرضات",
+    "activeAnnouncements": "{count} نشط"
+  },
+
+  "announcements": {
+    "title": "توظيف ممرضات",
+    "subtitle": "انشر إعلانات لتوظيف ممرضات لعياداتك",
+    "noAnnouncements": "لا توجد إعلانات بعد",
+    "noAnnouncementsDesc": "انشر أول إعلان للعثور على ممرضة لعيادتك",
+    "postNew": "نشر إعلان",
+    "deleteConfirmTitle": "حذف الإعلان",
+    "deleteConfirmDesc": "هل أنت متأكد من حذف هذا الإعلان؟ لا يمكن التراجع عن هذا الإجراء.",
+    "applicants": "عرض المتقدمين",
+    "noApplicants": "لا يوجد متقدمون معلقون",
+    "noApplicantsDesc": "لم تتقدم أي ممرضة لهذا الإعلان بعد",
+    "approve": "قبول",
+    "reject": "رفض",
+    "approving": "جارٍ القبول...",
+    "rejecting": "جارٍ الرفض...",
+    "approved": "مقبول",
+    "rejected": "مرفوض",
+    "deleting": "جارٍ الحذف...",
+    "status": {
+      "PENDING": "يستقبل الطلبات",
+      "EXPIRED": "غير ظاهر للمتقدمين"
+    },
+    "createForm": {
+      "clinic": "العيادة",
+      "selectClinic": "اختر عيادة",
+      "workingDays": "أيام العمل",
+      "addDay": "إضافة يوم",
+      "day": "اليوم",
+      "startTime": "وقت البداية",
+      "endTime": "وقت النهاية",
+      "removeDay": "حذف",
+      "optionalSection": "متطلبات اختيارية",
+      "gender": "الجنس المطلوب",
+      "selectGender": "اختر الجنس",
+      "maxAge": "الحد الأقصى للسن",
+      "maxAgePlaceholder": "الحد الأقصى للسن (50)",
+      "yearsOfExperience": "الحد الأدنى لسنوات الخبرة",
+      "yearsPlaceholder": "الحد الأدنى لسنوات الخبرة (2)",
+      "notes": "ملاحظات",
+      "notesPlaceholder": "أي متطلبات إضافية...",
+      "submit": "نشر الإعلان",
+      "submitting": "جارٍ النشر..."
+    },
+    "workingSchedule": "جدول العمل",
+    "requirements": "المتطلبات",
+    "requiredGender": "الجنس",
+    "maxAge": "الحد الأقصى للسن",
+    "yearsOfExperienceReq": "الحد الأدنى للخبرة",
+    "years": "سنة"
   }
 }

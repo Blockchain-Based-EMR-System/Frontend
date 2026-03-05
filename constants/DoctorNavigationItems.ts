@@ -4,6 +4,7 @@ import {
   Calendar,
   CalendarCheck,
   Plane,
+  Megaphone,
 } from "lucide-react";
 
 export const doctorNavigationItems = [
@@ -31,5 +32,10 @@ export const doctorNavigationItems = [
     nameKey: "vacationTab",
     href: "/doctor-dashboard/vacation",
     icon: Plane,
+  },
+  {
+    nameKey: "announcementsTab",
+    href: "/doctor-dashboard/announcements",
+    icon: Megaphone,
   },
 ];

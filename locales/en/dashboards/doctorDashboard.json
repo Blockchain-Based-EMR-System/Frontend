@@ -5,6 +5,7 @@
   "scheduleTab": "Schedule Configuration",
   "appointmentsTab": "Appointments",
   "vacationTab": "Vacation",
+  "announcementsTab": "Nurse Hiring",
 
   "clinics": {
     "title": "My Clinics",
@@ -230,6 +231,59 @@
     "schedule": "Schedule",
     "workingDays": "Working days",
     "today": "Today",
-    "appointments": "Appointments"
+    "appointments": "Appointments",
+    "announcements": "Nurse Hiring",
+    "activeAnnouncements": "{count} active"
+  },
+
+  "announcements": {
+    "title": "Nurse Hiring",
+    "subtitle": "Post announcements to hire nurses for your clinics",
+    "noAnnouncements": "No announcements yet",
+    "noAnnouncementsDesc": "Post your first announcement to find a nurse for your clinic",
+    "postNew": "Post Announcement",
+    "deleteConfirmTitle": "Delete Announcement",
+    "deleteConfirmDesc": "Are you sure you want to delete this announcement? This action cannot be undone.",
+    "applicants": "View Applicants",
+    "noApplicants": "No pending applicants",
+    "noApplicantsDesc": "No nurses have applied to this announcement yet",
+    "approve": "Approve",
+    "reject": "Reject",
+    "approving": "Approving...",
+    "rejecting": "Rejecting...",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "deleting": "Deleting...",
+    "status": {
+      "PENDING": "Accepting Applications",
+      "EXPIRED": "Not Shown for Applicants"
+    },
+    "createForm": {
+      "clinic": "Clinic",
+      "selectClinic": "Select a clinic",
+      "workingDays": "Working Days",
+      "addDay": "Add Day",
+      "day": "Day",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "removeDay": "Remove",
+      "optionalSection": "Optional Requirements",
+      "gender": "Required Gender",
+      "selectGender": "Select Gender",
+      "maxAge": "Max Age",
+      "maxAgePlaceholder": "Max age limit (50)",
+      "yearsOfExperience": "Min. Years of Experience",
+      "yearsPlaceholder": "Minimum years of experience (2)",
+      "notes": "Notes",
+      "notesPlaceholder": "Any additional requirements...",
+      "submit": "Post Announcement",
+      "submitting": "Posting..."
+    },
+    "workingSchedule": "Working Schedule",
+    "requirements": "Requirements",
+    "requiredGender": "Gender",
+    "maxAge": "Max Age",
+    "yearsOfExperienceReq": "Min. Experience",
+    "years": "yrs"
   }
 }

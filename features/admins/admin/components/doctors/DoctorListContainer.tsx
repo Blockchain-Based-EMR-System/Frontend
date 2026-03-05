@@ -19,7 +19,8 @@ export function DoctorListContainer() {
     action: "verify" | "reject";
   } | null>(null);
 
-  const { mutate: verifyDoctor } = useVerifyDoctor();
+  const { mutate: verifyDoctor, isPending: isVerifyPending } =
+    useVerifyDoctor();
   const { toast } = useToast();
   const tAdmin = useTranslations("admin");
 
@@ -86,6 +87,7 @@ export function DoctorListContainer() {
           open={!!doctorToVerify}
           onClose={() => setDoctorToVerify(null)}
           onConfirm={confirmVerification}
+          isPending={isVerifyPending}
         />
       )}
     </>

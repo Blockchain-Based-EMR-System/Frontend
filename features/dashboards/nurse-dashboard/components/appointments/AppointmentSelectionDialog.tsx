@@ -14,9 +14,11 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, CalendarDays } from "lucide-react";
+import { MapPin, CalendarDays, Building2 } from "lucide-react";
 import { DatePickerPopover } from "@/components/common/DatePickerPopover";
 import { NurseScheduleEntry } from "../../types/nurseDashboardTypes";
+import { useLanguage } from "@/contexts/LanguageProvider";
+import { getTimeIn12HourFormat } from "@/lib/helpers";
 
 interface AppointmentSelectionDialogProps {
   open: boolean;
@@ -40,6 +42,8 @@ export function AppointmentSelectionDialog({
   onConfirm,
 }: AppointmentSelectionDialogProps) {
   const t = useTranslations("nurseDashboard");
+  const tDoctorDashboard = useTranslations("doctorDashboard");
+  const { locale } = useLanguage();
 
   const [selectedId, setSelectedId] = useState<string>(
     scheduleEntries.length === 1 ? scheduleEntries[0].id : "",
@@ -66,14 +70,12 @@ export function AppointmentSelectionDialog({
       >
         <DialogHeader>
           <DialogTitle>{t("appointments.selectPair")}</DialogTitle>
-          <DialogDescription>
-            {t("appointments.selectPairDesc")}
-          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-5 mt-2">
           {/* Doctor + Clinic selection */}
           <RadioGroup
+            dir={locale === "ar" ? "rtl" : "ltr"}
             value={selectedId}
             onValueChange={setSelectedId}
             className="space-y-3"
@@ -85,12 +87,6 @@ export function AppointmentSelectionDialog({
                 .map((n) => n[0])
                 .join("")
                 .toUpperCase();
-
-              const sortedDays = [...entry.working_days].sort(
-                (a, b) =>
-                  DAY_ORDER.indexOf(a.day_of_week) -
-                  DAY_ORDER.indexOf(b.day_of_week),
-              );
 
               return (
                 <Label
@@ -126,7 +122,7 @@ export function AppointmentSelectionDialog({
                               {entry.doctor.name}
                             </p>
                             <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                              <MapPin className="h-3 w-3 shrink-0" />
+                              <Building2 className="h-3 w-3 shrink-0" />
                               <span className="truncate">
                                 {entry.clinic.name}
                               </span>
@@ -140,15 +136,14 @@ export function AppointmentSelectionDialog({
                           {t("schedule.workingDays")}
                         </p>
                         <div className="flex flex-wrap gap-1">
-                          {sortedDays.map((wd) => (
+                          {entry.working_days.map((wd) => (
                             <Badge
                               key={wd.day_of_week}
                               variant="outline"
                               className="text-xs"
                             >
-                              {wd.day_of_week.charAt(0) +
-                                wd.day_of_week.slice(1).toLowerCase()}{" "}
-                              {wd.start_time}–{wd.end_time}
+                              {tDoctorDashboard(`schedule.days.${wd.day_of_week.toLowerCase()}`)}{" "}
+                              {getTimeIn12HourFormat(wd.start_time, locale)}–{getTimeIn12HourFormat(wd.end_time, locale)}
                             </Badge>
                           ))}
                         </div>

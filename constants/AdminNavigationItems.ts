@@ -1,4 +1,9 @@
-import { Stethoscope, LayoutDashboard, Building2 } from "lucide-react";
+import {
+  Stethoscope,
+  LayoutDashboard,
+  Building2,
+  HeartPulse,
+} from "lucide-react";
 
 export const navigationItems = [
   {
@@ -15,5 +20,10 @@ export const navigationItems = [
     nameKey: "clinics",
     href: "/admin-dashboard/clinics",
     icon: Building2,
+  },
+  {
+    nameKey: "nurses",
+    href: "/admin-dashboard/nurses",
+    icon: HeartPulse,
   },
 ];

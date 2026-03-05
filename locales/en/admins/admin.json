@@ -14,7 +14,8 @@
   "verifyMessage": "Are you sure you want to verify this doctor? They will be approved to use the system.",
   "rejectMessage": "Are you sure you want to reject this doctor? They will not be able to access the system.",
   "totalDoctors": "Total Doctors",
-  "welcomeToDashboard": "Welcome to the Admin Dashboard",
+  "totalClinics": "Total Clinics",
+  "totalNurses": "Total Nurses",
 
   "doctors": "Doctors",
   "manageDoctors": "Manage Doctors in the System",
@@ -56,5 +57,21 @@
   "unionSpecializationCertificate": "Union Specialization Certificate",
   "viewDocument": "View Document",
   "notProvided": "Not Provided",
-  "downloadPDF": "Download PDF"
+  "downloadPDF": "Download PDF",
+
+  "nurses": "Nurses",
+  "manageNurses": "Manage Nurse Accounts",
+  "noNursesFound": "No nurses found.",
+  "nurseDetails": "Nurse Details",
+  "verifyNurseSuccess": "Nurse verified successfully",
+  "rejectNurseSuccess": "Nurse rejected successfully",
+  "nurseVerificationError": "Failed to update nurse status",
+  "confirmVerifyNurse": "Confirm Nurse Verification",
+  "confirmRejectNurse": "Confirm Nurse Rejection",
+  "verifyNurseMessage": "Are you sure you want to verify this nurse? They will be approved to use the system.",
+  "rejectNurseMessage": "Are you sure you want to reject this nurse? They will not be able to access the system.",
+  "yearsOfExperience": "Years of Experience",
+  "brief": "Brief",
+  "nationalCard": "National Card",
+  "bonusFile": "Bonus File"
 }

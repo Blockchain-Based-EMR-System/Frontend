@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { format } from "date-fns";
+import { ar } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -17,6 +18,8 @@ import {
   CheckCircle2,
   Loader2,
   Settings2,
+  Stethoscope,
+  Building2,
 } from "lucide-react";
 import { NurseScheduleEntry } from "../../types/nurseDashboardTypes";
 import {
@@ -25,10 +28,12 @@ import {
   useCompleteNurseAppointment,
 } from "../../query/useNurseDashboard.query";
 import { AppointmentSelectionDialog } from "./AppointmentSelectionDialog";
+import { useLanguage } from "@/contexts/LanguageProvider";
+import { getTimeIn12HourFormat } from "@/lib/helpers";
 
 export function NurseAppointmentsTab() {
   const t = useTranslations("nurseDashboard");
-
+  const { locale } = useLanguage();
   const [selectedEntry, setSelectedEntry] = useState<NurseScheduleEntry | null>(
     null,
   );
@@ -70,9 +75,22 @@ export function NurseAppointmentsTab() {
   if (isScheduleLoading) {
     return (
       <div className="space-y-4">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <Skeleton key={i} className="h-20 w-full rounded-xl" />
-        ))}
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-40" />
+          <Skeleton className="h-4 w-64" />
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="border rounded-xl p-4 flex items-center gap-3">
+              <Skeleton className="h-11 w-11 rounded-full shrink-0" />
+              <div className="flex-1 space-y-1.5">
+                <Skeleton className="h-4 w-36" />
+                <Skeleton className="h-3 w-28" />
+              </div>
+              <Skeleton className="h-9 w-20 rounded-md shrink-0" />
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -101,19 +119,22 @@ export function NurseAppointmentsTab() {
         <div className="space-y-5">
           {/* Header */}
           <div className="flex items-start justify-between gap-4 flex-wrap">
-            <div>
+            <div className="mt-1">
               <h1 className="text-2xl font-bold">{t("appointments.title")}</h1>
               <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1 flex-wrap">
                 <span className="flex items-center gap-1 font-medium text-foreground">
-                  <User2 className="h-4 w-4" />
+                  <Stethoscope className="h-4 w-4" />
                   {selectedEntry.doctor.name}
                 </span>
                 <span>·</span>
-                <span>{selectedEntry.clinic.name}</span>
+                <span className="flex items-center gap-1 font-medium">
+                  <Building2 className="h-4 w-4" />
+                  {selectedEntry.clinic.name}
+                </span>
                 <span>·</span>
                 <span className="flex items-center gap-1">
                   <CalendarDays className="h-4 w-4" />
-                  {format(selectedDate, "PPP")}
+                  {format(selectedDate, "PPP", { locale: locale === "ar" ? ar : undefined })}
                 </span>
               </div>
             </div>
@@ -173,7 +194,7 @@ export function NurseAppointmentsTab() {
                         <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-muted-foreground mt-0.5">
                           <span className="flex items-center gap-1">
                             <Clock className="h-3 w-3" />
-                            {appt.start_time} – {appt.end_time}
+                            {getTimeIn12HourFormat(appt.start_time, locale)} – {getTimeIn12HourFormat(appt.end_time, locale)}
                           </span>
                           <span className="flex items-center gap-1">
                             <Phone className="h-3 w-3" />

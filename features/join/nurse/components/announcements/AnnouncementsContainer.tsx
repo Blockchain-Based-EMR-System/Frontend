@@ -18,6 +18,8 @@ export function AnnouncementsContainer({
 }: AnnouncementsContainerProps) {
   const tNurse = useTranslations("nurseJoining");
   const tCommon = useTranslations("common");
+  const tDoctorDashboard = useTranslations("doctorDashboard");
+  const tFields = useTranslations("fields");
 
   const [applyingId, setApplyingId] = useState<string | null>(null);
 
@@ -52,6 +54,8 @@ export function AnnouncementsContainer({
         onApply: handleApply,
         t: tNurse,
         tCommon,
+        tDoctorDashboard,
+        tFields,
       })}
     </>
   );

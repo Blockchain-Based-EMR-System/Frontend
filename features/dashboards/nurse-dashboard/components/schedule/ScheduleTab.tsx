@@ -3,7 +3,6 @@
 import { useNurseSchedule } from "../../query/useNurseDashboard.query";
 import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -13,27 +12,46 @@ import {
   ExternalLink,
   Clock,
 } from "lucide-react";
-
-const DAY_ORDER = [
-  "MONDAY",
-  "TUESDAY",
-  "WEDNESDAY",
-  "THURSDAY",
-  "FRIDAY",
-  "SATURDAY",
-  "SUNDAY",
-];
+import { useLanguage } from "@/contexts/LanguageProvider";
+import { getTimeIn12HourFormat } from "@/lib/helpers";
+import { Separator } from "@/components/ui/separator";
 
 export function ScheduleTab() {
   const t = useTranslations("nurseDashboard");
+  const tDoctorDashboard = useTranslations("doctorDashboard");
+  const { locale } = useLanguage();
   const { data, isLoading } = useNurseSchedule();
 
   if (isLoading) {
     return (
       <div className="space-y-4">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <Skeleton key={i} className="h-48 w-full rounded-xl" />
-        ))}
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-40" />
+          <Skeleton className="h-4 w-64" />
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="border rounded-xl p-4 space-y-3">
+              <div className="flex items-center gap-3">
+                <Skeleton className="h-12 w-12 rounded-full shrink-0" />
+                <div className="flex-1 space-y-1.5">
+                  <Skeleton className="h-4 w-36" />
+                  <Skeleton className="h-3 w-28" />
+                </div>
+              </div>
+              <Skeleton className="h-3 w-full" />
+              <Skeleton className="h-3 w-24" />
+              <div className="space-y-2">
+                {Array.from({ length: 3 }).map((_, d) => (
+                  <div key={d} className="flex items-center justify-between">
+                    <Skeleton className="h-3 w-20" />
+                    <Skeleton className="h-3 w-28" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -70,12 +88,6 @@ export function ScheduleTab() {
             .join("")
             .toUpperCase();
 
-          const sortedDays = [...entry.working_days].sort(
-            (a, b) =>
-              DAY_ORDER.indexOf(a.day_of_week) -
-              DAY_ORDER.indexOf(b.day_of_week),
-          );
-
           return (
             <Card key={entry.id} className="hover:shadow-sm transition-shadow">
               <CardHeader className="pb-3">
@@ -101,37 +113,39 @@ export function ScheduleTab() {
                 <div className="flex items-start gap-1.5 text-sm text-muted-foreground mt-1">
                   <MapPin className="h-3.5 w-3.5 shrink-0 mt-0.5" />
                   <span className="line-clamp-2">{entry.clinic.address}</span>
-                  {entry.clinic.address_maps_link && (
+                </div>
+                {entry.clinic.address_maps_link && (
                     <a
                       href={entry.clinic.address_maps_link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="shrink-0 text-primary hover:underline"
+                      className="shrink-0 text-primary text-sm hover:underline underline-offset-8 w-fit flex items-center gap-1.5"
                     >
-                      <ExternalLink className="h-3.5 w-3.5" />
+                      <MapPin className="h-3.5 w-3.5" />
+                      {locale === "ar" ? "الاتجاهات" : "Directions"}
                     </a>
                   )}
-                </div>
+
+                  <Separator className="my-2" />
               </CardHeader>
 
               <CardContent>
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2 flex items-center gap-1.5">
+                <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-2 flex items-center gap-1.5">
                   <CalendarDays className="h-3.5 w-3.5" />
                   {t("schedule.workingDays")}
                 </p>
                 <div className="space-y-1.5">
-                  {sortedDays.map((wd) => (
+                  {entry.working_days.map((wd) => (
                     <div
                       key={wd.day_of_week}
                       className="flex items-center justify-between text-sm"
                     >
                       <span className="font-medium">
-                        {wd.day_of_week.charAt(0) +
-                          wd.day_of_week.slice(1).toLowerCase()}
+                        {tDoctorDashboard(`schedule.days.${wd.day_of_week.toLowerCase()}`)}  
                       </span>
                       <span className="text-muted-foreground flex items-center gap-1">
                         <Clock className="h-3 w-3" />
-                        {wd.start_time} – {wd.end_time}
+                        {getTimeIn12HourFormat(wd.start_time, locale)} – {getTimeIn12HourFormat(wd.end_time, locale)}
                       </span>
                     </div>
                   ))}

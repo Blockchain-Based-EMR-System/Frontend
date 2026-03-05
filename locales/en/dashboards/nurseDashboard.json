@@ -10,6 +10,14 @@
     "subtitle": "Here is a summary of your activity"
   },
 
+  "stats": {
+    "totalApplications": "My Applications",
+    "approvedCount": "{count} approved",
+    "clinicsCount": "Clinics I Work At",
+    "doctorsCount": "Doctors I Work With",
+    "fromSchedule": "from my schedule"
+  },
+
   "applications": {
     "title": "My Applications",
     "subtitle": "Track the status of your job applications",
@@ -38,7 +46,7 @@
     "title": "Appointments",
     "subtitle": "View appointments for a doctor and date",
     "selectPair": "Select Doctor & Clinic",
-    "selectPairDesc": "Choose the doctor-clinic pair you are working with today",
+    "selectPairDesc": "Choose the doctor and the-clinic",
     "selectDate": "Select Date",
     "confirm": "Confirm",
     "changePair": "Change",
