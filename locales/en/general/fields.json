@@ -116,5 +116,7 @@
   "availabilityTypeRequired": "Availability type is required",
   "online": "Online",
   "offline": "Offline",
-  "both": "Both"
+  "both": "Both",
+
+  "optional": "optional"
 }

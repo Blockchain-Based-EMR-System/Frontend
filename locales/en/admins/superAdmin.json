@@ -12,6 +12,7 @@
   "superAdmin": "Super Admin",
   "totalDoctors": "Total Doctors",
   "totalAdmins": "Total Admins",
+  "totalNurses": "Total Nurses",
 
   "doctors": "Doctors",
   "manageDoctors": "Manage Doctors in the System",
@@ -46,5 +47,14 @@
   "unionSpecializationCertificate": "Union Specialization Certificate",
   "viewDocument": "View Document",
   "notProvided": "Not Provided",
-  "downloadPDF": "Download PDF"
+  "downloadPDF": "Download PDF",
+
+  "nurses": "Nurses",
+  "manageNurses": "Manage Nurse Accounts",
+  "noNursesFound": "No nurses found.",
+  "nurseDetails": "Nurse Details",
+  "yearsOfExperience": "Years of Experience",
+  "brief": "Brief",
+  "nationalCard": "National Card",
+  "bonusFile": "Bonus File"
 }

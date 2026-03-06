@@ -5,7 +5,9 @@ import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
+import { ar } from "date-fns/locale";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageProvider";
 
 interface DatePickerPopoverProps {
   date?: Date;
@@ -37,6 +39,8 @@ export function DatePickerPopover({
     setIsOpen(false);
   };
 
+  const { locale } = useLanguage();
+
   return (
     <>
       <Button
@@ -51,7 +55,7 @@ export function DatePickerPopover({
         onClick={() => setIsOpen(true)}
       >
         <CalendarIcon className="mr-2 h-4 w-4" />
-        {date ? format(date, "PPP") : <span>{placeholder}</span>}
+        {date ? format(date, "PPP", { locale: locale === "ar" ? ar : undefined }) : <span>{placeholder}</span>}
       </Button>
 
       {isOpen && (

@@ -27,18 +27,18 @@ export const getLocalizedMessage = (
 
 export const getTimeIn12HourFormat = (time: string, locale?: string): string => {
   if (!time || time === "undefined:undefined") return "";
-  if (locale === "ar") {
-    const [hourStr, minute] = time.split(":");
-    let hour = parseInt(hourStr, 10);
-    const ampm = hour >= 12 ? "م" : "ص";
-    hour = hour % 12 || 12;
-    return `${hour}:${minute} ${ampm}`;
-  }
+  
   const [hourStr, minute] = time.split(":");
   let hour = parseInt(hourStr, 10);
-  const ampm = hour >= 12 ? "PM" : "AM";
+  const isPM = hour >= 12;
   hour = hour % 12 || 12;
-  return `${hour}:${minute} ${ampm}`;
+  const hourDisplay = hour.toString().padStart(2, "0");
+
+  if (locale === "ar") {
+    return `${hourDisplay}:${minute} ${isPM ? "م" : "ص"}`;
+  }
+
+  return `${hourDisplay}:${minute} ${isPM ? "PM" : "AM"}`;
 };
 
 export const getInitials = (name: string) => {

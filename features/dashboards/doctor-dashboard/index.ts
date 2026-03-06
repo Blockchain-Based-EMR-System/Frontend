@@ -25,10 +25,16 @@ export { DashboardStats } from "./components/DashboardStats";
 
 export { DoctorDashboardContainer } from "./components/DoctorDashboardContainer";
 
+export { DoctorAnnouncementsTab } from "./components/announcements/DoctorAnnouncementsTab";
+export { CreateAnnouncementDialog } from "./components/announcements/CreateAnnouncementDialog";
+export { ApplicantsDialog } from "./components/announcements/ApplicantsDialog";
+
 export * from "./query/useClinics.query";
 export * from "./query/useSchedule.query";
 export * from "./query/useAppointments.query";
+export * from "./query/useAnnouncements.query";
 
 export * from "./types/clinic.types";
 export * from "./types/schedule.types";
 export * from "./types/appointment.types";
+export * from "./types/announcement.types";

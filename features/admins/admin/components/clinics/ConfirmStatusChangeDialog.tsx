@@ -11,13 +11,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Loader2 } from "lucide-react";
 
 interface ConfirmStatusChangeDialogProps {
   clinic: Clinic;
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
+  isPending?: boolean;
 }
 
 export function ConfirmStatusChangeDialog({
@@ -25,6 +26,7 @@ export function ConfirmStatusChangeDialog({
   open,
   onClose,
   onConfirm,
+  isPending = false,
 }: ConfirmStatusChangeDialogProps) {
   const tAdmin = useTranslations("admin");
   const tCommon = useTranslations("common");
@@ -32,7 +34,12 @@ export function ConfirmStatusChangeDialog({
   const newStatus = !clinic.is_active;
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        if (!isOpen && !isPending) onClose();
+      }}
+    >
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <div className="flex items-center gap-2">
@@ -56,17 +63,21 @@ export function ConfirmStatusChangeDialog({
         </div>
 
         <DialogFooter className="flex-row gap-2">
-          <Button variant="outline" onClick={onClose} className="flex-1">
+          <Button
+            variant="outline"
+            onClick={onClose}
+            disabled={isPending}
+            className="flex-1"
+          >
             {tCommon("cancel")}
           </Button>
           <Button
-            onClick={() => {
-              onConfirm();
-              onClose();
-            }}
+            onClick={onConfirm}
+            disabled={isPending}
             variant={newStatus ? "default" : "destructive"}
             className="flex-1"
           >
+            {isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
             {newStatus ? tAdmin("activate") : tAdmin("deactivate")}
           </Button>
         </DialogFooter>

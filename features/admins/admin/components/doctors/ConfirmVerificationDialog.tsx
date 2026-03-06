@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, CheckCircle } from "lucide-react";
+import { AlertTriangle, CheckCircle, Loader2 } from "lucide-react";
 
 interface ConfirmVerificationDialogProps {
   doctor: Doctor;
@@ -19,6 +19,7 @@ interface ConfirmVerificationDialogProps {
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
+  isPending?: boolean;
 }
 
 export function ConfirmVerificationDialog({
@@ -27,6 +28,7 @@ export function ConfirmVerificationDialog({
   open,
   onClose,
   onConfirm,
+  isPending = false,
 }: ConfirmVerificationDialogProps) {
   const tAdmin = useTranslations("admin");
   const tCommon = useTranslations("common");
@@ -34,7 +36,12 @@ export function ConfirmVerificationDialog({
   const isVerify = action === "verify";
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        if (!isOpen && !isPending) onClose();
+      }}
+    >
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <div className="flex items-center gap-2">
@@ -61,17 +68,21 @@ export function ConfirmVerificationDialog({
         </div>
 
         <DialogFooter className="flex-row gap-2">
-          <Button variant="outline" onClick={onClose} className="flex-1">
+          <Button
+            variant="outline"
+            onClick={onClose}
+            disabled={isPending}
+            className="flex-1"
+          >
             {tCommon("cancel")}
           </Button>
           <Button
-            onClick={() => {
-              onConfirm();
-              onClose();
-            }}
+            onClick={onConfirm}
+            disabled={isPending}
             variant={isVerify ? "default" : "destructive"}
             className="flex-1"
           >
+            {isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
             {isVerify ? tAdmin("verify") : tAdmin("reject")}
           </Button>
         </DialogFooter>

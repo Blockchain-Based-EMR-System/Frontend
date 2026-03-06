@@ -6,6 +6,9 @@
   "clinics": "Clinics",
   "contactUs": "Contact Us",
   "joinAsDoctor": "Join as a Doctor",
+  "join": "Join",
+  "joinAsNurse": "Join as a Nurse",
+  "announcements": "Announcements",
 
   "loading": "Loading...",
   "sending": "Sending...",
@@ -56,5 +59,4 @@
   "doctor": "Dr. ",
 
   "egp": "EGP"
-
 }

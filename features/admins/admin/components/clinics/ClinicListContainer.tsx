@@ -17,7 +17,8 @@ export function ClinicListContainer() {
   const [selectedClinic, setSelectedClinic] = useState<Clinic | null>(null);
   const [clinicToToggle, setClinicToToggle] = useState<Clinic | null>(null);
 
-  const { mutate: setActiveStatus } = useSetClinicActiveStatus();
+  const { mutate: setActiveStatus, isPending: isStatusPending } =
+    useSetClinicActiveStatus();
   const { toast } = useToast();
   const tAdmin = useTranslations("admin");
 
@@ -77,6 +78,7 @@ export function ClinicListContainer() {
           open={!!clinicToToggle}
           onClose={() => setClinicToToggle(null)}
           onConfirm={confirmToggleStatus}
+          isPending={isStatusPending}
         />
       )}
     </>
