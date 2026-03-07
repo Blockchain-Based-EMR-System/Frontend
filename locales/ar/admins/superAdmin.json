@@ -56,5 +56,7 @@
   "yearsOfExperience": "سنوات الخبرة",
   "brief": "نبذة",
   "nationalCard": "البطاقة الوطنية",
-  "bonusFile": "ملف إضافي"
+  "bonusFile": "ملف إضافي",
+  "searchByNameOrPhone": "البحث بالاسم أو رقم الهاتف",
+  "showInactiveOnly": "عرض غير النشطة فقط"
 }

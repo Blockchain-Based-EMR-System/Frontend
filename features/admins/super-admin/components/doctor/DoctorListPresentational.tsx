@@ -1,9 +1,10 @@
 "use client";
 
-import { Plus, Eye } from "lucide-react";
+import { Plus, Eye, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Doctor } from "@/types/user";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -21,6 +22,8 @@ interface DoctorListPresentationalProps {
   isLoading: boolean;
   onViewDoctor: (doctor: Doctor) => void;
   onAddDoctor: () => void;
+  searchQuery: string;
+  onSearchChange: (q: string) => void;
 }
 
 export function DoctorListPresentational({
@@ -28,6 +31,8 @@ export function DoctorListPresentational({
   isLoading,
   onViewDoctor,
   onAddDoctor,
+  searchQuery,
+  onSearchChange,
 }: DoctorListPresentationalProps) {
   const tAdmin = useTranslations("superAdmin");
   const tCommon = useTranslations("common");
@@ -45,6 +50,17 @@ export function DoctorListPresentational({
             {tAdmin("doctors")}
           </h1>
           <p className="text-muted-foreground">{tAdmin("manageDoctors")}</p>
+        </div>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <div className="relative">
+            <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              className="ps-9 w-64"
+              placeholder={tAdmin("searchByNameOrPhone")}
+              value={searchQuery}
+              onChange={(e) => onSearchChange(e.target.value)}
+            />
+          </div>
         </div>
       </div>
 

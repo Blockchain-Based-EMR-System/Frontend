@@ -1,10 +1,13 @@
 "use client";
 
-import { Eye } from "lucide-react";
+import { Eye, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Clinic } from "../../types/clinicTypes";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Table,
   TableBody,
@@ -20,12 +23,20 @@ interface ClinicListPresentationalProps {
   clinics: Clinic[];
   isLoading: boolean;
   onViewClinic: (clinic: Clinic) => void;
+  searchQuery: string;
+  onSearchChange: (q: string) => void;
+  showInactiveOnly: boolean;
+  onShowInactiveOnlyChange: (v: boolean) => void;
 }
 
 export function ClinicListPresentational({
   clinics,
   isLoading,
   onViewClinic,
+  searchQuery,
+  onSearchChange,
+  showInactiveOnly,
+  onShowInactiveOnlyChange,
 }: ClinicListPresentationalProps) {
   const tCommon = useTranslations("common");
   const tAdmin = useTranslations("superAdmin");
@@ -45,6 +56,27 @@ export function ClinicListPresentational({
           <p className="text-muted-foreground">
             {tAdmin("clinicsDescription")}
           </p>
+        </div>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <div className="relative">
+            <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              className="ps-9 w-64"
+              placeholder={tAdmin("searchByNameOrPhone")}
+              value={searchQuery}
+              onChange={(e) => onSearchChange(e.target.value)}
+            />
+          </div>
+          <div className="flex items-center space-x-2 rtl:space-x-reverse">
+            <Checkbox
+              id="show-inactive-clinics-sa"
+              checked={showInactiveOnly}
+              onCheckedChange={(checked) => onShowInactiveOnlyChange(checked as boolean)}
+            />
+            <Label htmlFor="show-inactive-clinics-sa">
+              {tAdmin("showInactiveOnly")}
+            </Label>
+          </div>
         </div>
       </div>
 

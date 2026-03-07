@@ -4,7 +4,9 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageProvider";
 
-interface TableProps extends React.HTMLAttributes<HTMLTableElement> {}
+interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
+  containerClassName?: string;
+}
 interface TableHeaderProps extends React.HTMLAttributes<HTMLTableSectionElement> {}
 interface TableBodyProps extends React.HTMLAttributes<HTMLTableSectionElement> {}
 interface TableFooterProps extends React.HTMLAttributes<HTMLTableSectionElement> {}
@@ -14,16 +16,24 @@ interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {}
 interface TableCaptionProps extends React.HTMLAttributes<HTMLTableCaptionElement> {}
 
 const Table = React.forwardRef<HTMLTableElement, TableProps>(
-  ({ className, ...props }, ref) => {
+  ({ className, containerClassName, ...props }, ref) => {
     const { direction } = useLanguage();
-    
+
     return (
-      <table
-        ref={ref}
+      <div
         dir={direction}
-        className={cn("w-full caption-bottom text-sm", className)}
-        {...props}
-      />
+        className={cn(
+          "relative w-full overflow-auto rounded-md border",
+          "max-h-[50vh] sm:max-h-[60vh] md:max-h-[65vh] lg:max-h-[70vh] xl:max-h-[75vh]",
+          containerClassName
+        )}
+      >
+        <table
+          ref={ref}
+          className={cn("w-full caption-bottom text-sm", className)}
+          {...props}
+        />
+      </div>
     );
   }
 );
@@ -31,7 +41,11 @@ Table.displayName = "Table";
 
 const TableHeader = React.forwardRef<HTMLTableSectionElement, TableHeaderProps>(
   ({ className, ...props }, ref) => (
-    <thead ref={ref} className={cn("[&_tr]:border-b", className)} {...props} />
+    <thead
+      ref={ref}
+      className={cn("sticky top-0 z-10 bg-background [&_tr]:border-b", className)}
+      {...props}
+    />
   )
 );
 TableHeader.displayName = "TableHeader";
@@ -78,7 +92,7 @@ TableRow.displayName = "TableRow";
 const TableHead = React.forwardRef<HTMLTableCellElement, TableHeadProps>(
   ({ className, ...props }, ref) => {
     const { direction } = useLanguage();
-    
+
     return (
       <th
         ref={ref}
@@ -97,7 +111,7 @@ TableHead.displayName = "TableHead";
 const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
   ({ className, ...props }, ref) => {
     const { direction } = useLanguage();
-    
+
     return (
       <td
         ref={ref}

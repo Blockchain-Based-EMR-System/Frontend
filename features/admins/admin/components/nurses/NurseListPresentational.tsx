@@ -1,9 +1,10 @@
 "use client";
 
-import { Eye, CheckCircle, XCircle } from "lucide-react";
+import { Eye, CheckCircle, XCircle, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Table,
@@ -24,6 +25,8 @@ interface NurseListPresentationalProps {
   showUnverifiedOnly: boolean;
   setShowUnverifiedOnly: (show: boolean) => void;
   onVerifyClick: (nurse: Nurse, action: "verify" | "reject") => void;
+  searchQuery: string;
+  onSearchChange: (q: string) => void;
 }
 
 function NurseTableSkeleton() {
@@ -109,6 +112,8 @@ export function NurseListPresentational({
   showUnverifiedOnly,
   setShowUnverifiedOnly,
   onVerifyClick,
+  searchQuery,
+  onSearchChange,
 }: NurseListPresentationalProps) {
   const tCommon = useTranslations("common");
   const tAdmin = useTranslations("admin");
@@ -127,17 +132,28 @@ export function NurseListPresentational({
           </h1>
           <p className="text-muted-foreground">{tAdmin("manageNurses")}</p>
         </div>
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id="show-unverified-nurses"
-            checked={showUnverifiedOnly}
-            onCheckedChange={(checked) =>
-              setShowUnverifiedOnly(checked as boolean)
-            }
-          />
-          <Label htmlFor="show-unverified-nurses">
-            {tAdmin("showUnverifiedOnly")}
-          </Label>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <div className="relative">
+            <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              className="ps-9 w-64"
+              placeholder={tAdmin("searchByNameOrPhone")}
+              value={searchQuery}
+              onChange={(e) => onSearchChange(e.target.value)}
+            />
+          </div>
+          <div className="flex items-center space-x-2 rtl:space-x-reverse">
+            <Checkbox
+              id="show-unverified-nurses"
+              checked={showUnverifiedOnly}
+              onCheckedChange={(checked) =>
+                setShowUnverifiedOnly(checked as boolean)
+              }
+            />
+            <Label htmlFor="show-unverified-nurses">
+              {tAdmin("showUnverifiedOnly")}
+            </Label>
+          </div>
         </div>
       </div>
 

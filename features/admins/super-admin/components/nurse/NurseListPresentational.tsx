@@ -1,8 +1,9 @@
 "use client";
 
-import { Eye } from "lucide-react";
+import { Eye, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -19,6 +20,8 @@ interface NurseListPresentationalProps {
   nurses: Nurse[];
   isLoading: boolean;
   onViewNurse: (nurse: Nurse) => void;
+  searchQuery: string;
+  onSearchChange: (q: string) => void;
 }
 
 function NurseTableSkeleton() {
@@ -87,6 +90,8 @@ export function NurseListPresentational({
   nurses,
   isLoading,
   onViewNurse,
+  searchQuery,
+  onSearchChange,
 }: NurseListPresentationalProps) {
   const tCommon = useTranslations("common");
   const tAdmin = useTranslations("superAdmin");
@@ -105,6 +110,15 @@ export function NurseListPresentational({
           </h1>
           <p className="text-muted-foreground">{tAdmin("manageNurses")}</p>
         </div>
+        <div className="relative">
+          <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            className="ps-9 w-64"
+            placeholder={tAdmin("searchByNameOrPhone")}
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+          />
+        </div>
       </div>
 
       <Card>
@@ -117,6 +131,7 @@ export function NurseListPresentational({
                   <TableHead>{tFields("email")}</TableHead>
                   <TableHead>{tFields("phoneNumber")}</TableHead>
                   <TableHead>{tFields("gender")}</TableHead>
+                  <TableHead>{tCommon("accountStatus")}</TableHead>
                   <TableHead className="text-right">
                     {tCommon("actions")}
                   </TableHead>
@@ -125,7 +140,7 @@ export function NurseListPresentational({
               <TableBody>
                 {nurses.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center py-8">
+                    <TableCell colSpan={6} className="text-center py-8">
                       {tAdmin("noNursesFound")}
                     </TableCell>
                   </TableRow>
@@ -143,6 +158,9 @@ export function NurseListPresentational({
                           : nurse.gender === "FEMALE"
                             ? tFields("female")
                             : "N/A"}
+                      </TableCell>
+                      <TableCell>
+                        {getAccountStatusBadge(nurse.nurse?.account_status, tCommon)}
                       </TableCell>
                       <TableCell className="text-right">
                         <Button

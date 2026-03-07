@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Clinic } from "../../types/clinic.types";
 import {
@@ -16,6 +16,8 @@ export function ClinicListContainer() {
   const { data, isLoading } = useClinics();
   const [selectedClinic, setSelectedClinic] = useState<Clinic | null>(null);
   const [clinicToToggle, setClinicToToggle] = useState<Clinic | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showInactiveOnly, setShowInactiveOnly] = useState(false);
 
   const { mutate: setActiveStatus, isPending: isStatusPending } =
     useSetClinicActiveStatus();
@@ -53,15 +55,27 @@ export function ClinicListContainer() {
     );
   };
 
-  const clinics = data?.data || [];
+  const filteredClinics = useMemo(() => {
+    const allClinics = data?.data || [];
+    const q = searchQuery.toLowerCase().trim();
+    return allClinics.filter((c) => {
+      if (showInactiveOnly && c.is_active) return false;
+      if (q) return (c.name?.toLowerCase().includes(q) ?? false) || (c.phone?.toLowerCase().includes(q) ?? false);
+      return true;
+    });
+  }, [data, searchQuery, showInactiveOnly]);
 
   return (
     <>
       <ClinicListPresentational
-        clinics={clinics}
+        clinics={filteredClinics}
         isLoading={isLoading}
         onViewClinic={setSelectedClinic}
         onToggleStatus={handleToggleStatus}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        showInactiveOnly={showInactiveOnly}
+        onShowInactiveOnlyChange={setShowInactiveOnly}
       />
 
       {selectedClinic && (

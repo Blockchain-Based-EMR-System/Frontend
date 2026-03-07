@@ -56,5 +56,7 @@
   "yearsOfExperience": "Years of Experience",
   "brief": "Brief",
   "nationalCard": "National Card",
-  "bonusFile": "Bonus File"
+  "bonusFile": "Bonus File",
+  "searchByNameOrPhone": "Search by name or phone",
+  "showInactiveOnly": "Show Inactive Only"
 }

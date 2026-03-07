@@ -1,9 +1,10 @@
 "use client";
 
-import { Plus, Eye } from "lucide-react";
+import { Plus, Eye, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Admin } from "@/types/user";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -20,6 +21,8 @@ interface AdminListPresentationalProps {
   isLoading: boolean;
   onViewAdmin: (admin: Admin) => void;
   onAddAdmin: () => void;
+  searchQuery: string;
+  onSearchChange: (q: string) => void;
 }
 
 export function AdminListPresentational({
@@ -27,6 +30,8 @@ export function AdminListPresentational({
   isLoading,
   onViewAdmin,
   onAddAdmin,
+  searchQuery,
+  onSearchChange,
 }: AdminListPresentationalProps) {
   const tCommon = useTranslations("common");
   const tAdmin = useTranslations("superAdmin");
@@ -45,10 +50,21 @@ export function AdminListPresentational({
           </h1>
           <p className="text-muted-foreground">{tAdmin("adminsDescription")}</p>
         </div>
-        <Button onClick={onAddAdmin} className="w-full md:w-auto">
-          <Plus className="h-4 w-4 mr-2 rtl:mr-0 rtl:ml-2" />
-          {tAdmin("addAdmin")}
-        </Button>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <div className="relative">
+            <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              className="ps-9 w-64"
+              placeholder={tAdmin("searchByNameOrPhone")}
+              value={searchQuery}
+              onChange={(e) => onSearchChange(e.target.value)}
+            />
+          </div>
+          <Button onClick={onAddAdmin} className="w-full md:w-auto">
+            <Plus className="h-4 w-4 mr-2 rtl:mr-0 rtl:ml-2" />
+            {tAdmin("addAdmin")}
+          </Button>
+        </div>
       </div>
 
       {/* Break out of container padding on mobile */}

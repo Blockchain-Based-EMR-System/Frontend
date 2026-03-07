@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 
 import { NurseListPresentational } from "./NurseListPresentational";
@@ -10,10 +10,14 @@ import { useAllNurses, useVerifyNurse } from "../../query/useNurses.query";
 import { useToast } from "@/hooks/useToast";
 import { Nurse } from "../../types/nurse.types";
 
+const STATUS_ORDER: Record<string, number> = { PENDING: 0, APPROVED: 1, REJECTED: 2 };
+const getStatusOrder = (status?: string): number => STATUS_ORDER[status ?? ""] ?? 3;
+
 export function NurseListContainer() {
   const { data, isLoading } = useAllNurses();
   const [selectedNurse, setSelectedNurse] = useState<Nurse | null>(null);
   const [showUnverifiedOnly, setShowUnverifiedOnly] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [nurseToVerify, setNurseToVerify] = useState<{
     nurse: Nurse;
     action: "verify" | "reject";
@@ -54,11 +58,17 @@ export function NurseListContainer() {
     );
   };
 
-  const nurses = data?.data || [];
-
-  const filteredNurses = showUnverifiedOnly
-    ? nurses.filter((n) => n.nurse?.account_status !== "APPROVED")
-    : nurses;
+  const filteredNurses = useMemo(() => {
+    const allNurses = data?.data || [];
+    const q = searchQuery.toLowerCase().trim();
+    return allNurses
+      .filter((n) => {
+        if (showUnverifiedOnly && n.nurse?.account_status === "APPROVED") return false;
+        if (q) return (n.name?.toLowerCase().includes(q) ?? false) || (n.phone?.toLowerCase().includes(q) ?? false);
+        return true;
+      })
+      .sort((a, b) => getStatusOrder(a.nurse?.account_status) - getStatusOrder(b.nurse?.account_status));
+  }, [data, showUnverifiedOnly, searchQuery]);
 
   return (
     <>
@@ -69,6 +79,8 @@ export function NurseListContainer() {
         showUnverifiedOnly={showUnverifiedOnly}
         setShowUnverifiedOnly={setShowUnverifiedOnly}
         onVerifyClick={handleVerifyClick}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
       />
 
       {selectedNurse && (
