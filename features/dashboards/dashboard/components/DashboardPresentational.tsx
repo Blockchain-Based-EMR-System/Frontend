@@ -11,8 +11,9 @@ import {
   MapPin,
   Video,
   CalendarCheck,
-  ExternalLink,
   Building2,
+  CheckCircle2,
+  XCircle,
 } from "lucide-react";
 import { useTodayAppointment } from "../query/useDashboard.query";
 import { format } from "date-fns";
@@ -22,6 +23,7 @@ import { DashboardSkeleton } from "./skeletons";
 import { QueueStatusCard } from "./QueueStatusCard";
 import { useLanguage } from "@/contexts/LanguageProvider";
 import { getTimeIn12HourFormat } from "@/lib/helpers";
+import { cn } from "@/lib/utils";
 
 export interface DashboardPresentationalProps {
   user: DashboardUser | null;
@@ -44,9 +46,6 @@ export function DashboardPresentational({
     useTodayAppointment();
   const { locale } = useLanguage();
 
-  console.log("📅 Today's appointment data:", todayAppointment);
-  console.log("📅 Loading:", isLoadingAppointment);
-
   if (isLoading || !user) {
     return <DashboardSkeleton />;
   }
@@ -65,6 +64,14 @@ export function DashboardPresentational({
     );
   }
 
+  const isCompleted = todayAppointment?.status === "COMPLETED";
+  const isCancelled = todayAppointment?.status === "CANCELLED";
+  const hasAppointment =
+    todayAppointment?.status === "CONFIRMED" ||
+    todayAppointment?.status === "RESCHEDULED" ||
+    isCompleted ||
+    isCancelled;
+
   return (
     <div className="space-y-6">
       <Card>
@@ -75,14 +82,34 @@ export function DashboardPresentational({
         </CardHeader>
       </Card>
 
-      <Card>
+      <Card
+        className={cn(
+          "transition-all relative",
+          isCompleted && "border-green-800 bg-green-800/30",
+          isCancelled && "border-red-800 bg-red-800/30",
+        )}
+      >
+        {/* Watermark icon overlay for COMPLETED / CANCELLED */}
+        {(isCompleted || isCancelled) && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+            {isCompleted ? (
+              <CheckCircle2 className="h-24 w-24 text-green-600 drop-shadow-lg opacity-30" />
+            ) : (
+              <XCircle className="h-24 w-24 text-red-600 drop-shadow-lg opacity-30" />
+            )}
+          </div>
+        )}
+
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <CalendarCheck className="h-5 w-5" />
             {tDashboard("todaysAppointment")}
           </CardTitle>
         </CardHeader>
-        <CardContent>
+
+        <CardContent
+          className={cn(isCompleted || isCancelled ? "opacity-60" : "")}
+        >
           {isLoadingAppointment ? (
             <div className="space-y-4">
               <div className="flex items-start gap-4">
@@ -107,8 +134,7 @@ export function DashboardPresentational({
                 <div className="h-9 w-32 bg-muted animate-pulse rounded" />
               </div>
             </div>
-          ) : todayAppointment?.status === "CONFIRMED" ||
-            todayAppointment?.status === "RESCHEDULED" ? (
+          ) : hasAppointment ? (
             <div className="space-y-4">
               <div className="flex items-start gap-4">
                 <Avatar className="h-16 w-16">

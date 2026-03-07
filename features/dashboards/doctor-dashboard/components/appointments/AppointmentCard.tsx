@@ -79,9 +79,9 @@ export function AppointmentCard({
         {(isCompleted || isCancelled) && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
             {isCompleted ? (
-              <CheckCircle2 className="h-16 w-16 text-green-600 drop-shadow-lg opacity-50" />
+              <CheckCircle2 className="h-16 w-16 text-green-600 drop-shadow-lg opacity-30" />
             ) : (
-              <XCircle className="h-16 w-16 text-red-600 drop-shadow-lg opacity-50" />
+              <XCircle className="h-16 w-16 text-red-600 drop-shadow-lg opacity-30" />
             )}
           </div>
         )}
@@ -107,7 +107,7 @@ export function AppointmentCard({
             </p>
 
             {/* Status Badge */}
-            <Badge className={cn("text-xs", statusColor)}>
+            <Badge className={cn("text-xs hover:bg-transparent", statusColor)}>
               {t(`status.${appointment.status.toLowerCase()}`)}
             </Badge>
           </div>

@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { useLogout } from "@/features/auth/login";
 import { getRoleDashboardPath } from "@/lib/auth";
 import { getInitials } from "@/lib/helpers";
+import { usePathname } from "next/navigation";
 
 interface UserProfileDropdownProps {
   user: User;
@@ -27,8 +28,11 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
   const tCommon = useTranslations("common");
   const tDashboard = useTranslations("userDashboard");
   const logoutMutation = useLogout();
+  const pathname = usePathname();
 
   const dashboardUrl = getRoleDashboardPath(user.role);
+  const isOnDashboard = pathname === dashboardUrl;
+  const isOnSettings = pathname.includes("/settings");
 
   const handleLogout = () => {
     logoutMutation.mutate();
@@ -93,19 +97,19 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
               <DropdownMenuItem asChild>
                 <Link
                   href={dashboardUrl}
-                  className="cursor-pointer flex items-center"
+                  className={`cursor-pointer flex items-center ${isOnDashboard ? "text-primary" : ""}`}
                 >
-                  <UserIcon className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+                  <UserIcon className={ `h-4 w-4 ltr:mr-2 rtl:ml-2 ${isOnDashboard ? "text-primary" : ""}` } />
                   {tDashboard("dashboard")}
                 </Link>
               </DropdownMenuItem>
 
               <DropdownMenuItem asChild>
                 <Link
-                  href="/settings"
-                  className="cursor-pointer flex items-center"
+                  href="/settings/profile"
+                  className={`cursor-pointer flex items-center ${isOnSettings ? "text-primary" : ""}`}
                 >
-                  <Settings className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+                  <Settings className= {`h-4 w-4 ltr:mr-2 rtl:ml-2 ${isOnSettings ? "text-primary" : ""}`} />
                   {tCommon("settings")}
                 </Link>
               </DropdownMenuItem>
@@ -154,8 +158,8 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
               className="w-full justify-start"
               asChild
             >
-              <Link href={dashboardUrl}>
-                <UserIcon className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+              <Link href={dashboardUrl} className={`flex items-center ${isOnDashboard ? "text-primary" : ""}`}>
+                <UserIcon className={ `h-4 w-4 ltr:mr-2 rtl:ml-2 ${isOnDashboard ? "text-primary" : ""}` } />
                 {tDashboard("dashboard")}
               </Link>
             </Button>
@@ -166,8 +170,8 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
               className="w-full justify-start"
               asChild
             >
-              <Link href="/settings">
-                <Settings className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+              <Link href="/settings/profile" className={`flex items-center ${isOnSettings ? "text-primary" : ""}`}>
+                <Settings className={ `h-4 w-4 ltr:mr-2 rtl:ml-2 ${isOnSettings ? "text-primary" : ""}` } />
                 {tCommon("settings")}
               </Link>
             </Button>
