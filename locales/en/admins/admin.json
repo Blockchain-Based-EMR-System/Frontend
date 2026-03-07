@@ -14,8 +14,8 @@
   "verifyMessage": "Are you sure you want to verify this doctor? They will be approved to use the system.",
   "rejectMessage": "Are you sure you want to reject this doctor? They will not be able to access the system.",
   "totalDoctors": "Total Doctors",
-  "totalClinics": "Total Clinics",
   "totalNurses": "Total Nurses",
+  "welcomeToDashboard": "Welcome to the Admin Dashboard",
 
   "doctors": "Doctors",
   "manageDoctors": "Manage Doctors in the System",

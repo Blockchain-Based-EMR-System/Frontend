@@ -25,11 +25,11 @@ export const getLocalizedMessage = (
   );
 };
 
-export const getTimeIn12HourFormat = (time: string, locale?: string): string => {
+export const getTimeIn12HourFormat = (time: string, locale?: string, addHours?: number): string => {
   if (!time || time === "undefined:undefined") return "";
   
   const [hourStr, minute] = time.split(":");
-  let hour = parseInt(hourStr, 10);
+  let hour = (parseInt(hourStr, 10) + (addHours ?? 0)) % 24;
   const isPM = hour >= 12;
   hour = hour % 12 || 12;
   const hourDisplay = hour.toString().padStart(2, "0");

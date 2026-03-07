@@ -285,5 +285,11 @@
     "maxAge": "Max Age",
     "yearsOfExperienceReq": "Min. Experience",
     "years": "yrs"
+  },
+
+  "socket": {
+    "patientCancelled": "{patient} cancelled their appointment on {date}",
+    "patientRescheduled": "{patient} has rescheduled their appointment",
+    "appointmentCompleted": "An appointment has been marked as completed"
   }
 }

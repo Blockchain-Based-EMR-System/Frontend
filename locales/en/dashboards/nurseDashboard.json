@@ -66,5 +66,9 @@
     "markComplete": "Mark Complete",
     "completing": "Completing...",
     "completed": "Completed"
+  },
+
+  "socket": {
+    "appointmentStatusChanged": "Appointment #{id} status changed to {status}"
   }
 }

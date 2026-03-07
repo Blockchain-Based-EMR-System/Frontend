@@ -133,6 +133,7 @@ export function DoctorJoinForm({
       mastersCertificate: data.mastersCertificate?.name,
       fellowshipCertificate: data.fellowshipCertificate?.name,
       unionSpecializationCertificate: data.unionSpecializationCertificate?.name,
+      availability_type: data.availability_type,
     });
 
     if (!data.gender || !data.dateOfBirth) {

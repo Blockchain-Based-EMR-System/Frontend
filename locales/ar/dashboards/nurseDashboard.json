@@ -66,5 +66,9 @@
     "markComplete": "تحديد كمكتمل",
     "completing": "جاري الإكمال...",
     "completed": "مكتمل"
+  },
+
+  "socket": {
+    "appointmentStatusChanged": "تغيرت حالة الموعد رقم #{id} إلى {status}"
   }
 }

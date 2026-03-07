@@ -50,5 +50,15 @@
   "cancelled": "ملغى",
   "rescheduled": "معاد جدولته",
 
-  "bookAppointment": "حجز موعد"
+  "bookAppointment": "حجز موعد",
+
+  "socket": {
+    "appointmentCancelled": "تم إلغاء موعدك",
+    "appointmentRescheduled": "تم إعادة جدولة موعدك",
+    "appointmentCompleted": "اكتمل موعدك",
+    "queueUpdated": "تم تحديث موقعك في الطابور",
+    "queuePosition": "أنت رقم #{position} في الطابور",
+    "queueWait": "~{minutes} دقيقة انتظار",
+    "queueAhead": "{count} مريض أمامك"
+  }
 }

@@ -10,7 +10,7 @@ export interface GoogleUserDataResponse extends ApiResponse<User> {
 export interface RawAppointmentData {
   id: string;
   status: "CONFIRMED" | "COMPLETED" | "CANCELLED" | "RESCHEDULED";
-  doctor_id: string; 
+  doctor_id: string;
   clinic_id: string | null;
   is_online: boolean;
   slot_duration: number;
@@ -25,13 +25,13 @@ export interface RawAppointmentData {
 }
 
 export interface AppointmentDoctor {
-  id: string; 
+  id: string;
   name: string;
   profilePic: string | null;
 }
 
 export interface AppointmentClinic {
-  id: string | null; 
+  id: string | null;
   name: string;
   address: string;
   mapsLink: string;
@@ -47,8 +47,9 @@ export interface Appointment {
   online: boolean;
 }
 
-export type TodayAppointmentRawResponse =
-  ApiResponse<RawAppointmentData | null>;
+export type TodayAppointmentRawResponse = ApiResponse<
+  RawAppointmentData | RawAppointmentData[] | null
+>;
 export type PatientAppointmentsRawResponse = ApiResponse<RawAppointmentData[]>;
 
 export type TodayAppointmentResponse = ApiResponse<Appointment | null>;

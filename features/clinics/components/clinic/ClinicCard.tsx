@@ -144,7 +144,9 @@ export function ClinicCard({ clinic }: ClinicCardProps) {
                             alt={doctor.name}
                           />
                           <AvatarFallback>
-                            {getInitials(doctor.name)}
+                            <p className="text-xl text-primary">
+                              {getInitials(doctor.name)}
+                            </p>
                           </AvatarFallback>
                         </Avatar>
                         <div

@@ -285,5 +285,11 @@
     "maxAge": "الحد الأقصى للسن",
     "yearsOfExperienceReq": "الحد الأدنى للخبرة",
     "years": "سنة"
+  },
+
+  "socket": {
+    "patientCancelled": "قام {patient} بإلغاء موعده بتاريخ {date}",
+    "patientRescheduled": "قام {patient} بإعادة جدولة موعده",
+    "appointmentCompleted": "تم تمييز موعد كمكتمل"
   }
 }

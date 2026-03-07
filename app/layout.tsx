@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { ThemeProvider } from "@/contexts/ThemeProvider";
 import { LanguageProvider } from "@/contexts/LanguageProvider";
+import { SocketProvider } from "@/contexts/SocketProvider";
 import { QueryProvider } from "@/contexts/QueryProvider";
 import { Toaster } from "@/components/ui/toaster";
 import { Navbar, Footer } from "@/components/layout";
@@ -49,15 +50,17 @@ export default async function RootLayout({
           <NextIntlClientProvider messages={messages} locale={locale}>
             <ThemeProvider>
               <LanguageProvider initialLocale={locale}>
-                <NuqsAdapter>
-                  <InteractiveBackground />
-                  <div className="flex flex-col min-h-screen">
-                    <Navbar />
-                    <main className="grow flex flex-col">{children}</main>
-                  </div>
-                  <Footer />
-                  <Toaster />
-                </NuqsAdapter>
+                <SocketProvider>
+                  <NuqsAdapter>
+                    <InteractiveBackground />
+                    <div className="flex flex-col min-h-screen">
+                      <Navbar />
+                      <main className="grow flex flex-col">{children}</main>
+                    </div>
+                    <Footer />
+                    <Toaster />
+                  </NuqsAdapter>
+                </SocketProvider>
               </LanguageProvider>
             </ThemeProvider>
           </NextIntlClientProvider>

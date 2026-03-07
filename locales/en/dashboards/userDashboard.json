@@ -50,5 +50,15 @@
   "cancelled": "Cancelled",
   "rescheduled": "Rescheduled",
 
-  "bookAppointment": "Book Appointment"
+  "bookAppointment": "Book Appointment",
+
+  "socket": {
+    "appointmentCancelled": "Your appointment has been cancelled",
+    "appointmentRescheduled": "Your appointment has been rescheduled",
+    "appointmentCompleted": "Your appointment has been completed",
+    "queueUpdated": "Queue position updated",
+    "queuePosition": "You are #{position} in the queue",
+    "queueWait": "~{minutes} min wait",
+    "queueAhead": "{count} patients ahead"
+  }
 }

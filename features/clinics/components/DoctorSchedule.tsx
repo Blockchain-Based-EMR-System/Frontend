@@ -136,7 +136,9 @@ export function DoctorSchedule() {
                   alt={selectedDoctor.name}
                 />
                 <AvatarFallback>
-                  {getInitials(selectedDoctor.name)}
+                  <p className="text-3xl text-primary">
+                    {getInitials(selectedDoctor.name)}
+                  </p>
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 space-y-2">

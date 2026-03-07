@@ -22,11 +22,18 @@ export const getTodayAppointment = async (): Promise<Appointment | null> => {
   const response = await api.get<TodayAppointmentRawResponse>(
     "/appointments/patient/today-appointment",
   );
-  if (response.data && response.data.id && response.data.appointment_date) {
-    const transformed = transformRawAppointment(response.data);
-    return transformed;
-  }
-  return null;
+  console.log("Raw today appointment response:", response);
+  const raw = response.data;
+  if (!raw) return null;
+
+  // Backend may return a single object or an array of today's appointments
+  const list = Array.isArray(raw) ? raw : [raw];
+  if (list.length === 0) return null;
+
+  // Prefer CONFIRMED appointment; fall back to first in list
+  const appointment = list.find((a) => a.status === "CONFIRMED") ?? list[0];
+
+  return transformRawAppointment(appointment);
 };
 
 export const getPatientAppointments = async (): Promise<Appointment[]> => {

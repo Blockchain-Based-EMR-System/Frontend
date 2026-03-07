@@ -12,12 +12,16 @@ import {
   Video,
   CalendarCheck,
   ExternalLink,
+  Building2,
 } from "lucide-react";
 import { useTodayAppointment } from "../query/useDashboard.query";
 import { format } from "date-fns";
 import Link from "next/link";
 import { getInitials } from "@/lib/helpers";
 import { DashboardSkeleton } from "./skeletons";
+import { QueueStatusCard } from "./QueueStatusCard";
+import { useLanguage } from "@/contexts/LanguageProvider";
+import { getTimeIn12HourFormat } from "@/lib/helpers";
 
 export interface DashboardPresentationalProps {
   user: DashboardUser | null;
@@ -29,18 +33,6 @@ export interface DashboardPresentationalProps {
   tCommon: (key: string) => string;
 }
 
-const formatTime = (dateString: string) => {
-  if (!dateString || dateString === "undefinedTundefined") return "";
-  try {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return "";
-    return format(date, "h:mm a");
-  } catch (error) {
-    console.error("Error formatting time:", error);
-    return "";
-  }
-};
-
 export function DashboardPresentational({
   user,
   isLoading,
@@ -50,6 +42,7 @@ export function DashboardPresentational({
 }: DashboardPresentationalProps) {
   const { data: todayAppointment, isLoading: isLoadingAppointment } =
     useTodayAppointment();
+  const { locale } = useLanguage();
 
   console.log("📅 Today's appointment data:", todayAppointment);
   console.log("📅 Loading:", isLoadingAppointment);
@@ -114,7 +107,8 @@ export function DashboardPresentational({
                 <div className="h-9 w-32 bg-muted animate-pulse rounded" />
               </div>
             </div>
-          ) : todayAppointment ? (
+          ) : todayAppointment?.status === "CONFIRMED" ||
+            todayAppointment?.status === "RESCHEDULED" ? (
             <div className="space-y-4">
               <div className="flex items-start gap-4">
                 <Avatar className="h-16 w-16">
@@ -123,7 +117,9 @@ export function DashboardPresentational({
                     alt={todayAppointment.doctor?.name || "Doctor"}
                   />
                   <AvatarFallback>
-                    {getInitials(todayAppointment.doctor?.name)}
+                    <p className="text-2xl text-primary">
+                      {getInitials(todayAppointment.doctor?.name)}
+                    </p>
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 space-y-1">
@@ -131,22 +127,36 @@ export function DashboardPresentational({
                     {tCommon("doctor")}
                     {todayAppointment.doctor?.name || "Unknown"}
                   </h3>
-                  <Badge variant="outline" className="mt-1">
-                    {todayAppointment.online
-                      ? tDashboard("onlineConsultation")
-                      : tDashboard("inClinic")}
-                  </Badge>
+                  <div className="mt-1 text-muted-foreground">
+                    {todayAppointment.online ? (
+                      <div className="flex items-center gap-2">
+                        <Video className="h-4 w-4 text-primary" />
+                        {tDashboard("onlineConsultation")}
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <Building2 className="h-4 w-4 text-muted-foreground" />
+                        {tDashboard("inClinic")}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
               <div className="flex items-center gap-2 text-sm">
                 <Clock className="h-4 w-4 text-muted-foreground" />
-                <span className="font-medium">
-                  {tDashboard("appointmentTime")}:
-                </span>
                 <span>
-                  {formatTime(todayAppointment.scheduledTime)} -{" "}
-                  {formatTime(todayAppointment.scheduledEndTime)}
+                  {getTimeIn12HourFormat(
+                    todayAppointment.scheduledTime,
+                    locale,
+                    2,
+                  )}{" "}
+                  -{" "}
+                  {getTimeIn12HourFormat(
+                    todayAppointment.scheduledEndTime,
+                    locale,
+                    2,
+                  )}
                 </span>
               </div>
 
@@ -161,7 +171,7 @@ export function DashboardPresentational({
                 todayAppointment.clinic && (
                   <div className="space-y-2">
                     <div className="flex items-start gap-2 text-sm">
-                      <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+                      <Building2 className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
                       <div className="flex-1">
                         <p className="font-medium">
                           {todayAppointment.clinic.name}
@@ -172,22 +182,13 @@ export function DashboardPresentational({
                       </div>
                     </div>
                     {todayAppointment.clinic.mapsLink && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        asChild
-                        className="w-full sm:w-auto"
+                      <Link
+                        href={todayAppointment.clinic.mapsLink}
+                        className="w-full sm:w-auto flex items-center gap-2 text-sm text-primary"
                       >
-                        <a
-                          href={todayAppointment.clinic.mapsLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2"
-                        >
-                          <ExternalLink className="h-4 w-4" />
-                          {tDashboard("viewOnMap")}
-                        </a>
-                      </Button>
+                        <MapPin className="h-4 w-4" />
+                        {locale === "en" ? "Directions" : "الاتجاهات"}
+                      </Link>
                     )}
                   </div>
                 )
@@ -209,6 +210,13 @@ export function DashboardPresentational({
           )}
         </CardContent>
       </Card>
+
+      {todayAppointment?.status === "CONFIRMED" && (
+        <QueueStatusCard
+          appointmentId={todayAppointment.id}
+          tDashboard={tDashboard}
+        />
+      )}
     </div>
   );
 }

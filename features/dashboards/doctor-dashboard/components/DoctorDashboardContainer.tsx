@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { doctorNavigationItems } from "@/constants/DoctorNavigationItems";
 import { Stethoscope } from "lucide-react";
+import { useDoctorSocket } from "../hooks/useDoctorSocket";
 
 interface DoctorDashboardContainerProps {
   children: ReactNode;

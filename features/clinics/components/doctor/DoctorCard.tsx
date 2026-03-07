@@ -71,7 +71,11 @@ export function DoctorCard({
                 src={doctor.profilePic || undefined}
                 alt={doctor.name}
               />
-              <AvatarFallback>{getInitials(doctor.name)}</AvatarFallback>
+              <AvatarFallback>
+                <p className="text-2xl text-primary">
+                  {getInitials(doctor.name)}
+                </p>
+              </AvatarFallback>
             </Avatar>
 
             <div className="flex-1 space-y-2">
