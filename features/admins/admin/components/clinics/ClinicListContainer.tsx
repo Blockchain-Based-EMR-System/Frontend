@@ -60,7 +60,11 @@ export function ClinicListContainer() {
     const q = searchQuery.toLowerCase().trim();
     return allClinics.filter((c) => {
       if (showInactiveOnly && c.is_active) return false;
-      if (q) return (c.name?.toLowerCase().includes(q) ?? false) || (c.phone?.toLowerCase().includes(q) ?? false);
+      if (q)
+        return (
+          (c.name?.toLowerCase().includes(q) ?? false) ||
+          (c.phone?.toLowerCase().includes(q) ?? false)
+        );
       return true;
     });
   }, [data, searchQuery, showInactiveOnly]);

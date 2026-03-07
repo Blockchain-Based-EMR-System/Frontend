@@ -7,8 +7,13 @@ import { DoctorListPresentational } from "./DoctorListPresentational";
 import { DoctorDetailDialog } from "./DoctorDetailDialog";
 import { AddDoctorDialog } from "./addDoctorForm/AddDoctorDialog";
 
-const STATUS_ORDER: Record<string, number> = { PENDING: 0, APPROVED: 1, REJECTED: 2 };
-const getStatusOrder = (status?: string): number => STATUS_ORDER[status ?? ""] ?? 3;
+const STATUS_ORDER: Record<string, number> = {
+  PENDING: 0,
+  APPROVED: 1,
+  REJECTED: 2,
+};
+const getStatusOrder = (status?: string): number =>
+  STATUS_ORDER[status ?? ""] ?? 3;
 
 export function DoctorListContainer() {
   const { data, isLoading } = useDoctors();
@@ -21,10 +26,18 @@ export function DoctorListContainer() {
     const q = searchQuery.toLowerCase().trim();
     return allDoctors
       .filter((doc) => {
-        if (q) return (doc.name?.toLowerCase().includes(q) ?? false) || (doc.phone?.toLowerCase().includes(q) ?? false);
+        if (q)
+          return (
+            (doc.name?.toLowerCase().includes(q) ?? false) ||
+            (doc.phone?.toLowerCase().includes(q) ?? false)
+          );
         return true;
       })
-      .sort((a, b) => getStatusOrder(a.doctor?.account_status) - getStatusOrder(b.doctor?.account_status));
+      .sort(
+        (a, b) =>
+          getStatusOrder(a.doctor?.account_status) -
+          getStatusOrder(b.doctor?.account_status),
+      );
   }, [data, searchQuery]);
 
   return (

@@ -10,8 +10,13 @@ import { useAllNurses, useVerifyNurse } from "../../query/useNurses.query";
 import { useToast } from "@/hooks/useToast";
 import { Nurse } from "../../types/nurse.types";
 
-const STATUS_ORDER: Record<string, number> = { PENDING: 0, APPROVED: 1, REJECTED: 2 };
-const getStatusOrder = (status?: string): number => STATUS_ORDER[status ?? ""] ?? 3;
+const STATUS_ORDER: Record<string, number> = {
+  PENDING: 0,
+  APPROVED: 1,
+  REJECTED: 2,
+};
+const getStatusOrder = (status?: string): number =>
+  STATUS_ORDER[status ?? ""] ?? 3;
 
 export function NurseListContainer() {
   const { data, isLoading } = useAllNurses();
@@ -63,11 +68,20 @@ export function NurseListContainer() {
     const q = searchQuery.toLowerCase().trim();
     return allNurses
       .filter((n) => {
-        if (showUnverifiedOnly && n.nurse?.account_status === "APPROVED") return false;
-        if (q) return (n.name?.toLowerCase().includes(q) ?? false) || (n.phone?.toLowerCase().includes(q) ?? false);
+        if (showUnverifiedOnly && n.nurse?.account_status === "APPROVED")
+          return false;
+        if (q)
+          return (
+            (n.name?.toLowerCase().includes(q) ?? false) ||
+            (n.phone?.toLowerCase().includes(q) ?? false)
+          );
         return true;
       })
-      .sort((a, b) => getStatusOrder(a.nurse?.account_status) - getStatusOrder(b.nurse?.account_status));
+      .sort(
+        (a, b) =>
+          getStatusOrder(a.nurse?.account_status) -
+          getStatusOrder(b.nurse?.account_status),
+      );
   }, [data, showUnverifiedOnly, searchQuery]);
 
   return (

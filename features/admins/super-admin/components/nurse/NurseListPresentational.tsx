@@ -160,7 +160,10 @@ export function NurseListPresentational({
                             : "N/A"}
                       </TableCell>
                       <TableCell>
-                        {getAccountStatusBadge(nurse.nurse?.account_status, tCommon)}
+                        {getAccountStatusBadge(
+                          nurse.nurse?.account_status,
+                          tCommon,
+                        )}
                       </TableCell>
                       <TableCell className="text-right">
                         <Button

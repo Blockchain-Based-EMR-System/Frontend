@@ -18,7 +18,9 @@ export function AdminListContainer() {
     const q = searchQuery.toLowerCase().trim();
     if (!q) return allAdmins;
     return allAdmins.filter(
-      (a) => (a.name?.toLowerCase().includes(q) ?? false) || (a.phone?.toLowerCase().includes(q) ?? false),
+      (a) =>
+        (a.name?.toLowerCase().includes(q) ?? false) ||
+        (a.phone?.toLowerCase().includes(q) ?? false),
     );
   }, [data, searchQuery]);
 

@@ -71,7 +71,9 @@ export function ClinicListPresentational({
             <Checkbox
               id="show-inactive-clinics-sa"
               checked={showInactiveOnly}
-              onCheckedChange={(checked) => onShowInactiveOnlyChange(checked as boolean)}
+              onCheckedChange={(checked) =>
+                onShowInactiveOnlyChange(checked as boolean)
+              }
             />
             <Label htmlFor="show-inactive-clinics-sa">
               {tAdmin("showInactiveOnly")}
