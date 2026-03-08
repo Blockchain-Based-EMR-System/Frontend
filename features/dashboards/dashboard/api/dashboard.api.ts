@@ -22,6 +22,7 @@ export const getTodayAppointment = async (): Promise<Appointment | null> => {
   const response = await api.get<TodayAppointmentRawResponse>(
     "/appointments/patient/today-appointment",
   );
+  console.log("today appointment response:", response);
   const raw = response.data;
   if (!raw) return null;
 
@@ -32,9 +33,6 @@ export const getTodayAppointment = async (): Promise<Appointment | null> => {
 
   const getTime = (a: (typeof list)[number]) =>
     new Date(`${a.appointment_date}T${a.start_time}`).getTime();
-
-  // Among CONFIRMED appointments, prefer the next upcoming one (closest in the
-  // future); if all are in the past, take the most recently started one.
   const confirmed = list.filter((a) => a.status === "CONFIRMED");
   const pickClosest = (candidates: typeof list) => {
     const upcoming = candidates.filter((a) => getTime(a) >= now);
@@ -43,7 +41,6 @@ export const getTodayAppointment = async (): Promise<Appointment | null> => {
         getTime(a) < getTime(best) ? a : best,
       );
     }
-    // All past — return the most recently started
     return candidates.reduce((best, a) =>
       getTime(a) > getTime(best) ? a : best,
     );

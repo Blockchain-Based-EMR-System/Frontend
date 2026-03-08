@@ -6,6 +6,7 @@
   "appointmentsTab": "المواعيد",
   "vacationTab": "الإجازة",
   "announcementsTab": "توظيف ممرضات",
+  "nursesTab": "ممرضاتي",
 
   "clinics": {
     "title": "عياداتي",
@@ -291,5 +292,26 @@
     "patientCancelled": "قام {patient} بإلغاء موعده بتاريخ {date}",
     "patientRescheduled": "قام {patient} بإعادة جدولة موعده",
     "appointmentCompleted": "تم تمييز موعد كمكتمل"
+  },
+
+  "nurses": {
+    "title": "ممرضاتي",
+    "subtitle": "جميع الممرضات العاملات معك حاليًا عبر عياداتك",
+    "noNurses": "لا توجد ممرضات مسجلة في عياداتك حاليًا",
+    "viewMore": "عرض التفاصيل",
+    "nurseDetails": "تفاصيل الممرضة",
+    "age": "العمر",
+    "years": "سنة",
+    "yearsOfExperience": "سنوات الخبرة",
+    "brief": "نبذة",
+    "clinics": "العيادات",
+    "noClinics": "لا توجد عيادة مسندة",
+    "workingDays": "أيام وساعات العمل",
+    "viewMap": "عرض الخريطة",
+    "documents": "المستندات",
+    "nationalCard": "بطاقة الهوية الوطنية",
+    "bonusFile": "ملف المكافأة / الشهادة",
+    "notProvided": "غير متوفر",
+    "viewDocument": "عرض"
   }
 }

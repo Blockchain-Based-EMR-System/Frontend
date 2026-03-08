@@ -29,12 +29,17 @@ export { DoctorAnnouncementsTab } from "./components/announcements/DoctorAnnounc
 export { CreateAnnouncementDialog } from "./components/announcements/CreateAnnouncementDialog";
 export { ApplicantsDialog } from "./components/announcements/ApplicantsDialog";
 
+export { NursesTab } from "./components/nurses/NursesTab";
+export { NurseDetailDialog } from "./components/nurses/NurseDetailDialog";
+
 export * from "./query/useClinics.query";
 export * from "./query/useSchedule.query";
 export * from "./query/useAppointments.query";
 export * from "./query/useAnnouncements.query";
+export * from "./query/useNurses.query";
 
 export * from "./types/clinic.types";
 export * from "./types/schedule.types";
 export * from "./types/appointment.types";
 export * from "./types/announcement.types";
+export * from "./types/nurse.types";
