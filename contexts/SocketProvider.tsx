@@ -31,11 +31,23 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
     const socket = getSocket();
 
-    const onConnect = () => setIsConnected(true);
+    const onConnect = () => {
+      console.log("Socket connected: true");
+      setIsConnected(true);
+    };
     const onDisconnect = () => setIsConnected(false);
+    const onConnectError = (err: Error) => {
+      console.error("Socket connection error:", err.message);
+      setIsConnected(false);
+    };
 
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
+    socket.on("connect_error", onConnectError);
+
+    if (socket.connected) {
+      setIsConnected(true);
+    }
 
     if (user) {
       socket.connect();
@@ -47,6 +59,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
+      socket.off("connect_error", onConnectError);
     };
   }, [user?.email, _hasHydrated]);
 

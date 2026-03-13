@@ -59,6 +59,8 @@
     "queueUpdated": "Queue position updated",
     "queuePosition": "You are #{position} in the queue",
     "queueWait": "~{minutes} min wait",
-    "queueAhead": "{count} patients ahead"
+    "queueAhead": "{count} patients ahead",
+    "queueWaiting": "Queue Status",
+    "queueNotStarted": "The queue hasn't started yet. You'll be notified when it's your turn."
   }
 }

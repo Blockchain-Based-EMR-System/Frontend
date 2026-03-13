@@ -175,13 +175,13 @@ export function DashboardPresentational({
                   {getTimeIn12HourFormat(
                     todayAppointment.scheduledTime,
                     locale,
-                    2,
+                  
                   )}{" "}
                   -{" "}
                   {getTimeIn12HourFormat(
                     todayAppointment.scheduledEndTime,
                     locale,
-                    2,
+            
                   )}
                 </span>
               </div>

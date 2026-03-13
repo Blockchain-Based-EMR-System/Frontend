@@ -59,6 +59,8 @@
     "queueUpdated": "تم تحديث موقعك في الطابور",
     "queuePosition": "أنت رقم #{position} في الطابور",
     "queueWait": "~{minutes} دقيقة انتظار",
-    "queueAhead": "{count} مريض أمامك"
+    "queueAhead": "{count} مريض أمامك",
+    "queueWaiting": "حالة الطابور",
+    "queueNotStarted": "لم يبدأ الطابور بعد. سيتم إشعارك عندما يحين دورك."
   }
 }

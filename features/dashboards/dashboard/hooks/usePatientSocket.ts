@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useSocketEvent } from "@/hooks/useSocketEvent";
+import { useSocket } from "@/contexts/SocketProvider";
 import { useToast } from "@/hooks/useToast";
 import { useQueueStore } from "@/stores/useQueueStore";
 
@@ -32,6 +33,7 @@ interface PatientInitialData {
 }
 
 export function usePatientSocket() {
+  const { socket } = useSocket();
   const queryClient = useQueryClient();
   const t = useTranslations("userDashboard");
   const { toast } = useToast();
@@ -70,6 +72,10 @@ export function usePatientSocket() {
 
   const handleInitialData = useCallback(
     (data: PatientInitialData) => {
+      console.log(
+        "[socket] initial_data received:",
+        JSON.stringify(data, null, 2),
+      );
       if (data.appointments) {
         for (const app of data.appointments) {
           if (app.queuePosition) {
@@ -88,4 +94,13 @@ export function usePatientSocket() {
   );
   useSocketEvent<QueueUpdatedPayload>("queue_updated", handleQueueUpdated);
   useSocketEvent<PatientInitialData>("initial_data", handleInitialData);
+
+  useEffect(() => {
+    if (!socket) return;
+    console.log(
+      "[socket] emitting request_initial_data, connected:",
+      socket.connected,
+    );
+    socket.emit("request_initial_data");
+  }, [socket]);
 }

@@ -15,7 +15,24 @@ export function QueueStatusCard({
 }: QueueStatusCardProps) {
   const entry = useQueueStore((state) => state.getEntry(appointmentId));
 
-  if (!entry) return null;
+  if (!entry) {
+    return (
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Users2 className="h-5 w-5 text-primary" />
+            {tDashboard("socket.queueWaiting")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Clock className="h-4 w-4" />
+            <span>{tDashboard("socket.queueNotStarted")}</span>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   const patientsAhead = Math.max(0, entry.position - 1);
   const filledDots = Math.min(patientsAhead, 5);

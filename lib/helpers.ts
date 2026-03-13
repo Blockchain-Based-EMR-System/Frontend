@@ -25,10 +25,17 @@ export const getLocalizedMessage = (
   );
 };
 
-export const getTimeIn12HourFormat = (time: string, locale?: string, addHours?: number): string => {
+export const getTimeIn12HourFormat = (
+  time: string,
+  locale?: string,
+  addHours?: number,
+): string => {
   if (!time || time === "undefined:undefined") return "";
-  
-  const [hourStr, minute] = time.split(":");
+
+  // Handle full ISO datetime strings like "2026-03-09T01:35" or "2026-03-09T01:35:00"
+  const timePart = time.includes("T") ? time.split("T")[1] : time;
+
+  const [hourStr, minute] = timePart.split(":");
   let hour = (parseInt(hourStr, 10) + (addHours ?? 0)) % 24;
   const isPM = hour >= 12;
   hour = hour % 12 || 12;

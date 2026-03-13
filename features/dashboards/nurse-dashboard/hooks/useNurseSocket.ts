@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useSocketEvent } from "@/hooks/useSocketEvent";
+import { useSocket } from "@/contexts/SocketProvider";
 import { useToast } from "@/hooks/useToast";
 import { NURSE_APPOINTMENTS_KEY } from "../query/useNurseDashboard.query";
 
@@ -22,6 +23,7 @@ interface NurseInitialData {
 }
 
 export function useNurseSocket() {
+  const { socket } = useSocket();
   const queryClient = useQueryClient();
   const t = useTranslations("nurseDashboard");
   const { toast } = useToast();
@@ -61,4 +63,9 @@ export function useNurseSocket() {
     handleStatusChanged,
   );
   useSocketEvent<NurseInitialData>("initial_data", handleInitialData);
+
+  useEffect(() => {
+    if (!socket) return;
+    socket.emit("request_initial_data");
+  }, [socket]);
 }
