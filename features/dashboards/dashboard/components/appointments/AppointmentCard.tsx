@@ -20,6 +20,13 @@ import { getInitials } from "@/lib/helpers";
 import { useLanguage } from "@/contexts/LanguageProvider";
 import type { Locale } from "date-fns";
 import Link from "next/link";
+import { useMemo } from "react";
+import { useRouter } from "next/navigation";
+import {
+  formatCountdown,
+  parseAppointmentStart,
+  useSessionGate,
+} from "@/features/appointment-session";
 
 interface AppointmentCardProps {
   appointment: Appointment;
@@ -83,8 +90,34 @@ export function AppointmentCard({
   tDashboard,
   tCommon,
 }: AppointmentCardProps) {
-
+  const router = useRouter();
   const { locale } = useLanguage();
+
+  const startDate = useMemo(
+    () => parseAppointmentStart(appointment.scheduledTime),
+    [appointment.scheduledTime],
+  );
+  const gate = useSessionGate(startDate, 5);
+
+  const canJoinSession =
+    appointment.online &&
+    !isPast &&
+    (appointment.status === "CONFIRMED" ||
+      appointment.status === "RESCHEDULED");
+  const showMeetingCountdown =
+    canJoinSession && !!startDate && !gate.hasStarted;
+
+  const onJoinSession = () => {
+    if (!startDate) return;
+
+    const params = new URLSearchParams({
+      startAt: startDate.toISOString(),
+    });
+
+    router.push(
+      `/dashboard/appointments/${appointment.id}/online/lobby?${params.toString()}`,
+    );
+  };
 
   return (
     <Card className={isPast ? "opacity-70" : ""}>
@@ -146,12 +179,17 @@ export function AppointmentCard({
                 </div>
               </div>
               {appointment.clinic.mapsLink && (
-              <Link href={appointment.clinic.mapsLink} className="flex items-start gap-2 text-sm text-primary">
-                <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
-                <div className="flex-1">
-                  <p className="font-medium">{locale === "en" ? "Directions" : "الاتجاهات"}</p>
-                </div>
-              </Link>
+                <Link
+                  href={appointment.clinic.mapsLink}
+                  className="flex items-start gap-2 text-sm text-primary"
+                >
+                  <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
+                  <div className="flex-1">
+                    <p className="font-medium">
+                      {locale === "en" ? "Directions" : "الاتجاهات"}
+                    </p>
+                  </div>
+                </Link>
               )}
             </div>
           )
@@ -180,6 +218,30 @@ export function AppointmentCard({
                 <X className="h-4 w-4 mr-2" />
                 {tDashboard("cancel")}
               </Button>
+            )}
+          </div>
+        )}
+
+        {canJoinSession && (
+          <div className="space-y-2 pt-1">
+            <Button
+              onClick={onJoinSession}
+              className="w-full"
+              disabled={gate.isTooEarly}
+            >
+              <Video className="h-4 w-4 mr-2" />
+              {tDashboard("joinSession")}
+            </Button>
+            {showMeetingCountdown && (
+              <p className="text-xs text-muted-foreground">
+                {gate.isTooEarly
+                  ? `${tDashboard("meetingAvailableInPrefix")} ${formatCountdown(
+                      gate.secondsUntilEnabled,
+                    )}`
+                  : `${tDashboard("meetingStartsInPrefix")} ${formatCountdown(
+                      gate.secondsUntilStart,
+                    )}`}
+              </p>
             )}
           </div>
         )}

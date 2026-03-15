@@ -178,7 +178,10 @@ export function middleware(request: NextRequest) {
           new URL(getRoleDashboardPath(userRole), request.url),
         );
       }
-      if (normalizedPath === "/dashboard" && userRole !== Role.PATIENT) {
+      if (
+        normalizedPath.startsWith("/dashboard") &&
+        userRole !== Role.PATIENT
+      ) {
         return NextResponse.redirect(
           new URL(getRoleDashboardPath(userRole), request.url),
         );

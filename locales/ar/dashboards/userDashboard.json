@@ -51,6 +51,9 @@
   "rescheduled": "معاد جدولته",
 
   "bookAppointment": "حجز موعد",
+  "joinSession": "انضمام للجلسة",
+  "meetingAvailableInPrefix": "الجلسة متاحة بعد",
+  "meetingStartsInPrefix": "تبدأ الجلسة بعد",
 
   "socket": {
     "appointmentCancelled": "تم إلغاء موعدك",

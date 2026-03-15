@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Card,
   CardContent,
@@ -19,14 +19,22 @@ import {
   X,
   CheckCircle2,
   XCircle,
+  Mic,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { Appointment } from "../../types/appointment.types";
 import { RescheduleAppointmentDialog } from "@/features/dashboards/doctor-dashboard/components/appointments/RescheduleAppointmentDialog";
 import { CancelAppointmentDialog } from "@/features/dashboards/doctor-dashboard/components/appointments/CancelAppointmentDialog";
 import { cn } from "@/lib/utils";
 import { getTimeIn12HourFormat } from "@/lib/helpers";
 import { useLanguage } from "@/contexts/LanguageProvider";
+import { useSessionGate } from "@/features/appointment-session";
+import {
+  formatCountdown,
+  parseAppointmentStart,
+} from "@/features/appointment-session";
+import { useSoapDraftStore } from "@/stores/useSoapDraftStore";
 
 interface AppointmentCardProps {
   appointment: Appointment;
@@ -37,15 +45,29 @@ export function AppointmentCard({
   appointment,
   selectedDate,
 }: AppointmentCardProps) {
+  const router = useRouter();
   const t = useTranslations("doctorDashboard.appointments");
   const tCommon = useTranslations("common");
+  const tSession = useTranslations("doctorDashboard.sessions");
   const { locale } = useLanguage();
 
   const [isRescheduleOpen, setIsRescheduleOpen] = useState(false);
   const [isCancelOpen, setIsCancelOpen] = useState(false);
 
+  const soapState = useSoapDraftStore(
+    (state) => state.byAppointment[appointment.id],
+  );
+
+  const sessionStart = useMemo(() => {
+    return parseAppointmentStart(
+      appointment.appointment_date,
+      appointment.start_time,
+    );
+  }, [appointment.appointment_date, appointment.start_time]);
+
   const isOnline =
     appointment.clinic_name === null || appointment.clinic_name === undefined;
+  const gate = useSessionGate(sessionStart, isOnline ? 5 : 10);
   const isCompleted = appointment.status === "COMPLETED";
   const isCancelled = appointment.status === "CANCELLED";
 
@@ -56,6 +78,17 @@ export function AppointmentCard({
     CANCELLED: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
   };
 
+  const sessionStatusColors: Record<string, string> = {
+    recording: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
+    uploading:
+      "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300",
+    processing:
+      "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
+    "draft-ready":
+      "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300",
+    failed: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
+  };
+
   const statusColor =
     statusColors[appointment.status] || statusColors.CONFIRMED;
 
@@ -63,8 +96,30 @@ export function AppointmentCard({
     appointment.status === "COMPLETED"
       ? "border-green-800"
       : appointment.status === "CANCELLED"
-      ? "border-red-800"
-      : "";
+        ? "border-red-800"
+        : "";
+
+  const sessionPath = isOnline
+    ? `/doctor-dashboard/appointments/${appointment.id}/online/lobby`
+    : `/doctor-dashboard/appointments/${appointment.id}/offline-session`;
+
+  const sessionButtonLabel = isOnline
+    ? tSession("meeting.join")
+    : tSession("offline.startSession");
+
+  const showSessionControls = appointment.status === "CONFIRMED";
+  const showMeetingCountdown =
+    showSessionControls && !!sessionStart && !gate.hasStarted;
+
+  const onOpenSession = () => {
+    if (!sessionStart) return;
+
+    const params = new URLSearchParams({
+      startAt: sessionStart.toISOString(),
+    });
+
+    router.push(`${sessionPath}?${params.toString()}`);
+  };
 
   return (
     <>
@@ -88,33 +143,42 @@ export function AppointmentCard({
 
         <CardHeader className="pb-2 pt-3 px-3">
           <div className="flex items-center justify-between gap-2">
-            {/* Big Type Badge */}
             <p
               className={cn(
                 "text-base font-semibold px-3 py-2 rounded-xl",
                 "bg-transparent text-black dark:text-white border-2 flex items-center gap-3",
               )}
-            > 
+            >
               {isOnline ? (
-                <>
-                  <Video className={`h-4 w-4`} />
-                </>
+                <Video className="h-4 w-4" />
               ) : (
-                <>
-                  <Building2 className={`h-4 w-4`} />
-                </>
+                <Building2 className="h-4 w-4" />
               )}
             </p>
 
-            {/* Status Badge */}
-            <Badge className={cn("text-xs hover:bg-transparent", statusColor)}>
-              {t(`status.${appointment.status.toLowerCase()}`)}
-            </Badge>
+            <div className="flex items-center gap-1.5">
+              {soapState &&
+                soapState.status !== "idle" &&
+                soapState.status !== "confirmed" && (
+                  <Badge
+                    className={cn(
+                      "text-xs hover:bg-transparent",
+                      sessionStatusColors[soapState.status],
+                    )}
+                  >
+                    {tSession(`status.${soapState.status}`)}
+                  </Badge>
+                )}
+              <Badge
+                className={cn("text-xs hover:bg-transparent", statusColor)}
+              >
+                {t(`status.${appointment.status.toLowerCase()}`)}
+              </Badge>
+            </div>
           </div>
         </CardHeader>
 
         <CardContent className="px-3 py-2 space-y-1.5">
-          {/* Patient Name - Prominent */}
           <div className="flex items-center gap-2">
             <User className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
             <p className="font-semibold text-sm">{appointment.patient_name}</p>
@@ -127,9 +191,7 @@ export function AppointmentCard({
                 {getTimeIn12HourFormat(appointment.start_time, locale)}
               </span>
               {" - "}
-              <span>
-                {getTimeIn12HourFormat(appointment.end_time, locale)}
-              </span>
+              <span>{getTimeIn12HourFormat(appointment.end_time, locale)}</span>
             </span>
             <span className="text-xs text-muted-foreground">
               ({appointment.slot_duration}m)
@@ -142,30 +204,74 @@ export function AppointmentCard({
               <span className="truncate">{appointment.clinic_name}</span>
             </div>
           )}
+
+          {showMeetingCountdown && (
+            <p className="text-xs text-muted-foreground">
+              {gate.isTooEarly
+                ? tSession("meeting.availableIn", {
+                    time: formatCountdown(gate.secondsUntilEnabled),
+                  })
+                : tSession("meeting.startsIn", {
+                    time: formatCountdown(gate.secondsUntilStart),
+                  })}
+            </p>
+          )}
         </CardContent>
 
-        {appointment.status === "CONFIRMED" && (
-          <CardFooter className="flex gap-1.5 px-3 py-2 pt-1.5">
-            <Button
-              onClick={() => setIsRescheduleOpen(true)}
-              variant="outline"
-              size="sm"
-              className="flex-1 h-8 text-xs px-2"
-              title={t("reschedule")}
-            >
-              <CalendarClock className="h-3.5 w-3.5 mr-1" />
-              {t("reschedule")}
-            </Button>
-            <Button
-              onClick={() => setIsCancelOpen(true)}
-              variant="destructive"
-              size="sm"
-              className="flex-1 h-8 text-xs px-2"
-              title={tCommon("cancel")}
-            >
-              <X className="h-3.5 w-3.5 mr-1" />
-              {tCommon("cancel")}
-            </Button>
+        {(showSessionControls || soapState?.status === "draft-ready") && (
+          <CardFooter className="flex flex-col gap-2 px-3 py-2 pt-1.5">
+            {showSessionControls && (
+              <div className="flex w-full gap-1.5">
+                <Button
+                  onClick={() => setIsRescheduleOpen(true)}
+                  variant="outline"
+                  size="sm"
+                  className="flex-1 h-8 text-xs px-2"
+                  title={t("reschedule")}
+                >
+                  <CalendarClock className="h-3.5 w-3.5 mr-1" />
+                  {t("reschedule")}
+                </Button>
+                <Button
+                  onClick={() => setIsCancelOpen(true)}
+                  variant="destructive"
+                  size="sm"
+                  className="flex-1 h-8 text-xs px-2"
+                  title={tCommon("cancel")}
+                >
+                  <X className="h-3.5 w-3.5 mr-1" />
+                  {tCommon("cancel")}
+                </Button>
+              </div>
+            )}
+
+            {showSessionControls && (
+              <Button
+                onClick={onOpenSession}
+                variant="default"
+                size="sm"
+                className="w-full h-8 text-xs px-2"
+                disabled={gate.isTooEarly}
+              >
+                <Mic className="h-3.5 w-3.5 mr-1" />
+                {sessionButtonLabel}
+              </Button>
+            )}
+
+            {soapState?.status === "draft-ready" && (
+              <Button
+                onClick={() =>
+                  router.push(
+                    `/doctor-dashboard/appointments/${appointment.id}/soap-review`,
+                  )
+                }
+                variant="outline"
+                size="sm"
+                className="w-full h-8 text-xs px-2"
+              >
+                {tSession("soap.reviewAction")}
+              </Button>
+            )}
           </CardFooter>
         )}
       </Card>

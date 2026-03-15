@@ -51,6 +51,9 @@
   "rescheduled": "Rescheduled",
 
   "bookAppointment": "Book Appointment",
+  "joinSession": "Join Session",
+  "meetingAvailableInPrefix": "Session available in",
+  "meetingStartsInPrefix": "Session starts in",
 
   "socket": {
     "appointmentCancelled": "Your appointment has been cancelled",

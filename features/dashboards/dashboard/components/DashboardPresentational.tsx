@@ -16,14 +16,20 @@ import {
   XCircle,
 } from "lucide-react";
 import { useTodayAppointment } from "../query/useDashboard.query";
-import { format } from "date-fns";
 import Link from "next/link";
 import { getInitials } from "@/lib/helpers";
+import { useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { DashboardSkeleton } from "./skeletons";
 import { QueueStatusCard } from "./QueueStatusCard";
 import { useLanguage } from "@/contexts/LanguageProvider";
 import { getTimeIn12HourFormat } from "@/lib/helpers";
 import { cn } from "@/lib/utils";
+import {
+  formatCountdown,
+  parseAppointmentStart,
+  useSessionGate,
+} from "@/features/appointment-session";
 
 export interface DashboardPresentationalProps {
   user: DashboardUser | null;
@@ -42,9 +48,15 @@ export function DashboardPresentational({
   tDashboard,
   tCommon,
 }: DashboardPresentationalProps) {
+  const router = useRouter();
   const { data: todayAppointment, isLoading: isLoadingAppointment } =
     useTodayAppointment();
   const { locale } = useLanguage();
+
+  const sessionStart = useMemo(() => {
+    return parseAppointmentStart(todayAppointment?.scheduledTime || "");
+  }, [todayAppointment?.scheduledTime]);
+  const gate = useSessionGate(sessionStart, 5);
 
   if (isLoading || !user) {
     return <DashboardSkeleton />;
@@ -72,6 +84,25 @@ export function DashboardPresentational({
     isCompleted ||
     isCancelled;
 
+  const canJoinTodaySession =
+    todayAppointment?.online &&
+    (todayAppointment?.status === "CONFIRMED" ||
+      todayAppointment?.status === "RESCHEDULED");
+  const showTodayMeetingCountdown =
+    canJoinTodaySession && !!sessionStart && !gate.hasStarted;
+
+  const onJoinTodaySession = () => {
+    if (!todayAppointment || !sessionStart) return;
+
+    const params = new URLSearchParams({
+      startAt: sessionStart.toISOString(),
+    });
+
+    router.push(
+      `/dashboard/appointments/${todayAppointment.id}/online/lobby?${params.toString()}`,
+    );
+  };
+
   return (
     <div className="space-y-6">
       <Card>
@@ -89,7 +120,6 @@ export function DashboardPresentational({
           isCancelled && "border-red-800 bg-red-800/30",
         )}
       >
-        {/* Watermark icon overlay for COMPLETED / CANCELLED */}
         {(isCompleted || isCancelled) && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
             {isCompleted ? (
@@ -175,23 +205,47 @@ export function DashboardPresentational({
                   {getTimeIn12HourFormat(
                     todayAppointment.scheduledTime,
                     locale,
-                  
                   )}{" "}
                   -{" "}
                   {getTimeIn12HourFormat(
                     todayAppointment.scheduledEndTime,
                     locale,
-            
                   )}
                 </span>
               </div>
 
               {todayAppointment.online ? (
-                <div className="flex items-center gap-2 text-sm text-primary">
-                  <Video className="h-4 w-4" />
-                  <span className="font-medium">
-                    {tDashboard("onlineConsultation")}
-                  </span>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-sm text-primary">
+                    <Video className="h-4 w-4" />
+                    <span className="font-medium">
+                      {tDashboard("onlineConsultation")}
+                    </span>
+                  </div>
+
+                  {canJoinTodaySession && (
+                    <>
+                      <Button
+                        onClick={onJoinTodaySession}
+                        disabled={gate.isTooEarly}
+                        className="w-full sm:w-auto"
+                      >
+                        <Video className="h-4 w-4 mr-2" />
+                        {tDashboard("joinSession")}
+                      </Button>
+                      {showTodayMeetingCountdown && (
+                        <p className="text-xs text-muted-foreground">
+                          {gate.isTooEarly
+                            ? `${tDashboard("meetingAvailableInPrefix")} ${formatCountdown(
+                                gate.secondsUntilEnabled,
+                              )}`
+                            : `${tDashboard("meetingStartsInPrefix")} ${formatCountdown(
+                                gate.secondsUntilStart,
+                              )}`}
+                        </p>
+                      )}
+                    </>
+                  )}
                 </div>
               ) : (
                 todayAppointment.clinic && (

@@ -7,7 +7,6 @@
   "vacationTab": "Vacation",
   "announcementsTab": "Nurse Hiring",
   "nursesTab": "My Nurses",
-
   "clinics": {
     "title": "My Clinics",
     "addNew": "Add New Clinic",
@@ -31,7 +30,6 @@
       "editFees": "Edit Fees"
     }
   },
-
   "clinicForm": {
     "createTitle": "Create New Clinic",
     "editTitle": "Edit Clinic",
@@ -57,7 +55,6 @@
     "deleteConfirmation": "Are you sure you want to delete this clinic? This action cannot be undone and will remove all associated schedules.",
     "deleteWarning": "Warning: This will permanently delete the clinic"
   },
-
   "schedule": {
     "title": "Schedule Configuration",
     "selectClinic": "Select Clinic or Schedule Type",
@@ -124,7 +121,6 @@
     "confirmDelete": "Yes, Delete Schedule",
     "skipDeletions": "Skip Deletions & Save"
   },
-
   "vacation": {
     "title": "Vacation Mode",
     "vacationTab": "Vacation",
@@ -191,7 +187,6 @@
     "cancelling": "Cancelling...",
     "back": "Back"
   },
-
   "appointments": {
     "title": "Appointments",
     "today": "Today",
@@ -224,7 +219,93 @@
       "cancelled": "Cancelled"
     }
   },
-
+  "sessions": {
+    "backToAppointments": "Back to appointments",
+    "status": {
+      "recording": "Recording",
+      "uploading": "Uploading",
+      "processing": "Processing",
+      "draft-ready": "SOAP Draft Ready",
+      "failed": "Failed"
+    },
+    "permissions": {
+      "microphoneDenied": "Microphone permission is required to start recording.",
+      "cameraMicrophoneDenied": "Camera and microphone access is required for the pre-join lobby."
+    },
+    "errors": {
+      "recordingStartFailed": "Could not start recording. Please check your microphone settings.",
+      "offlineProcessingFailed": "Could not upload/process this recording. Please try again.",
+      "processingQueued": "Recording uploaded. SOAP processing will continue once all required uploads are available.",
+      "joinFailed": "Could not join the meeting room.",
+      "messageSendFailed": "Message could not be delivered to the other participant."
+    },
+    "meeting": {
+      "join": "Join Session",
+      "leave": "Leave Session",
+      "availableIn": "Session will be available in {time}",
+      "startsIn": "Session starts in {time}",
+      "roomTitle": "Live Session Room",
+      "connecting": "Connecting to session...",
+      "participant": "Participant",
+      "you": "You",
+      "waitingForParticipant": "Waiting for the other participant",
+      "autoRecordingNotice": "Recording starts automatically when both doctor and patient join, and stops when the doctor leaves.",
+      "micOn": "Mic On",
+      "micOff": "Mic Off",
+      "camOn": "Camera On",
+      "camOff": "Camera Off",
+      "chat": "Live Chat",
+      "chatEmpty": "No messages yet. Say hello!",
+      "messagePlaceholder": "Type a message…",
+      "sendMessage": "Send"
+    },
+    "offline": {
+      "title": "Offline Session Recorder",
+      "description": "Select your microphone, record the session, then upload for SOAP generation.",
+      "chooseMicrophone": "Microphone",
+      "loadingDevices": "Loading devices...",
+      "microphonePlaceholder": "Select microphone",
+      "unnamedMicrophone": "Microphone device",
+      "startSession": "Start Offline Session"
+    },
+    "lobby": {
+      "title": "Pre-Join Lobby",
+      "description": "Check your camera and microphone settings before joining.",
+      "micOn": "Mic On",
+      "micOff": "Mic Off",
+      "camOn": "Camera On",
+      "camOff": "Camera Off",
+      "microphone": "Microphone",
+      "selectMicrophone": "Select microphone",
+      "camera": "Camera",
+      "selectCamera": "Select camera",
+      "unnamedCamera": "Camera device",
+      "micLevel": "Microphone level",
+      "micDetected": "Input detected",
+      "micNotDetected": "No input detected",
+      "noCameraDevices": "No camera device detected.",
+      "noMicrophoneDevices": "No microphone device detected."
+    },
+    "recording": {
+      "status": "Recording status",
+      "live": "Recording",
+      "waiting": "Waiting for both participants",
+      "start": "Start recording",
+      "stopAndUpload": "Stop and upload"
+    },
+    "soap": {
+      "generated": "SOAP draft generated successfully.",
+      "reviewAction": "Review SOAP Draft",
+      "reviewTitle": "SOAP Draft Review",
+      "reviewDescription": "Review and edit generated SOAP sections before final confirmation.",
+      "noDraft": "No SOAP draft is available yet for this appointment.",
+      "subjective": "Subjective",
+      "objective": "Objective",
+      "assessment": "Assessment",
+      "plan": "Plan",
+      "confirmPending": "Confirm endpoint pending"
+    }
+  },
   "stats": {
     "myClinics": "My Clinics",
     "activeClinics": "{count} active",
@@ -236,7 +317,6 @@
     "announcements": "Nurse Hiring",
     "activeAnnouncements": "{count} active"
   },
-
   "announcements": {
     "title": "Nurse Hiring",
     "subtitle": "Post announcements to hire nurses for your clinics",
@@ -287,13 +367,11 @@
     "yearsOfExperienceReq": "Min. Experience",
     "years": "yrs"
   },
-
   "socket": {
     "patientCancelled": "{patient} cancelled their appointment on {date}",
     "patientRescheduled": "{patient} has rescheduled their appointment",
     "appointmentCompleted": "An appointment has been marked as completed"
   },
-
   "nurses": {
     "title": "My Nurses",
     "subtitle": "All nurses currently working with you across your clinics",

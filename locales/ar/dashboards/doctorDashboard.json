@@ -7,7 +7,6 @@
   "vacationTab": "الإجازة",
   "announcementsTab": "توظيف ممرضات",
   "nursesTab": "ممرضاتي",
-
   "clinics": {
     "title": "عياداتي",
     "addNew": "إضافة عيادة جديدة",
@@ -31,7 +30,6 @@
       "editFees": "تعديل الرسوم"
     }
   },
-
   "clinicForm": {
     "createTitle": "إنشاء عيادة جديدة",
     "editTitle": "تعديل العيادة",
@@ -57,7 +55,6 @@
     "deleteConfirmation": "هل أنت متأكد أنك تريد حذف هذه العيادة؟ لا يمكن التراجع عن هذا الإجراء وسيتم حذف جميع الجداول المرتبطة.",
     "deleteWarning": "تحذير: سيتم حذف العيادة نهائياً"
   },
-
   "schedule": {
     "title": "إعدادات المواعيد",
     "selectClinic": "اختر العيادة أو نوع الجدول",
@@ -124,7 +121,6 @@
     "confirmDelete": "نعم، احذف الجدول",
     "skipDeletions": "تخطي الحذف وحفظ"
   },
-
   "vacation": {
     "title": "وضع الإجازة",
     "vacationTab": "الإجازة",
@@ -191,7 +187,6 @@
     "cancelling": "جاري الإلغاء...",
     "back": "رجوع"
   },
-
   "appointments": {
     "title": "المواعيد",
     "today": "اليوم",
@@ -224,7 +219,93 @@
       "cancelled": "ملغى"
     }
   },
-
+  "sessions": {
+    "backToAppointments": "العودة إلى المواعيد",
+    "status": {
+      "recording": "جارٍ التسجيل",
+      "uploading": "جارٍ الرفع",
+      "processing": "جارٍ التحليل",
+      "draft-ready": "مسودة SOAP جاهزة",
+      "failed": "فشل"
+    },
+    "permissions": {
+      "microphoneDenied": "يلزم السماح بالميكروفون لبدء التسجيل.",
+      "cameraMicrophoneDenied": "يلزم السماح بالكاميرا والميكروفون قبل الدخول إلى الغرفة."
+    },
+    "errors": {
+      "recordingStartFailed": "تعذر بدء التسجيل. يرجى التحقق من إعدادات الميكروفون.",
+      "offlineProcessingFailed": "تعذر رفع أو معالجة التسجيل. حاول مرة أخرى.",
+      "processingQueued": "تم رفع التسجيل. سيستمر إنشاء SOAP عند توفر كل التسجيلات المطلوبة.",
+      "joinFailed": "تعذر الانضمام إلى غرفة الجلسة.",
+      "messageSendFailed": "تعذر إرسال الرسالة إلى الطرف الآخر."
+    },
+    "meeting": {
+      "join": "انضمام للجلسة",
+      "leave": "مغادرة الجلسة",
+      "availableIn": "ستتوفر الجلسة بعد {time}",
+      "startsIn": "تبدأ الجلسة بعد {time}",
+      "roomTitle": "غرفة الجلسة المباشرة",
+      "connecting": "جارٍ الاتصال بالجلسة...",
+      "participant": "مشارك",
+      "you": "أنت",
+      "waitingForParticipant": "بانتظار الطرف الآخر",
+      "autoRecordingNotice": "يبدأ التسجيل تلقائيًا عند دخول الطبيب والمريض ويتوقف عند مغادرة الطبيب.",
+      "micOn": "الميكروفون يعمل",
+      "micOff": "الميكروفون متوقف",
+      "camOn": "الكاميرا تعمل",
+      "camOff": "الكاميرا متوقفة",
+      "chat": "المحادثة المباشرة",
+      "chatEmpty": "لا رسائل بعد. قل مرحبًا!",
+      "messagePlaceholder": "اكتب رسالة…",
+      "sendMessage": "إرسال"
+    },
+    "offline": {
+      "title": "مسجل الجلسة الحضورية",
+      "description": "اختر الميكروفون، سجّل الجلسة، ثم ارفعها لتوليد SOAP.",
+      "chooseMicrophone": "الميكروفون",
+      "loadingDevices": "جارٍ تحميل الأجهزة...",
+      "microphonePlaceholder": "اختر ميكروفون",
+      "unnamedMicrophone": "جهاز ميكروفون",
+      "startSession": "بدء الجلسة الحضورية"
+    },
+    "lobby": {
+      "title": "غرفة ما قبل الانضمام",
+      "description": "تحقق من إعدادات الكاميرا والميكروفون قبل الانضمام.",
+      "micOn": "الميكروفون يعمل",
+      "micOff": "الميكروفون متوقف",
+      "camOn": "الكاميرا تعمل",
+      "camOff": "الكاميرا متوقفة",
+      "microphone": "الميكروفون",
+      "selectMicrophone": "اختر الميكروفون",
+      "camera": "الكاميرا",
+      "selectCamera": "اختر الكاميرا",
+      "unnamedCamera": "جهاز كاميرا",
+      "micLevel": "مستوى الميكروفون",
+      "micDetected": "تم اكتشاف الصوت",
+      "micNotDetected": "لا يوجد دخل صوتي",
+      "noCameraDevices": "لم يتم العثور على كاميرا.",
+      "noMicrophoneDevices": "لم يتم العثور على ميكروفون."
+    },
+    "recording": {
+      "status": "حالة التسجيل",
+      "live": "تسجيل",
+      "waiting": "بانتظار دخول الطرفين",
+      "start": "بدء التسجيل",
+      "stopAndUpload": "إيقاف ورفع"
+    },
+    "soap": {
+      "generated": "تم إنشاء مسودة SOAP بنجاح.",
+      "reviewAction": "مراجعة مسودة SOAP",
+      "reviewTitle": "مراجعة مسودة SOAP",
+      "reviewDescription": "راجع وعدّل أقسام SOAP قبل التأكيد النهائي.",
+      "noDraft": "لا توجد مسودة SOAP متاحة لهذا الموعد بعد.",
+      "subjective": "الشكوى الذاتية",
+      "objective": "الملاحظات الموضوعية",
+      "assessment": "التقييم",
+      "plan": "الخطة",
+      "confirmPending": "نقطة التأكيد غير متاحة بعد"
+    }
+  },
   "stats": {
     "myClinics": "عياداتي",
     "activeClinics": "{count} نشطة",
@@ -236,7 +317,6 @@
     "announcements": "توظيف ممرضات",
     "activeAnnouncements": "{count} نشط"
   },
-
   "announcements": {
     "title": "توظيف ممرضات",
     "subtitle": "انشر إعلانات لتوظيف ممرضات لعياداتك",
@@ -287,13 +367,11 @@
     "yearsOfExperienceReq": "الحد الأدنى للخبرة",
     "years": "سنة"
   },
-
   "socket": {
     "patientCancelled": "قام {patient} بإلغاء موعده بتاريخ {date}",
     "patientRescheduled": "قام {patient} بإعادة جدولة موعده",
     "appointmentCompleted": "تم تمييز موعد كمكتمل"
   },
-
   "nurses": {
     "title": "ممرضاتي",
     "subtitle": "جميع الممرضات العاملات معك حاليًا عبر عياداتك",
