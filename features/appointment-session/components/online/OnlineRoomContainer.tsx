@@ -8,9 +8,10 @@ import {
   useRef,
   useState,
 } from "react";
-import AgoraRTC, {
+import type {
   IAgoraRTCClient,
   IAgoraRTCRemoteUser,
+  UID,
   ILocalAudioTrack,
   ILocalVideoTrack,
 } from "agora-rtc-sdk-ng";
@@ -33,12 +34,25 @@ import {
 import { useSessionGate } from "../../hooks/useSessionGate";
 import { guessOnlineAudioKeys } from "../../api/session.api";
 
+type AgoraSDK = (typeof import("agora-rtc-sdk-ng"))["default"];
+
+let agoraSDKPromise: Promise<AgoraSDK> | null = null;
+
+const loadAgoraSDK = async (): Promise<AgoraSDK> => {
+  if (!agoraSDKPromise) {
+    agoraSDKPromise = import("agora-rtc-sdk-ng").then(
+      (module) => module.default,
+    );
+  }
+  return agoraSDKPromise;
+};
+
 const stringToNumericUid = (str: string): number => {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i);
     hash = (hash << 5) - hash + char;
-    hash = hash & hash; 
+    hash = hash & hash;
   }
   return Math.abs(hash);
 };
@@ -280,7 +294,10 @@ export function OnlineRoomContainer({
           const audioBlob = new Blob(chunksRef.current, {
             type: recorder.mimeType || "audio/webm",
           });
-          console.log("[AgoraRoom Pipeline] Recorder stopped. Blob size:", audioBlob.size);
+          console.log(
+            "[AgoraRoom Pipeline] Recorder stopped. Blob size:",
+            audioBlob.size,
+          );
           resolve(audioBlob);
         };
         recorder.onerror = (e) => {
@@ -290,12 +307,16 @@ export function OnlineRoomContainer({
         if (recorder.state !== "inactive") {
           recorder.stop();
         } else {
-          console.log("[AgoraRoom Pipeline] Recorder already inactive. Yielding empty blob.");
+          console.log(
+            "[AgoraRoom Pipeline] Recorder already inactive. Yielding empty blob.",
+          );
           resolve(new Blob([], { type: "audio/webm" }));
         }
       });
     } else {
-      console.log("[AgoraRoom Pipeline] No active recorder found (mic may have been disabled). Falling back to empty blob.");
+      console.log(
+        "[AgoraRoom Pipeline] No active recorder found (mic may have been disabled). Falling back to empty blob.",
+      );
     }
 
     recorderRef.current = null;
@@ -305,7 +326,10 @@ export function OnlineRoomContainer({
     }
 
     try {
-      console.log("[AgoraRoom Pipeline] Requesting S3 upload URL for userType:", sessionRole);
+      console.log(
+        "[AgoraRoom Pipeline] Requesting S3 upload URL for userType:",
+        sessionRole,
+      );
       setStatus(appointmentId, "uploading");
       const uploadUrlResponse = await uploadUrlMutation.mutateAsync({
         appointmentId,
@@ -316,7 +340,10 @@ export function OnlineRoomContainer({
       if (!uploadData?.uploadUrl || !uploadData.objectKey) {
         throw new Error("upload_url_missing");
       }
-      console.log("[AgoraRoom Pipeline] Upload URL received. Key:", uploadData.objectKey);
+      console.log(
+        "[AgoraRoom Pipeline] Upload URL received. Key:",
+        uploadData.objectKey,
+      );
 
       console.log("[AgoraRoom Pipeline] Uploading audio blob to S3...");
       await uploadFileMutation.mutateAsync({
@@ -335,14 +362,22 @@ export function OnlineRoomContainer({
           ? uploadData.objectKey
           : guessedKeys.patientKey;
 
-      console.log("[AgoraRoom Pipeline] Triggering AI processing. DoctorKey:", doctorKey, "PatientKey:", patientKey);
+      console.log(
+        "[AgoraRoom Pipeline] Triggering AI processing. DoctorKey:",
+        doctorKey,
+        "PatientKey:",
+        patientKey,
+      );
       setStatus(appointmentId, "processing");
       const processResponse = await processMutation.mutateAsync({
         appointmentId,
         payload: { doctorKey, patientKey },
       });
 
-      console.log("[AgoraRoom Pipeline] AI processing successful! SOAP generated:", !!processResponse.data?.SOAP);
+      console.log(
+        "[AgoraRoom Pipeline] AI processing successful! SOAP generated:",
+        !!processResponse.data?.SOAP,
+      );
       if (processResponse.data?.SOAP) {
         setDraft(appointmentId, processResponse.data.SOAP);
       }
@@ -399,7 +434,9 @@ export function OnlineRoomContainer({
       if (joinedRef.current) {
         await stopRecorderAndUpload();
       } else {
-        console.log("[AgoraRoom] Skipping Pipeline: joining aborted or unmounted before join completed.");
+        console.log(
+          "[AgoraRoom] Skipping Pipeline: joining aborted or unmounted before join completed.",
+        );
       }
 
       if (recordingTimerRef.current) {
@@ -445,7 +482,12 @@ export function OnlineRoomContainer({
 
     const uniqueUserId = user?.id || user?.email || user?.username;
 
-    if (!tokenQuery.data?.data || !uniqueUserId || clientRef.current || joiningRef.current) {
+    if (
+      !tokenQuery.data?.data ||
+      !uniqueUserId ||
+      clientRef.current ||
+      joiningRef.current
+    ) {
       console.log("[AgoraRoom] Guard exit:", {
         hasToken: Boolean(tokenQuery.data?.data),
         hasUserId: Boolean(uniqueUserId),
@@ -461,6 +503,7 @@ export function OnlineRoomContainer({
       setIsJoining(true);
 
       try {
+        const AgoraRTC = await loadAgoraSDK();
         const tokenData = tokenQuery.data.data;
 
         if (!tokenData?.token || !tokenData.appId) {
@@ -479,14 +522,24 @@ export function OnlineRoomContainer({
           finalUid = stringToNumericUid(uniqueUserId);
         }
 
-        console.log("[AgoraRoom] Joining channel:", channelName, "as UID:", finalUid, "role:", sessionRole);
+        console.log(
+          "[AgoraRoom] Joining channel:",
+          channelName,
+          "as UID:",
+          finalUid,
+          "role:",
+          sessionRole,
+        );
 
         const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
         clientRef.current = client;
 
         const syncRemoteUsers = () => {
           const current = [...client.remoteUsers];
-          console.log("[AgoraRoom] syncRemoteUsers:", current.map((u) => u.uid));
+          console.log(
+            "[AgoraRoom] syncRemoteUsers:",
+            current.map((u) => u.uid),
+          );
           setRemoteUsers(current);
         };
 
@@ -494,63 +547,101 @@ export function OnlineRoomContainer({
           remoteUser: IAgoraRTCRemoteUser,
           mediaType: "audio" | "video",
         ) => {
-          console.log("[AgoraRoom] Subscribing to", mediaType, "from uid:", remoteUser.uid);
+          console.log(
+            "[AgoraRoom] Subscribing to",
+            mediaType,
+            "from uid:",
+            remoteUser.uid,
+          );
           try {
             await client.subscribe(remoteUser, mediaType);
-            console.log("[AgoraRoom] Subscribed to", mediaType, "from uid:", remoteUser.uid);
+            console.log(
+              "[AgoraRoom] Subscribed to",
+              mediaType,
+              "from uid:",
+              remoteUser.uid,
+            );
             if (mediaType === "audio") {
               remoteUser.audioTrack?.play();
             }
           } catch (subscribeError) {
-            console.error("[AgoraRoom] Failed subscribing to remote track", subscribeError);
+            console.error(
+              "[AgoraRoom] Failed subscribing to remote track",
+              subscribeError,
+            );
           } finally {
             syncRemoteUsers();
           }
         };
 
-        client.on("user-joined", (remoteUser) => {
+        client.on("user-joined", (remoteUser: IAgoraRTCRemoteUser) => {
           console.log("[AgoraRoom] user-joined uid:", remoteUser.uid);
           syncRemoteUsers();
         });
 
-        client.on("user-published", (remoteUser, mediaType) => {
-          console.log("[AgoraRoom] user-published uid:", remoteUser.uid, "type:", mediaType);
-          if (mediaType !== "audio" && mediaType !== "video") {
+        client.on(
+          "user-published",
+          (
+            remoteUser: IAgoraRTCRemoteUser,
+            mediaType: "audio" | "video" | "datachannel",
+          ) => {
+            console.log(
+              "[AgoraRoom] user-published uid:",
+              remoteUser.uid,
+              "type:",
+              mediaType,
+            );
+            if (mediaType !== "audio" && mediaType !== "video") {
+              syncRemoteUsers();
+              return;
+            }
+            void subscribeRemoteTrack(remoteUser, mediaType);
+          },
+        );
+
+        client.on(
+          "user-unpublished",
+          (
+            remoteUser: IAgoraRTCRemoteUser,
+            mediaType: "audio" | "video" | "datachannel",
+          ) => {
+            console.log(
+              "[AgoraRoom] user-unpublished uid:",
+              remoteUser.uid,
+              "type:",
+              mediaType,
+            );
             syncRemoteUsers();
-            return;
-          }
-          void subscribeRemoteTrack(remoteUser, mediaType);
-        });
+          },
+        );
 
-        client.on("user-unpublished", (remoteUser, mediaType) => {
-          console.log("[AgoraRoom] user-unpublished uid:", remoteUser.uid, "type:", mediaType);
-          syncRemoteUsers();
-        });
-
-        client.on("user-left", (remoteUser) => {
+        client.on("user-left", (remoteUser: IAgoraRTCRemoteUser) => {
           console.log("[AgoraRoom] user-left uid:", remoteUser.uid);
           syncRemoteUsers();
         });
 
-        client.on("stream-message", (_uid, payload) => {
-          const parsed = decodeStreamMessagePayload(payload);
-          if (!parsed) return;
+        client.on(
+          "stream-message",
+          (_uid: UID, payload: string | Uint8Array) => {
+            const parsed = decodeStreamMessagePayload(payload);
+            if (!parsed) return;
 
-          setChatMessages((prev) => {
-            if (prev.some((item) => item.id === parsed.id)) return prev;
-            return [
-              ...prev,
-              {
-                id: parsed.id,
-                senderId: parsed.senderId,
-                senderName: parsed.senderName,
-                text: parsed.text,
-                timestamp: parsed.timestamp,
-                isOwn: parsed.senderId === uniqueUserId,
-              },
-            ];
-          });
-        });
+            setChatMessages((prev) => {
+              if (prev.some((item) => item.id === parsed.id)) return prev;
+              return [
+                ...prev,
+                {
+                  id: parsed.id,
+                  senderId: parsed.senderId,
+                  senderName: parsed.senderName,
+                  text: parsed.text,
+                  timestamp: parsed.timestamp,
+                  isOwn: parsed.senderId === uniqueUserId,
+                },
+              ];
+            });
+          },
+        );
 
         console.log("[AgoraRoom] Calling client.join()...");
         await client.join(
@@ -559,10 +650,16 @@ export function OnlineRoomContainer({
           tokenData.token,
           finalUid,
         );
-        console.log("[AgoraRoom] client.join() succeeded. Actual UID:", client.uid);
+        console.log(
+          "[AgoraRoom] client.join() succeeded. Actual UID:",
+          client.uid,
+        );
 
         const initialRemote = client.remoteUsers;
-        console.log("[AgoraRoom] Users already in channel:", initialRemote.map((u) => u.uid));
+        console.log(
+          "[AgoraRoom] Users already in channel:",
+          initialRemote.map((u: IAgoraRTCRemoteUser) => u.uid),
+        );
         for (const existingUser of initialRemote) {
           if (existingUser.hasAudio) {
             await subscribeRemoteTrack(existingUser, "audio");
@@ -598,15 +695,20 @@ export function OnlineRoomContainer({
         joinedRef.current = true;
         console.log("[AgoraRoom] Fully joined and published.");
       } catch (error: any) {
-        if (leavingRef.current || error?.message?.includes("OPERATION_ABORTED")) {
-          console.log("[AgoraRoom] Join aborted safely (likely strict-mode unmount).");
+        if (
+          leavingRef.current ||
+          error?.message?.includes("OPERATION_ABORTED")
+        ) {
+          console.log(
+            "[AgoraRoom] Join aborted safely (likely strict-mode unmount).",
+          );
           return;
         }
 
         console.error("[AgoraRoom] Session join failed:", error);
         if (clientRef.current) {
           clientRef.current.removeAllListeners();
-          void clientRef.current.leave().catch(() => { });
+          void clientRef.current.leave().catch(() => {});
           clientRef.current = null;
         }
         toast({
