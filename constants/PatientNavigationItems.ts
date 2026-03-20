@@ -1,4 +1,4 @@
-import { LayoutDashboard, CalendarCheck } from "lucide-react";
+import { LayoutDashboard, CalendarCheck, FileText } from "lucide-react";
 
 export const patientNavigationItems = [
   {
@@ -10,5 +10,10 @@ export const patientNavigationItems = [
     nameKey: "appointmentsTab",
     href: "/dashboard/appointments",
     icon: CalendarCheck,
+  },
+  {
+    nameKey: "medicalHistoryTab",
+    href: "/dashboard/medical-history",
+    icon: FileText,
   },
 ];

@@ -43,6 +43,11 @@ import { useToast } from "@/hooks/useToast";
 import { format } from "date-fns";
 import { Loader2, Upload, Trash2 } from "lucide-react";
 import { getInitials } from "@/lib/helpers";
+import {
+  fileToDataUrl,
+  validateImageFile,
+  DEFAULT_MAX_IMAGE_SIZE_BYTES,
+} from "@/lib/imageUtils";
 
 type ProfileFormValues = {
   name: string;
@@ -63,7 +68,6 @@ export function UpdateProfileForm() {
   const deleteProfilePictureMutation = useDeleteProfilePicture();
 
   const [imageToCrop, setImageToCrop] = useState<string | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const isDoctor = user?.role === "DOCTOR";
 
@@ -100,11 +104,15 @@ export function UpdateProfileForm() {
     }
   }, [user, isDoctor, form]);
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith("image/")) {
+    const validationError = validateImageFile(file);
+
+    if (validationError === "invalid-type") {
       toast({
         title: locale === "en" ? "Invalid file type" : "نوع ملف غير صالح",
         description:
@@ -116,30 +124,36 @@ export function UpdateProfileForm() {
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
+    if (validationError === "file-too-large") {
       toast({
         title: locale === "en" ? "File too large" : "حجم الملف كبير جدًا",
         description:
           locale === "en"
-            ? "Please upload an image smaller than 5MB"
+            ? `Please upload an image smaller than ${Math.floor(DEFAULT_MAX_IMAGE_SIZE_BYTES / (1024 * 1024))}MB`
             : "يرجى تحميل صورة أصغر من 5 ميغابايت",
         variant: "destructive",
       });
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      setImageToCrop(reader.result as string);
-      setSelectedFile(file);
-    };
-    reader.readAsDataURL(file);
+    try {
+      const imageDataUrl = await fileToDataUrl(file);
+      setImageToCrop(imageDataUrl);
+    } catch {
+      toast({
+        title: locale === "en" ? "Error" : "خطأ",
+        description:
+          locale === "en"
+            ? "Failed to process selected image"
+            : "تعذر معالجة الصورة المحددة",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleCropComplete = (croppedImage: File) => {
     updateProfilePictureMutation.mutate(croppedImage);
     setImageToCrop(null);
-    setSelectedFile(null);
   };
 
   const handleDeleteImage = () => {
@@ -402,7 +416,6 @@ export function UpdateProfileForm() {
           open={!!imageToCrop}
           onClose={() => {
             setImageToCrop(null);
-            setSelectedFile(null);
           }}
           onCropComplete={handleCropComplete}
           locale={locale}
