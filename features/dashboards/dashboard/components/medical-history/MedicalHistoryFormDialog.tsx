@@ -49,6 +49,7 @@ import {
   Upload,
   X,
 } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageProvider";
 
 interface MedicalHistoryFormDialogProps {
   open: boolean;
@@ -91,6 +92,7 @@ export function MedicalHistoryFormDialog({
 }: MedicalHistoryFormDialogProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { toast } = useToast();
+  const { locale } = useLanguage();
 
   const schema = useMemo(
     () => createMedicalHistorySchema(tMedicalHistory),
@@ -248,7 +250,7 @@ export function MedicalHistoryFormDialog({
                           <Label
                             key={categoryValue}
                             htmlFor={cardId}
-                            className="cursor-pointer rounded-lg border p-3 transition-colors hover:border-primary"
+                            className="mt-1 cursor-pointer rounded-lg border p-3 transition-colors hover:border-primary"
                           >
                             <div className="flex items-center gap-2">
                               <RadioGroupItem
@@ -277,8 +279,13 @@ export function MedicalHistoryFormDialog({
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{tMedicalHistory("recordTitle")}</FormLabel>
-                  <FormControl>
+                  <FormLabel>
+                    {tMedicalHistory("recordTitle")}
+                    <span className={`${locale === "ar" ? "mr-1" : "ml-1"} text-destructive`}>
+                      *
+                    </span>
+                  </FormLabel>
+                  <FormControl className="mt-1">
                     <Input
                       placeholder={tMedicalHistory("recordTitlePlaceholder")}
                       disabled={isPending}
@@ -295,8 +302,13 @@ export function MedicalHistoryFormDialog({
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{tMedicalHistory("recordDescription")}</FormLabel>
-                  <FormControl>
+                  <FormLabel>
+                    {tMedicalHistory("recordDescription")}
+                    <span className={`${locale === "ar" ? "mr-1" : "ml-1"} text-destructive`}>
+                      *
+                    </span>
+                  </FormLabel>
+                  <FormControl className="mt-1">
                     <Textarea
                       placeholder={tMedicalHistory(
                         "recordDescriptionPlaceholder",
@@ -338,7 +350,7 @@ export function MedicalHistoryFormDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{tMedicalHistory("notes")}</FormLabel>
-                  <FormControl>
+                  <FormControl className="mt-1">
                     <Textarea
                       placeholder={tMedicalHistory("notesPlaceholder")}
                       className="min-h-20"
