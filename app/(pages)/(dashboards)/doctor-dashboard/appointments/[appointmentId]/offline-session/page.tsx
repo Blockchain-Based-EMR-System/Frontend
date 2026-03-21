@@ -5,6 +5,8 @@ import { DoctorDashboardContainer } from "@/features/dashboards/doctor-dashboard
 import {
   OfflineSessionContainer,
   OfflineSessionPresentational,
+  SOAPOfflineContainer,
+  SOAPOfflinePresentational,
 } from "@/features/appointment-session";
 
 export default function DoctorOfflineSessionPage() {
@@ -20,6 +22,12 @@ export default function DoctorOfflineSessionPage() {
       >
         {(props) => <OfflineSessionPresentational {...props} />}
       </OfflineSessionContainer>
+      <div className="mx-auto w-full max-w-3xl px-4 pb-4">
+        <SOAPOfflineContainer appointmentId={params.appointmentId}>
+          {(props) => <SOAPOfflinePresentational {...props} />}
+        </SOAPOfflineContainer>
+      </div>
+      
     </DoctorDashboardContainer>
   );
 }
