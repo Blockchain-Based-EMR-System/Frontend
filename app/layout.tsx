@@ -6,11 +6,12 @@ import { cookies } from "next/headers";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { ThemeProvider } from "@/contexts/ThemeProvider";
 import { LanguageProvider } from "@/contexts/LanguageProvider";
+import { UiPreferencesProvider } from "@/contexts/UiPreferencesProvider";
 import { SocketProvider } from "@/contexts/SocketProvider";
 import { QueryProvider } from "@/contexts/QueryProvider";
 import { Toaster } from "@/components/ui/toaster";
 import { Navbar, Footer } from "@/components/layout";
-import InteractiveBackground from "@/components/ui/interactive-background";
+import { InteractiveBackgroundLayer } from "@/components/ui/InteractiveBackgroundLayer";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -50,17 +51,19 @@ export default async function RootLayout({
           <NextIntlClientProvider messages={messages} locale={locale}>
             <ThemeProvider>
               <LanguageProvider initialLocale={locale}>
-                <SocketProvider>
-                  <NuqsAdapter>
-                    <InteractiveBackground />
-                    <div className="flex flex-col min-h-screen">
-                      <Navbar />
-                      <main className="grow flex flex-col">{children}</main>
-                    </div>
-                    <Footer />
-                    <Toaster />
-                  </NuqsAdapter>
-                </SocketProvider>
+                <UiPreferencesProvider>
+                  <SocketProvider>
+                    <NuqsAdapter>
+                      <InteractiveBackgroundLayer />
+                      <div className="flex flex-col min-h-screen">
+                        <Navbar />
+                        <main className="grow flex flex-col">{children}</main>
+                      </div>
+                      <Footer />
+                      <Toaster />
+                    </NuqsAdapter>
+                  </SocketProvider>
+                </UiPreferencesProvider>
               </LanguageProvider>
             </ThemeProvider>
           </NextIntlClientProvider>
