@@ -105,6 +105,7 @@ export function MedicalHistoryFormDialog({
   });
 
   const watchedImages = form.watch("images");
+  const watchedDescription = form.watch("description") || "";
 
   useEffect(() => {
     if (!open) {
@@ -281,7 +282,9 @@ export function MedicalHistoryFormDialog({
                 <FormItem>
                   <FormLabel>
                     {tMedicalHistory("recordTitle")}
-                    <span className={`${locale === "ar" ? "mr-1" : "ml-1"} text-destructive`}>
+                    <span
+                      className={`${locale === "ar" ? "mr-1" : "ml-1"} text-destructive`}
+                    >
                       *
                     </span>
                   </FormLabel>
@@ -304,7 +307,9 @@ export function MedicalHistoryFormDialog({
                 <FormItem>
                   <FormLabel>
                     {tMedicalHistory("recordDescription")}
-                    <span className={`${locale === "ar" ? "mr-1" : "ml-1"} text-destructive`}>
+                    <span
+                      className={`${locale === "ar" ? "mr-1" : "ml-1"} text-destructive`}
+                    >
                       *
                     </span>
                   </FormLabel>
@@ -314,10 +319,15 @@ export function MedicalHistoryFormDialog({
                         "recordDescriptionPlaceholder",
                       )}
                       className="min-h-28"
+                      maxLength={500}
                       disabled={isPending}
                       {...field}
                     />
                   </FormControl>
+                  <p className="text-xs text-muted-foreground">
+                    {watchedDescription.length}/500{" "}
+                    {tMedicalHistory("characters")}
+                  </p>
                   <FormMessage />
                 </FormItem>
               )}

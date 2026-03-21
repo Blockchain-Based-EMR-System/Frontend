@@ -1,8 +1,11 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, NotebookPen, Plus } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { LayoutGrid, NotebookPen, Plus, Route } from "lucide-react";
 import {
   MedicalHistoryRecord,
   UpsertMedicalHistoryRequest,
@@ -11,6 +14,12 @@ import { MedicalHistoryCard } from "./MedicalHistoryCard";
 import { MedicalHistoryFormDialog } from "./MedicalHistoryFormDialog";
 import { DeleteMedicalHistoryDialog } from "./DeleteMedicalHistoryDialog";
 import { ImageLightboxDialog } from "./ImageLightboxDialog";
+import { MedicalHistorySkeleton } from "./MedicalHistorySkeleton";
+import { MedicalHistoryTimeline } from "./MedicalHistoryTimeline";
+import { useLanguage } from "@/contexts/LanguageProvider";
+
+type MedicalHistoryViewMode = "cards" | "timeline";
+type MedicalHistorySortOrder = "latest" | "oldest";
 
 export interface MedicalHistoryPresentationalProps {
   records: MedicalHistoryRecord[];
@@ -57,12 +66,25 @@ export function MedicalHistoryPresentational({
   tMedicalHistory,
   tCommon,
 }: MedicalHistoryPresentationalProps) {
+  const { locale } = useLanguage();
+  const [viewMode, setViewMode] = useState<MedicalHistoryViewMode>("cards");
+  const [sortOrder, setSortOrder] = useState<MedicalHistorySortOrder>("latest");
+
+  const sortedRecords = useMemo(() => {
+    const nextRecords = [...records];
+
+    return nextRecords.sort((firstRecord, secondRecord) => {
+      const firstDate = new Date(firstRecord.content.date).getTime();
+      const secondDate = new Date(secondRecord.content.date).getTime();
+
+      return sortOrder === "latest"
+        ? secondDate - firstDate
+        : firstDate - secondDate;
+    });
+  }, [records, sortOrder]);
+
   if (isLoading) {
-    return (
-      <div className="flex min-h-80 items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+    return <MedicalHistorySkeleton />;
   }
 
   if (isError) {
@@ -98,7 +120,58 @@ export function MedicalHistoryPresentational({
           </Button>
         </div>
 
-        {records.length === 0 ? (
+        <div className="inline-flex w-fit flex-wrap items-center gap-2 rounded-lg border bg-muted/30 p-1">
+          <Button
+            type="button"
+            size="sm"
+            variant={viewMode === "cards" ? "default" : "ghost"}
+            onClick={() => setViewMode("cards")}
+          >
+            <LayoutGrid className="h-4 w-4" />
+            {tMedicalHistory("viewCards")}
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            variant={viewMode === "timeline" ? "default" : "ghost"}
+            onClick={() => setViewMode("timeline")}
+          >
+            <Route className="h-4 w-4" />
+            {tMedicalHistory("viewTimeline")}
+          </Button>
+        </div>
+
+        <div className="rounded-lg border bg-card p-3">
+          <p className="mb-2 text-sm font-medium">
+            {tMedicalHistory("sortByDate")}
+          </p>
+          <RadioGroup
+            dir={locale === "ar" ? "rtl" : "ltr"}
+            value={sortOrder}
+            onValueChange={(value) =>
+              setSortOrder(value as MedicalHistorySortOrder)
+            }
+            className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4"
+          >
+            <Label
+              htmlFor="medical-history-sort-latest"
+              className="flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2"
+            >
+              <RadioGroupItem value="latest" id="medical-history-sort-latest" />
+              <span>{tMedicalHistory("latestFirst")}</span>
+            </Label>
+
+            <Label
+              htmlFor="medical-history-sort-oldest"
+              className="flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2"
+            >
+              <RadioGroupItem value="oldest" id="medical-history-sort-oldest" />
+              <span>{tMedicalHistory("oldestFirst")}</span>
+            </Label>
+          </RadioGroup>
+        </div>
+
+        {sortedRecords.length === 0 ? (
           <Card>
             <CardContent className="flex flex-col items-center justify-center py-12 text-center">
               <NotebookPen className="mb-3 h-12 w-12 text-muted-foreground" />
@@ -115,19 +188,31 @@ export function MedicalHistoryPresentational({
             </CardContent>
           </Card>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2">
-            {records.map((record) => (
-              <MedicalHistoryCard
-                key={record.recordId}
-                record={record}
+          <>
+            {viewMode === "cards" ? (
+              <div className="grid gap-4 md:grid-cols-2">
+                {sortedRecords.map((record) => (
+                  <MedicalHistoryCard
+                    key={record.recordId}
+                    record={record}
+                    onEdit={onEditRecord}
+                    onDelete={onRequestDelete}
+                    onOpenImage={onOpenImage}
+                    tMedicalHistory={tMedicalHistory}
+                    tCommon={tCommon}
+                  />
+                ))}
+              </div>
+            ) : (
+              <MedicalHistoryTimeline
+                records={sortedRecords}
                 onEdit={onEditRecord}
                 onDelete={onRequestDelete}
-                onOpenImage={onOpenImage}
                 tMedicalHistory={tMedicalHistory}
                 tCommon={tCommon}
               />
-            ))}
-          </div>
+            )}
+          </>
         )}
       </div>
 

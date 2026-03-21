@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageProvider";
 import { formatDate } from "@/lib/helpers";
+import { cn } from "@/lib/utils";
 import {
   FileText,
   FlaskConical,
@@ -35,6 +36,12 @@ const CATEGORY_ICONS: Record<
   GENERAL: FileText,
 };
 
+const CAT_BADGE: Record<MedicalHistoryCategory, string> = {
+  LAB:     "border-amber-400/30 bg-amber-400/10 text-amber-400",
+  SCAN:    "border-sky-400/30   bg-sky-400/10   text-sky-400",
+  GENERAL: "border-violet-400/30 bg-violet-400/10 text-violet-400",
+};
+
 export function MedicalHistoryCard({
   record,
   onEdit,
@@ -47,7 +54,7 @@ export function MedicalHistoryCard({
   const CategoryIcon = CATEGORY_ICONS[record.content.category];
 
   return (
-    <Card>
+    <Card className="flex h-full flex-col">
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between gap-2">
           <div>
@@ -56,16 +63,22 @@ export function MedicalHistoryCard({
               {formatDate(record.content.date, locale)}
             </p>
           </div>
-          <Badge variant="outline" className="flex items-center gap-1">
+          <Badge
+            variant="outline"
+            className={cn(
+              "flex items-center gap-1",
+              CAT_BADGE[record.content.category],
+            )}
+          >
             <CategoryIcon className="h-3.5 w-3.5" />
             {tMedicalHistory(
-              `categories.${record.content.category.toLowerCase()}`,
+              `categories.${record.content.category.toLowerCase()}`
             )}
           </Badge>
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4">
+      <CardContent className="flex flex-1 flex-col space-y-4">
         <p className="text-sm leading-relaxed">{record.content.description}</p>
 
         {record.content.notes ? (
@@ -101,7 +114,7 @@ export function MedicalHistoryCard({
           </div>
         ) : null}
 
-        <div className="flex justify-end gap-2">
+        <div className="mt-auto flex justify-end gap-2 pt-2">
           <Button
             variant="outline"
             size="sm"

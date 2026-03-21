@@ -28,7 +28,10 @@ export const createMedicalHistorySchema = (
     description: z
       .string()
       .trim()
-      .min(1, { message: tMedicalHistory("validation.descriptionRequired") }),
+      .min(1, { message: tMedicalHistory("validation.descriptionRequired") })
+      .max(500, {
+        message: tMedicalHistory("validation.descriptionTooLong"),
+      }),
     date: z.date({
       message: tMedicalHistory("validation.dateRequired"),
     }),
