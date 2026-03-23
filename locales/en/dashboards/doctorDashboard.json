@@ -226,7 +226,8 @@
       "uploading": "Uploading",
       "processing": "Processing",
       "draft-ready": "SOAP Draft Ready",
-      "failed": "Failed"
+      "failed": "Failed",
+      "idle": "Idle"
     },
     "permissions": {
       "microphoneDenied": "Microphone permission is required to start recording.",

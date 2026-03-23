@@ -226,7 +226,8 @@
       "uploading": "جارٍ الرفع",
       "processing": "جارٍ التحليل",
       "draft-ready": "مسودة SOAP جاهزة",
-      "failed": "فشل"
+      "failed": "فشل",
+      "idle": "خامل"
     },
     "permissions": {
       "microphoneDenied": "يلزم السماح بالميكروفون لبدء التسجيل.",
