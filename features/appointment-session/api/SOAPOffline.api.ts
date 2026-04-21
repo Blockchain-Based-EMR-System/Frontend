@@ -54,6 +54,55 @@ export const DEFAULT_SOAP_OFFLINE_DRAFT: SOAPOfflineDraft = {
 	},
 };
 
+export const getDefaultSoapOfflineDraft = (
+	attendingProvider = "",
+): SOAPOfflineDraft => ({
+	encounterDate: new Date().toISOString().slice(0, 10),
+	chiefComplaint: "",
+	attendingProvider,
+	Subjective: {
+		historyOfPresentIllness: {
+			onset: "",
+			location: "",
+			duration: "",
+			character: "",
+			aggravatingAlleviatingFactors: "",
+			severity: "",
+		},
+	},
+	Objective: {
+		vitalSigns: {
+			bloodPressure: "",
+			heartRate: "",
+			respiratoryRate: "",
+			temperature: "",
+		},
+		physicalExamination: "",
+		diagnosticResults: "",
+	},
+	Assessment: {
+		diagnosisType: "Primary",
+		condition: "",
+		icd10Code: "",
+		status: "Active",
+		rationale: "",
+	},
+	Plan: {
+		medications: [
+			{
+				name: "",
+				dosage: "",
+				frequency: "",
+				duration: "",
+			},
+		],
+		inistructions: {
+			activity: "",
+			followUp: "",
+		},
+	},
+});
+
 export const createSoapOfflinePayload = (
 	appointmentId: string,
 	draft: SOAPOfflineDraft,

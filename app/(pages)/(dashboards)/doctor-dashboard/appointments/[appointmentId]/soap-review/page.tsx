@@ -3,8 +3,8 @@
 import { useParams } from "next/navigation";
 import { DoctorDashboardContainer } from "@/features/dashboards/doctor-dashboard";
 import {
-  SoapReviewContainer,
-  SoapReviewPresentational,
+  SOAPOfflineContainer,
+  SOAPOfflinePresentational,
 } from "@/features/appointment-session";
 
 export default function DoctorSoapReviewPage() {
@@ -12,9 +12,11 @@ export default function DoctorSoapReviewPage() {
 
   return (
     <DoctorDashboardContainer>
-      <SoapReviewContainer appointmentId={params.appointmentId}>
-        {(props) => <SoapReviewPresentational {...props} />}
-      </SoapReviewContainer>
+      <div className="mx-auto w-full max-w-3xl px-4 pb-4">
+        <SOAPOfflineContainer appointmentId={params.appointmentId}>
+          {(props) => <SOAPOfflinePresentational {...props} />}
+        </SOAPOfflineContainer>
+      </div>
     </DoctorDashboardContainer>
   );
 }

@@ -53,6 +53,9 @@ export function SOAPOfflinePresentational({
 		<Card className="mt-4">
 			<CardHeader>
 				<CardTitle>{tSession("soapOffline.title")}</CardTitle>
+				<p className="text-sm text-muted-foreground">
+					{tSession("soapOffline.mandatoryHint")}
+				</p>
 			</CardHeader>
 
 			<CardContent className="space-y-4">
@@ -87,7 +90,7 @@ export function SOAPOfflinePresentational({
 											event.target.value,
 										)
 									}
-									disabled={isSubmitting}
+									disabled={isSubmitting || draft.encounterDate.trim().length > 0}
 								/>
 							</div>
 							<div className="space-y-2">
@@ -103,7 +106,7 @@ export function SOAPOfflinePresentational({
 										)
 									}
 									placeholder={tSession("soapOffline.placeholders.attendingProvider")}
-									disabled={isSubmitting}
+										disabled={isSubmitting || draft.attendingProvider.trim().length > 0}
 								/>
 							</div>
 						</div>
@@ -339,21 +342,6 @@ export function SOAPOfflinePresentational({
 									onSectionFieldChange(
 										"assessment",
 										"condition",
-										event.target.value,
-									)
-								}
-								disabled={isSubmitting}
-							/>
-						</div>
-						<div className="space-y-2">
-							<Label htmlFor="icd10Code">{tSession("soapOffline.fields.icd10Code")}</Label>
-							<Input
-								id="icd10Code"
-								value={draft.Assessment.icd10Code}
-								onChange={(event) =>
-									onSectionFieldChange(
-										"assessment",
-										"icd10Code",
 										event.target.value,
 									)
 								}

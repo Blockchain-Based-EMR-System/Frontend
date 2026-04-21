@@ -309,6 +309,7 @@
     },
     "soapOffline": {
       "title": "Visit Summary",
+      "mandatoryHint": "Fields marked with * are mandatory.",
       "tabs": {
         "subjective": "Subjective",
         "objective": "Objective",

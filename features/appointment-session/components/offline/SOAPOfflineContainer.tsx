@@ -1,12 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { toast } from "@/hooks/useToast";
+import { useSoapDraftStore } from "@/stores/useSoapDraftStore";
+import { useUserStore } from "@/stores/useUserStore";
 import {
 	createSoapOfflinePayload,
-	DEFAULT_SOAP_OFFLINE_DRAFT,
+	getDefaultSoapOfflineDraft,
 } from "../../api/SOAPOffline.api";
 import {
 	useDoctorAppointmentContext,
@@ -18,6 +20,25 @@ import {
 	SoapTab,
 } from "../../types/SOAPOffline.types";
 
+const mergeText = (doctorValue: string, aiValue: string): string => {
+	const normalizedDoctorValue = doctorValue.trim();
+	const normalizedAiValue = aiValue.trim();
+
+	if (!normalizedAiValue) {
+		return doctorValue;
+	}
+
+	if (!normalizedDoctorValue) {
+		return aiValue;
+	}
+
+	if (normalizedDoctorValue.includes(normalizedAiValue)) {
+		return doctorValue;
+	}
+
+	return `${doctorValue}\n\n${aiValue}`;
+};
+
 export function SOAPOfflineContainer({
 	appointmentId,
 	children,
@@ -25,15 +46,91 @@ export function SOAPOfflineContainer({
 	const router = useRouter();
 	const tSession = useTranslations("doctorDashboard.sessions");
 	const tCommon = useTranslations("common");
+	const user = useUserStore((state) => state.user);
+	const aiDraft = useSoapDraftStore(
+		(state) => state.byAppointment[appointmentId]?.draft,
+	);
+	const providerName = user?.name?.trim() ?? "";
 
 	const [activeTab, setActiveTab] = useState<SoapTab>("subjective");
-	const [draft, setDraft] = useState<SOAPOfflineDraft>(DEFAULT_SOAP_OFFLINE_DRAFT);
+	const [draft, setDraft] = useState<SOAPOfflineDraft>(() =>
+		getDefaultSoapOfflineDraft(providerName),
+	);
+	const [hasMergedAiDraft, setHasMergedAiDraft] = useState(false);
 
 	const getContextMutation = useDoctorAppointmentContext();
 	const submitRecordMutation = useSubmitSoapOfflineRecord();
 
 	const isLoadingContext = getContextMutation.isPending;
 	const isSubmitting = submitRecordMutation.isPending;
+
+	useEffect(() => {
+		if (!providerName) {
+			return;
+		}
+
+		setDraft((prev) => {
+			if (prev.attendingProvider.trim().length > 0) {
+				return prev;
+			}
+
+			return {
+				...prev,
+				attendingProvider: providerName,
+			};
+		});
+	}, [providerName]);
+
+	useEffect(() => {
+		setHasMergedAiDraft(false);
+	}, [appointmentId]);
+
+	useEffect(() => {
+		if (!aiDraft || hasMergedAiDraft) {
+			return;
+		}
+
+		setDraft((prev) => ({
+			...prev,
+			chiefComplaint: mergeText(prev.chiefComplaint, aiDraft.subjective),
+			Subjective: {
+				...prev.Subjective,
+				historyOfPresentIllness: {
+					...prev.Subjective.historyOfPresentIllness,
+					character: mergeText(
+						prev.Subjective.historyOfPresentIllness.character,
+						aiDraft.subjective,
+					),
+				},
+			},
+			Objective: {
+				...prev.Objective,
+				physicalExamination: mergeText(
+					prev.Objective.physicalExamination,
+					aiDraft.objective,
+				),
+				diagnosticResults: mergeText(
+					prev.Objective.diagnosticResults,
+					aiDraft.objective,
+				),
+			},
+			Assessment: {
+				...prev.Assessment,
+				condition: mergeText(prev.Assessment.condition, aiDraft.assessment),
+				rationale: mergeText(prev.Assessment.rationale, aiDraft.assessment),
+			},
+			Plan: {
+				...prev.Plan,
+				inistructions: {
+					...prev.Plan.inistructions,
+					activity: mergeText(prev.Plan.inistructions.activity, aiDraft.plan),
+					followUp: mergeText(prev.Plan.inistructions.followUp, aiDraft.plan),
+				},
+			},
+		}));
+
+		setHasMergedAiDraft(true);
+	}, [aiDraft, hasMergedAiDraft]);
 
 	const isFormValid = useMemo(() => {
 		return [
@@ -207,7 +304,8 @@ export function SOAPOfflineContainer({
 	};
 
 	const onReset = () => {
-		setDraft(DEFAULT_SOAP_OFFLINE_DRAFT);
+		setDraft(getDefaultSoapOfflineDraft(providerName));
+		setHasMergedAiDraft(false);
 		setActiveTab("subjective");
 	};
 
