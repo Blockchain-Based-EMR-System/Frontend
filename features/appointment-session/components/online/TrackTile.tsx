@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import type { ILocalVideoTrack, IRemoteVideoTrack } from "agora-rtc-sdk-ng";
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/helpers";
 
 interface TrackTileProps {
@@ -12,6 +12,7 @@ interface TrackTileProps {
   className?: string;
   showAvatar?: boolean;
   avatarName?: string;
+  avatarSrc?: string | null;
 }
 
 export function TrackTile({
@@ -20,6 +21,7 @@ export function TrackTile({
   className,
   showAvatar,
   avatarName,
+  avatarSrc,
 }: TrackTileProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -44,6 +46,7 @@ export function TrackTile({
       {showAvatar && avatarName && (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-muted">
           <Avatar className="h-16 w-16">
+            <AvatarImage src={avatarSrc ?? undefined} alt={avatarName} />
             <AvatarFallback className="text-lg font-semibold">
               {getInitials(avatarName)}
             </AvatarFallback>

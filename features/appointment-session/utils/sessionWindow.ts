@@ -1,4 +1,7 @@
-import { SessionGateState } from "../types/session.types";
+import {
+  ConsultationWindowState,
+  SessionGateState,
+} from "../types/session.types";
 
 const ONE_MINUTE_IN_SECONDS = 60;
 
@@ -111,4 +114,31 @@ export const formatCountdown = (seconds: number): string => {
   return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
     .toString()
     .padStart(2, "0")}`;
+};
+
+export const getConsultationWindowState = (
+  startAt: Date,
+  endAt: Date,
+  now = new Date(),
+): ConsultationWindowState => {
+  const durationSeconds = Math.max(
+    0,
+    Math.floor((endAt.getTime() - startAt.getTime()) / 1000),
+  );
+  const elapsedSeconds = Math.max(
+    0,
+    Math.floor((now.getTime() - startAt.getTime()) / 1000),
+  );
+  const remainingSeconds = Math.max(
+    0,
+    Math.floor((endAt.getTime() - now.getTime()) / 1000),
+  );
+
+  return {
+    durationSeconds,
+    elapsedSeconds: Math.min(durationSeconds, elapsedSeconds),
+    remainingSeconds,
+    isEnded: now.getTime() >= endAt.getTime(),
+    isEndingSoon: remainingSeconds > 0 && remainingSeconds <= 5 * 60,
+  };
 };

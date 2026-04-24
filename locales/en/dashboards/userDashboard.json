@@ -53,6 +53,7 @@
 
   "bookAppointment": "Book Appointment",
   "joinSession": "Join Session",
+  "sessionEnded": "Session Ended",
   "meetingAvailableInPrefix": "Session available in",
   "meetingStartsInPrefix": "Session starts in",
 

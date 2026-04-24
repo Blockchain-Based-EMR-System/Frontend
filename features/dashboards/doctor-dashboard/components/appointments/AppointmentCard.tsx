@@ -65,9 +65,17 @@ export function AppointmentCard({
     );
   }, [appointment.appointment_date, appointment.start_time]);
 
+  const sessionEnd = useMemo(() => {
+    return parseAppointmentStart(
+      appointment.appointment_date,
+      appointment.end_time,
+    );
+  }, [appointment.appointment_date, appointment.end_time]);
+
   const isOnline =
     appointment.clinic_name === null || appointment.clinic_name === undefined;
   const gate = useSessionGate(sessionStart, isOnline ? 5 : 10);
+  const isSessionEnded = !!sessionEnd && Date.now() >= sessionEnd.getTime();
   const isCompleted = appointment.status === "COMPLETED";
   const isCancelled = appointment.status === "CANCELLED";
 
@@ -104,7 +112,9 @@ export function AppointmentCard({
     : `/doctor-dashboard/appointments/${appointment.id}/offline-session`;
 
   const sessionButtonLabel = isOnline
-    ? tSession("meeting.join")
+    ? isSessionEnded
+      ? tSession("meeting.ended")
+      : tSession("meeting.join")
     : tSession("offline.startSession");
 
   const showSessionControls = appointment.status === "CONFIRMED";
@@ -112,11 +122,17 @@ export function AppointmentCard({
     showSessionControls && !!sessionStart && !gate.hasStarted;
 
   const onOpenSession = () => {
-    if (!sessionStart) return;
+    if (!sessionStart || isSessionEnded) return;
 
     const params = new URLSearchParams({
       startAt: sessionStart.toISOString(),
     });
+
+    if (sessionEnd) {
+      params.set("endAt", sessionEnd.toISOString());
+    }
+
+    params.set("patientName", appointment.patient_name);
 
     router.push(`${sessionPath}?${params.toString()}`);
   };
@@ -251,7 +267,7 @@ export function AppointmentCard({
                 variant="default"
                 size="sm"
                 className="w-full h-8 text-xs px-2"
-                disabled={gate.isTooEarly}
+                disabled={gate.isTooEarly || isSessionEnded}
               >
                 <Mic className="h-3.5 w-3.5 mr-1" />
                 {sessionButtonLabel}

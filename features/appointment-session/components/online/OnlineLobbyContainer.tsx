@@ -26,6 +26,7 @@ export interface OnlineLobbyPresentationalProps {
   isTooEarly: boolean;
   countdown: string;
   displayName: string;
+  avatarSrc?: string | null;
   microphones: MediaDeviceInfo[];
   cameras: MediaDeviceInfo[];
   selectedMicrophone: string;
@@ -52,14 +53,24 @@ export interface OnlineLobbyPresentationalProps {
 export interface OnlineLobbyContainerProps {
   appointmentId: string;
   startAt?: string | null;
+  endAt?: string | null;
   routeRole: SessionRoleRoute;
+  doctorName?: string | null;
+  doctorPhoto?: string | null;
+  patientName?: string | null;
+  patientPhoto?: string | null;
   children: (props: OnlineLobbyPresentationalProps) => ReactNode;
 }
 
 export function OnlineLobbyContainer({
   appointmentId,
   startAt,
+  endAt,
   routeRole,
+  doctorName,
+  doctorPhoto,
+  patientName,
+  patientPhoto,
   children,
 }: OnlineLobbyContainerProps) {
   const router = useRouter();
@@ -87,7 +98,11 @@ export function OnlineLobbyContainer({
   const audioSourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
   const micMeterFrameRef = useRef<number | null>(null);
 
-  const displayName = user?.name || tSession("meeting.you");
+  const displayName =
+    routeRole === "doctor"
+      ? `${tCommon("doctor")}${user?.name || ""}`
+      : user?.name || tSession("meeting.you");
+  const avatarSrc = user?.photo_url || user?.profilePicture || undefined;
 
   const startDate = useMemo(
     () => parseAppointmentStart(startAt || ""),
@@ -105,6 +120,16 @@ export function OnlineLobbyContainer({
       ? "/doctor-dashboard/appointments"
       : "/dashboard/appointments";
 
+  useEffect(() => {
+    const terminated = window.sessionStorage.getItem(
+      `appointment-session-terminated:${appointmentId}`,
+    );
+
+    if (terminated === "true") {
+      router.replace(appointmentsBackPath);
+    }
+  }, [appointmentId, appointmentsBackPath, router]);
+
   const stopMicMeter = useCallback(() => {
     if (micMeterFrameRef.current) {
       window.cancelAnimationFrame(micMeterFrameRef.current);
@@ -115,8 +140,7 @@ export function OnlineLobbyContainer({
     audioAnalyserRef.current?.disconnect();
 
     if (audioContextRef.current) {
-      void audioContextRef.current.close().catch(() => {
-      });
+      void audioContextRef.current.close().catch(() => {});
     }
 
     audioSourceRef.current = null;
@@ -303,8 +327,7 @@ export function OnlineLobbyContainer({
           previewRef.current.srcObject = null;
         } else if (previewStreamRef.current) {
           previewRef.current.srcObject = previewStreamRef.current;
-          void previewRef.current.play().catch(() => {
-          });
+          void previewRef.current.play().catch(() => {});
         }
       }
     }
@@ -334,6 +357,11 @@ export function OnlineLobbyContainer({
     params.set("micOn", String(micOn));
     params.set("camOn", String(camOn));
     if (startAt) params.set("startAt", startAt);
+    if (endAt) params.set("endAt", endAt);
+    if (doctorName) params.set("doctorName", doctorName);
+    if (doctorPhoto) params.set("doctorPhoto", doctorPhoto);
+    if (patientName) params.set("patientName", patientName);
+    if (patientPhoto) params.set("patientPhoto", patientPhoto);
 
     router.push(`${basePath}/room?${params.toString()}`);
   };
@@ -362,6 +390,7 @@ export function OnlineLobbyContainer({
         hasCamera: cameras.length > 0,
         hasMicrophone: microphones.length > 0,
         previewRef,
+        avatarSrc,
         onJoin,
         onBack: () => router.push(appointmentsBackPath),
         tSession,

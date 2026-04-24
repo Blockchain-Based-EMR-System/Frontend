@@ -53,6 +53,7 @@
 
   "bookAppointment": "حجز موعد",
   "joinSession": "انضمام للجلسة",
+  "sessionEnded": "انتهت الجلسة",
   "meetingAvailableInPrefix": "الجلسة متاحة بعد",
   "meetingStartsInPrefix": "تبدأ الجلسة بعد",
 

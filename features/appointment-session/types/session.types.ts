@@ -4,6 +4,21 @@ export type SessionMode = "ONLINE" | "OFFLINE";
 
 export type RecordingUserType = "DOCTOR" | "PATIENT" | "MIXED";
 
+export interface ConsultationParticipant {
+  id?: string;
+  name: string;
+  photoUrl?: string | null;
+  role: "DOCTOR" | "PATIENT";
+}
+
+export interface ConsultationWindowState {
+  durationSeconds: number;
+  elapsedSeconds: number;
+  remainingSeconds: number;
+  isEnded: boolean;
+  isEndingSoon: boolean;
+}
+
 export interface AgoraTokenData {
   token: string;
   appId: string;
