@@ -163,8 +163,8 @@ const DUMMY_APPOINTMENTS: NurseAppointmentItem[] = [
     status: "CONFIRMED",
     slot_duration: 45,
     appointment_date: todayLocalDate,
-    start_time: toTimeString(Math.min(slotBaseHour + 2, 23), 0),
-    end_time: toTimeString(Math.min(slotBaseHour + 2, 23), 45),
+    start_time: toTimeString(Math.min(slotBaseHour, 23), 0),
+    end_time: toTimeString(Math.min(slotBaseHour, 23), 45),
   },
   {
     id: "dummy-appt-4",
@@ -183,8 +183,8 @@ const DUMMY_APPOINTMENTS: NurseAppointmentItem[] = [
     status: "CANCELLED",
     slot_duration: 30,
     appointment_date: todayLocalDate,
-    start_time: toTimeString(Math.min(slotBaseHour + 3, 23), 0),
-    end_time: toTimeString(Math.min(slotBaseHour + 3, 23), 30),
+    start_time: toTimeString(Math.min(slotBaseHour, 23), 0),
+    end_time: toTimeString(Math.min(slotBaseHour, 23), 30),
   },
 ];
 

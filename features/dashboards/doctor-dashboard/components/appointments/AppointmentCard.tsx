@@ -27,7 +27,7 @@ import { Appointment } from "../../types/appointment.types";
 import { RescheduleAppointmentDialog } from "@/features/dashboards/doctor-dashboard/components/appointments/RescheduleAppointmentDialog";
 import { CancelAppointmentDialog } from "@/features/dashboards/doctor-dashboard/components/appointments/CancelAppointmentDialog";
 import { cn } from "@/lib/utils";
-import { getTimeIn12HourFormat } from "@/lib/helpers";
+import { getTimeIn12HourFormat, utcToLocalDateTime } from "@/lib/helpers";
 import { useLanguage } from "@/contexts/LanguageProvider";
 import { useSessionGate } from "@/features/appointment-session";
 import {
@@ -58,18 +58,13 @@ export function AppointmentCard({
     (state) => state.byAppointment[appointment.id],
   );
 
+  // Backend returns start_time/end_time in UTC — parse as UTC for correct Date objects
   const sessionStart = useMemo(() => {
-    return parseAppointmentStart(
-      appointment.appointment_date,
-      appointment.start_time,
-    );
+    return new Date(`${appointment.appointment_date}T${appointment.start_time}Z`);
   }, [appointment.appointment_date, appointment.start_time]);
 
   const sessionEnd = useMemo(() => {
-    return parseAppointmentStart(
-      appointment.appointment_date,
-      appointment.end_time,
-    );
+    return new Date(`${appointment.appointment_date}T${appointment.end_time}Z`);
   }, [appointment.appointment_date, appointment.end_time]);
 
   const isOnline =
@@ -204,10 +199,16 @@ export function AppointmentCard({
             <Clock className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
             <span className="font-medium">
               <span>
-                {getTimeIn12HourFormat(appointment.start_time, locale)}
+                {getTimeIn12HourFormat(
+                  utcToLocalDateTime(appointment.appointment_date, appointment.start_time),
+                  locale,
+                )}
               </span>
               {" - "}
-              <span>{getTimeIn12HourFormat(appointment.end_time, locale)}</span>
+              <span>{getTimeIn12HourFormat(
+                utcToLocalDateTime(appointment.appointment_date, appointment.end_time),
+                locale,
+              )}</span>
             </span>
             <span className="text-xs text-muted-foreground">
               ({appointment.slot_duration}m)

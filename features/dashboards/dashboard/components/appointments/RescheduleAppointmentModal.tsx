@@ -30,7 +30,7 @@ import { format, isToday, isTomorrow, parseISO } from "date-fns";
 import { ar } from "date-fns/locale";
 import { useLanguage } from "@/contexts/LanguageProvider";
 import { useTranslations } from "next-intl";
-import { getTimeIn12HourFormat } from "@/lib/helpers";
+import { getTimeIn12HourFormat, buildLocalISOString } from "@/lib/helpers";
 import { RescheduleDatesSkeleton, RescheduleSlotsSkeleton } from "../skeletons";
 
 interface RescheduleAppointmentModalProps {
@@ -103,11 +103,9 @@ export function RescheduleAppointmentModal({
   const handleReschedule = () => {
     if (!selectedDate || !selectedSlot) return;
 
-    const scheduledDateTime = new Date(`${selectedDate}T${selectedSlot.start}`);
-
-    scheduledDateTime.setHours(scheduledDateTime.getHours() + 2);
-
-    const newScheduledTime = scheduledDateTime.toISOString();
+    // Build ISO string with local timezone offset so the backend
+    // knows this is local time, not UTC
+    const newScheduledTime = buildLocalISOString(selectedDate, selectedSlot.start);
 
     rescheduleMutation.mutate(
       {
