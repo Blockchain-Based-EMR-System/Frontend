@@ -228,7 +228,7 @@
       "draft-ready": "SOAP Draft Ready",
       "failed": "Failed",
       "idle": "Idle",
-      "confirmed": "Confirmed"
+      "confirmed": "SOAP Confirmed"
     },
     "permissions": {
       "microphoneDenied": "Microphone permission is required to start recording.",

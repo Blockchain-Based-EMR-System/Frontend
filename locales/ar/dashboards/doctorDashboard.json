@@ -228,7 +228,7 @@
       "draft-ready": "مسودة SOAP جاهزة",
       "failed": "فشل",
       "idle": "خامل",
-      "confirmed": "تم الحفظ"
+      "confirmed": "تم حفظ الSOAP"
     },
     "permissions": {
       "microphoneDenied": "يلزم السماح بالميكروفون لبدء التسجيل.",
