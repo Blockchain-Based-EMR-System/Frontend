@@ -227,7 +227,8 @@
       "processing": "Processing",
       "draft-ready": "SOAP Draft Ready",
       "failed": "Failed",
-      "idle": "Idle"
+      "idle": "Idle",
+      "confirmed": "Confirmed"
     },
     "permissions": {
       "microphoneDenied": "Microphone permission is required to start recording.",
@@ -331,7 +332,9 @@
       "objective": "Objective",
       "assessment": "Assessment",
       "plan": "Plan",
-      "confirmPending": "Confirm endpoint pending"
+      "confirmPending": "Confirm endpoint pending",
+      "confirm": "Confirm Changes",
+      "confirming": "Confirming changes..."
     }
   },
   "stats": {

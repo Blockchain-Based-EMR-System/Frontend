@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Card,
   CardContent,
@@ -53,14 +53,20 @@ export function AppointmentCard({
 
   const [isRescheduleOpen, setIsRescheduleOpen] = useState(false);
   const [isCancelOpen, setIsCancelOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const soapState = useSoapDraftStore(
     (state) => state.byAppointment[appointment.id],
   );
 
-  // Backend returns start_time/end_time in UTC — parse as UTC for correct Date objects
   const sessionStart = useMemo(() => {
-    return new Date(`${appointment.appointment_date}T${appointment.start_time}Z`);
+    return new Date(
+      `${appointment.appointment_date}T${appointment.start_time}Z`,
+    );
   }, [appointment.appointment_date, appointment.start_time]);
 
   const sessionEnd = useMemo(() => {
@@ -90,6 +96,8 @@ export function AppointmentCard({
     "draft-ready":
       "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300",
     failed: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
+    confirmed:
+      "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300",
   };
 
   const statusColor =
@@ -168,18 +176,16 @@ export function AppointmentCard({
             </p>
 
             <div className="flex items-center gap-1.5">
-              {soapState &&
-                soapState.status !== "idle" &&
-                soapState.status !== "confirmed" && (
-                  <Badge
-                    className={cn(
-                      "text-xs hover:bg-transparent",
-                      sessionStatusColors[soapState.status],
-                    )}
-                  >
-                    {tSession(`status.${soapState.status}`)}
-                  </Badge>
-                )}
+              {soapState && soapState.status !== "idle" && (
+                <Badge
+                  className={cn(
+                    "text-xs hover:bg-transparent",
+                    sessionStatusColors[soapState.status],
+                  )}
+                >
+                  {tSession(`status.${soapState.status}`)}
+                </Badge>
+              )}
               <Badge
                 className={cn("text-xs hover:bg-transparent", statusColor)}
               >
@@ -200,15 +206,23 @@ export function AppointmentCard({
             <span className="font-medium">
               <span>
                 {getTimeIn12HourFormat(
-                  utcToLocalDateTime(appointment.appointment_date, appointment.start_time),
+                  utcToLocalDateTime(
+                    appointment.appointment_date,
+                    appointment.start_time,
+                  ),
                   locale,
                 )}
               </span>
               {" - "}
-              <span>{getTimeIn12HourFormat(
-                utcToLocalDateTime(appointment.appointment_date, appointment.end_time),
-                locale,
-              )}</span>
+              <span>
+                {getTimeIn12HourFormat(
+                  utcToLocalDateTime(
+                    appointment.appointment_date,
+                    appointment.end_time,
+                  ),
+                  locale,
+                )}
+              </span>
             </span>
             <span className="text-xs text-muted-foreground">
               ({appointment.slot_duration}m)
@@ -222,7 +236,7 @@ export function AppointmentCard({
             </div>
           )}
 
-          {showMeetingCountdown && (
+          {showMeetingCountdown && isMounted && (
             <p className="text-xs text-muted-foreground">
               {gate.isTooEarly
                 ? tSession("meeting.availableIn", {

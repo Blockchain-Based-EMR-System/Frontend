@@ -227,7 +227,8 @@
       "processing": "جارٍ التحليل",
       "draft-ready": "مسودة SOAP جاهزة",
       "failed": "فشل",
-      "idle": "خامل"
+      "idle": "خامل",
+      "confirmed": "تم الحفظ"
     },
     "permissions": {
       "microphoneDenied": "يلزم السماح بالميكروفون لبدء التسجيل.",
@@ -331,7 +332,9 @@
       "objective": "الملاحظات الموضوعية",
       "assessment": "التقييم",
       "plan": "الخطة",
-      "confirmPending": "نقطة التأكيد غير متاحة بعد"
+      "confirmPending": "نقطة التأكيد غير متاحة بعد",
+      "confirm": "حفظ التعديلات",
+      "confirming": "جارٍ حفظ التعديلات..."
     }
   },
   "stats": {

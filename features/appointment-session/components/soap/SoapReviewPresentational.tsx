@@ -85,9 +85,8 @@ export function SoapReviewPresentational({
         </CardContent>
 
         <CardFooter className="flex justify-end">
-          <Button onClick={onConfirm} disabled className="gap-2">
-            <Lock className="h-4 w-4" />
-            {tSession("soap.confirmPending")}
+          <Button onClick={onConfirm} className="gap-2">
+            {tSession("soap.confirm")}
           </Button>
         </CardFooter>
       </Card>

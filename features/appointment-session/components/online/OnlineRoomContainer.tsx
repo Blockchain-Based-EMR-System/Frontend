@@ -585,7 +585,6 @@ export function OnlineRoomContainer({
       clearRecordingRetry();
 
       recordingTimerRef.current = window.setInterval(() => {
-        // heartbeat only
       }, 1000);
       return true;
     } catch {
