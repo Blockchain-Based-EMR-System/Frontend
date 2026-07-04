@@ -6,6 +6,8 @@ export * from "./hooks/useSessionGate";
 
 export { OfflineSessionContainer } from "./components/offline/OfflineSessionContainer";
 export { OfflineSessionPresentational } from "./components/offline/OfflineSessionPresentational";
+export { SOAPOfflineContainer } from "./components/offline/SOAPOfflineContainer";
+export { SOAPOfflinePresentational } from "./components/offline/SOAPOfflinePresentational";
 export { SoapReviewContainer } from "./components/soap/SoapReviewContainer";
 export { SoapReviewPresentational } from "./components/soap/SoapReviewPresentational";
 export { OnlineLobbyContainer } from "./components/online/OnlineLobbyContainer";

@@ -222,6 +222,7 @@
   "sessions": {
     "backToAppointments": "Back to appointments",
     "status": {
+      "idle": "Idle",
       "recording": "Recording",
       "uploading": "Uploading",
       "processing": "Processing",
@@ -335,6 +336,65 @@
       "confirmPending": "Confirm endpoint pending",
       "confirm": "Confirm Changes",
       "confirming": "Confirming changes..."
+    },
+    "soapOffline": {
+      "title": "Visit Summary",
+      "mandatoryHint": "Fields marked with * are mandatory.",
+      "tabs": {
+        "subjective": "Subjective",
+        "objective": "Objective",
+        "assessment": "Assessment",
+        "plan": "Plan"
+      },
+      "fields": {
+        "encounterDate": "Encounter Date",
+        "chiefComplaint": "Chief Complaint",
+        "attendingProvider": "Attending Provider",
+        "onset": "Onset",
+        "location": "Location",
+        "duration": "Duration",
+        "character": "Character",
+        "aggravatingAlleviatingFactors": "Aggravating/Alleviating Factors",
+        "severity": "Severity (0-10)",
+        "bloodPressure": "Blood Pressure",
+        "heartRate": "Heart Rate",
+        "respiratoryRate": "Respiratory Rate",
+        "temperature": "Temperature",
+        "physicalExamination": "Physical Examination",
+        "diagnosticResults": "Diagnostic Results",
+        "diagnosisType": "Diagnosis Type",
+        "condition": "Condition",
+        "icd10Code": "ICD-10 Code",
+        "status": "Status",
+        "rationale": "Rationale",
+        "medicationName": "Medication Name",
+        "dosage": "Dosage",
+        "frequency": "Frequency",
+        "durationMedication": "Duration",
+        "activityInstructions": "Activity Instructions",
+        "followUp": "Follow-up"
+      },
+      "placeholders": {
+        "attendingProvider": "e.g., Dr. Ahmed",
+        "chiefComplaint": "e.g., Headache for 3 days"
+      },
+      "actions": {
+        "reset": "Reset",
+        "save": "Save Visit Summary",
+        "medication": "Medication",
+        "addMedication": "Add Medication"
+      },
+      "confirmSave": {
+        "title": "Confirm Save",
+        "description": "Are you sure you want to save this visit summary?",
+        "confirm": "Yes, Save"
+      },
+      "messages": {
+        "required": "Please fill required SOAP fields before submitting.",
+        "missingContext": "Missing appointment context (clinicId/patientId).",
+        "saved": "Visit summary saved successfully.",
+        "saveFailed": "Failed to save visit summary. Please try again."
+      }
     }
   },
   "stats": {

@@ -222,6 +222,7 @@
   "sessions": {
     "backToAppointments": "العودة إلى المواعيد",
     "status": {
+      "idle": "جاهز",
       "recording": "جارٍ التسجيل",
       "uploading": "جارٍ الرفع",
       "processing": "جارٍ التحليل",
@@ -335,6 +336,65 @@
       "confirmPending": "نقطة التأكيد غير متاحة بعد",
       "confirm": "حفظ التعديلات",
       "confirming": "جارٍ حفظ التعديلات..."
+    },
+    "soapOffline": {
+      "title": "ملخص الزيارة",
+      "mandatoryHint": "الحقول المميزة بعلامة * إلزامية.",
+      "tabs": {
+        "subjective": "الشكوى الذاتية",
+        "objective": "الملاحظات الموضوعية",
+        "assessment": "التقييم",
+        "plan": "الخطة"
+      },
+      "fields": {
+        "encounterDate": "تاريخ الزيارة",
+        "chiefComplaint": "الشكوى الرئيسية",
+        "attendingProvider": "الطبيب المعالج",
+        "onset": "بداية الأعراض",
+        "location": "المكان",
+        "duration": "المدة",
+        "character": "طبيعة الألم/العرض",
+        "aggravatingAlleviatingFactors": "العوامل التي تزيد/تخفف الأعراض",
+        "severity": "شدة الأعراض (0-10)",
+        "bloodPressure": "ضغط الدم",
+        "heartRate": "معدل النبض",
+        "respiratoryRate": "معدل التنفس",
+        "temperature": "درجة الحرارة",
+        "physicalExamination": "الفحص السريري",
+        "diagnosticResults": "نتائج الفحوصات",
+        "diagnosisType": "نوع التشخيص",
+        "condition": "الحالة",
+        "icd10Code": "رمز ICD-10",
+        "status": "الحالة",
+        "rationale": "المبررات",
+        "medicationName": "اسم الدواء",
+        "dosage": "الجرعة",
+        "frequency": "التكرار",
+        "durationMedication": "المدة",
+        "activityInstructions": "تعليمات النشاط",
+        "followUp": "المتابعة"
+      },
+      "placeholders": {
+        "attendingProvider": "مثال: د. أحمد",
+        "chiefComplaint": "مثال: صداع منذ 3 أيام"
+      },
+      "actions": {
+        "reset": "إعادة تعيين",
+        "save": "حفظ ملخص الزيارة",
+        "medication": "الدواء",
+        "addMedication": "إضافة دواء"
+      },
+      "confirmSave": {
+        "title": "تأكيد الحفظ",
+        "description": "هل أنت متأكد أنك تريد حفظ ملخص الزيارة؟",
+        "confirm": "نعم، احفظ"
+      },
+      "messages": {
+        "required": "يرجى تعبئة حقول SOAP المطلوبة قبل الإرسال.",
+        "missingContext": "بيانات الموعد غير مكتملة (العيادة/المريض).",
+        "saved": "تم حفظ ملخص الزيارة بنجاح.",
+        "saveFailed": "فشل حفظ ملخص الزيارة. حاول مرة أخرى."
+      }
     }
   },
   "stats": {
