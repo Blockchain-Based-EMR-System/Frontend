@@ -8,9 +8,10 @@ import {
   useRef,
   useState,
 } from "react";
-import AgoraRTC, {
+import type {
   IAgoraRTCClient,
   IAgoraRTCRemoteUser,
+  UID,
   ILocalAudioTrack,
   ILocalVideoTrack,
 } from "agora-rtc-sdk-ng";
@@ -26,22 +27,43 @@ import {
   useProcessAudioAi,
   useUploadAudioFile,
 } from "../../query/useAppointmentSession.query";
-import {
-  formatCountdown,
-  parseAppointmentStart,
-} from "../../utils/sessionWindow";
+import { parseAppointmentStart } from "../../utils/sessionWindow";
 import { useSessionGate } from "../../hooks/useSessionGate";
 import { guessOnlineAudioKeys } from "../../api/session.api";
+import {
+  useDailySchedule,
+  useRescheduleAppointment,
+} from "@/features/dashboards/doctor-dashboard/query/useAppointments.query";
+
+type AgoraSDK = (typeof import("agora-rtc-sdk-ng"))["default"];
+
+let agoraSDKPromise: Promise<AgoraSDK> | null = null;
+
+const loadAgoraSDK = async (): Promise<AgoraSDK> => {
+  if (!agoraSDKPromise) {
+    agoraSDKPromise = import("agora-rtc-sdk-ng").then(
+      (module) => module.default,
+    );
+  }
+  return agoraSDKPromise;
+};
 
 const stringToNumericUid = (str: string): number => {
   let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
+  for (let index = 0; index < str.length; index += 1) {
+    const char = str.charCodeAt(index);
     hash = (hash << 5) - hash + char;
-    hash = hash & hash; 
+    hash &= hash;
   }
   return Math.abs(hash);
 };
+
+const addMinutesToDate = (date: Date, minutes: number) => {
+  return new Date(date.getTime() + minutes * 60 * 1000);
+};
+
+const RECORDING_START_MAX_RETRIES = 4;
+const RECORDING_START_RETRY_DELAY_MS = 700;
 
 export interface ChatMessage {
   id: string;
@@ -52,7 +74,7 @@ export interface ChatMessage {
   isOwn: boolean;
 }
 
-interface AgoraStreamMessagePayload {
+interface ChatStreamMessagePayload {
   kind: "chat";
   id: string;
   senderId: string;
@@ -61,6 +83,21 @@ interface AgoraStreamMessagePayload {
   timestamp: number;
 }
 
+interface SessionControlStreamMessagePayload {
+  kind: "session-control";
+  id: string;
+  senderId: string;
+  senderName: string;
+  action: "ended" | "extended";
+  minutes?: number;
+  newEndAt?: string;
+  timestamp: number;
+}
+
+type AgoraStreamMessagePayload =
+  | ChatStreamMessagePayload
+  | SessionControlStreamMessagePayload;
+
 const decodeStreamMessagePayload = (
   payload: string | Uint8Array,
 ): AgoraStreamMessagePayload | null => {
@@ -68,9 +105,18 @@ const decodeStreamMessagePayload = (
     const raw =
       typeof payload === "string" ? payload : new TextDecoder().decode(payload);
     const parsed = JSON.parse(raw) as AgoraStreamMessagePayload;
-    if (parsed.kind !== "chat") return null;
-    if (!parsed.id || !parsed.senderId || !parsed.text) return null;
-    return parsed;
+
+    if (parsed.kind === "chat") {
+      if (!parsed.id || !parsed.senderId || !parsed.text) return null;
+      return parsed;
+    }
+
+    if (parsed.kind === "session-control") {
+      if (!parsed.id || !parsed.senderId || !parsed.action) return null;
+      return parsed;
+    }
+
+    return null;
   } catch {
     return null;
   }
@@ -94,6 +140,7 @@ const sendRtcStreamMessage = async (
 export interface RemoteParticipant {
   id: string;
   name: string;
+  avatarSrc?: string | null;
   videoTrack: IAgoraRTCRemoteUser["videoTrack"];
 }
 
@@ -101,19 +148,26 @@ export interface OnlineRoomPresentationalProps {
   isJoining: boolean;
   joined: boolean;
   isRecording: boolean;
-  recordingLabel: string;
+  sessionStartAt: Date | null;
+  sessionEndAt: Date | null;
   localVideoTrack: ILocalVideoTrack | null;
+  localParticipantName: string;
+  localParticipantAvatarSrc?: string | null;
   remoteParticipants: RemoteParticipant[];
   micOn: boolean;
   camOn: boolean;
   displayName: string;
   chatMessages: ChatMessage[];
   controlsDisabled: boolean;
+  routeRole: "doctor" | "patient";
+  canExtendMeeting: boolean;
   onToggleMic: () => void;
   onToggleCam: () => void;
   onSendMessage: (text: string) => void;
   onLeave: () => Promise<void>;
-  tSession: (key: string) => string;
+  onEndConsultation: () => Promise<void>;
+  onExtendMeeting: (minutes: number) => Promise<void>;
+  tSession: (key: string, values?: Record<string, string | number>) => string;
   tCommon: (key: string) => string;
 }
 
@@ -121,6 +175,11 @@ export interface OnlineRoomContainerProps {
   appointmentId: string;
   routeRole: "doctor" | "patient";
   startAt?: string | null;
+  endAt?: string | null;
+  doctorName?: string | null;
+  doctorPhoto?: string | null;
+  patientName?: string | null;
+  patientPhoto?: string | null;
   initialMicId?: string | null;
   initialCamId?: string | null;
   initialMicOn?: boolean;
@@ -132,6 +191,11 @@ export function OnlineRoomContainer({
   appointmentId,
   routeRole,
   startAt,
+  endAt,
+  doctorName,
+  doctorPhoto,
+  patientName,
+  patientPhoto,
   initialMicId,
   initialCamId,
   initialMicOn = true,
@@ -154,20 +218,29 @@ export function OnlineRoomContainer({
     useState<ILocalAudioTrack | null>(null);
   const [remoteUsers, setRemoteUsers] = useState<IAgoraRTCRemoteUser[]>([]);
   const [isRecording, setIsRecording] = useState(false);
-  const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [micOn, setMicOnState] = useState(initialMicOn);
   const [camOn, setCamOnState] = useState(initialCamOn);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [sessionEndAt, setSessionEndAt] = useState<Date | null>(() => {
+    if (endAt) return parseAppointmentStart(endAt);
+    return parseAppointmentStart(startAt || "");
+  });
+  const [isTerminated, setIsTerminated] = useState(false);
 
   const clientRef = useRef<IAgoraRTCClient | null>(null);
   const leavingRef = useRef(false);
   const joiningRef = useRef(false);
   const joinedRef = useRef(false);
-  const hadRemoteUserRef = useRef(false);
-
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<BlobPart[]>([]);
   const recordingTimerRef = useRef<number | null>(null);
+  const recordingRetryTimeoutRef = useRef<number | null>(null);
+  const recordingRetryCountRef = useRef(0);
+  const terminationMessageSentRef = useRef(false);
+  const leaveMeetingRef = useRef<
+    | ((args: { shouldNavigate: boolean; terminate: boolean }) => Promise<void>)
+    | null
+  >(null);
 
   const { setStatus, setRecordingKey, setDraft, setError } =
     useSoapDraftStore();
@@ -176,6 +249,16 @@ export function OnlineRoomContainer({
   const uploadUrlMutation = useAudioUploadUrl();
   const uploadFileMutation = useUploadAudioFile();
   const processMutation = useProcessAudioAi();
+  const rescheduleMutation = useRescheduleAppointment();
+
+  const sessionDate = useMemo(() => {
+    if (!startAt) return "";
+    return startAt.slice(0, 10);
+  }, [startAt]);
+
+  const dailyScheduleQuery = useDailySchedule(
+    routeRole === "doctor" ? sessionDate : "",
+  );
 
   const backPath =
     routeRole === "doctor"
@@ -188,15 +271,470 @@ export function OnlineRoomContainer({
   );
   const gate = useSessionGate(startDate, 5);
 
-  const remoteParticipants = useMemo(() => {
-    return remoteUsers.map((userItem) => ({
-      id: String(userItem.uid),
-      name: tSession("meeting.participant"),
-      videoTrack: userItem.videoTrack,
-    }));
-  }, [remoteUsers, tSession]);
+  useEffect(() => {
+    const terminated = window.sessionStorage.getItem(
+      `appointment-session-terminated:${appointmentId}`,
+    );
 
-  const displayName = user?.name ?? tSession("meeting.you");
+    if (terminated === "true") {
+      setIsTerminated(true);
+      router.replace(backPath);
+    }
+  }, [appointmentId, backPath, router]);
+
+  const consultationEndTimeoutMs = useMemo(() => {
+    if (!sessionEndAt) return null;
+
+    const remainingMs = sessionEndAt.getTime() - Date.now();
+    return remainingMs > 0 ? remainingMs : 0;
+  }, [sessionEndAt]);
+
+  const nextScheduleAppointment = useMemo(() => {
+    const appointments = dailyScheduleQuery.data?.data ?? [];
+    if (!startDate) return null;
+
+    const ordered = [...appointments].sort((left, right) => {
+      const leftStart =
+        parseAppointmentStart(
+          left.appointment_date,
+          left.start_time,
+        )?.getTime() ?? 0;
+      const rightStart =
+        parseAppointmentStart(
+          right.appointment_date,
+          right.start_time,
+        )?.getTime() ?? 0;
+      return leftStart - rightStart;
+    });
+
+    const currentIndex = ordered.findIndex((item) => item.id === appointmentId);
+    if (currentIndex >= 0) {
+      return ordered[currentIndex + 1] ?? null;
+    }
+
+    const currentEndTime = sessionEndAt?.getTime() ?? startDate.getTime();
+    return (
+      ordered.find((item) => {
+        const startTime =
+          parseAppointmentStart(
+            item.appointment_date,
+            item.start_time,
+          )?.getTime() ?? 0;
+        return startTime >= currentEndTime;
+      }) ?? null
+    );
+  }, [appointmentId, dailyScheduleQuery.data?.data, sessionEndAt, startDate]);
+
+  const displayName =
+    routeRole === "doctor"
+      ? `${tCommon("doctor")}${user?.name || ""}`
+      : (user?.name ?? tSession("meeting.you"));
+
+  const localParticipantAvatarSrc =
+    user?.photo_url || user?.profilePicture || undefined;
+
+  const remoteParticipantName =
+    routeRole === "doctor"
+      ? patientName || tSession("meeting.participant")
+      : `${tCommon("doctor")}${doctorName || tSession("meeting.participant")}`;
+
+  const remoteParticipantAvatarSrc =
+    routeRole === "doctor"
+      ? patientPhoto || undefined
+      : doctorPhoto || undefined;
+
+  const remoteParticipants = useMemo(() => {
+    return remoteUsers.map((remoteUser) => ({
+      id: String(remoteUser.uid),
+      name: remoteParticipantName,
+      avatarSrc: remoteParticipantAvatarSrc,
+      videoTrack: remoteUser.videoTrack,
+    }));
+  }, [remoteParticipantAvatarSrc, remoteParticipantName, remoteUsers]);
+
+  const stopRecorderAndUpload = useCallback(async (): Promise<void> => {
+    const recorder = recorderRef.current;
+    let blob = new Blob([], { type: "audio/webm" });
+
+    if (recorder) {
+      blob = await new Promise<Blob>((resolve, reject) => {
+        recorder.onstop = () => {
+          resolve(
+            new Blob(chunksRef.current, {
+              type: recorder.mimeType || "audio/webm",
+            }),
+          );
+        };
+        recorder.onerror = () => reject(new Error("recording_error"));
+        if (recorder.state !== "inactive") {
+          recorder.stop();
+        } else {
+          resolve(new Blob([], { type: "audio/webm" }));
+        }
+      });
+    }
+
+    recorderRef.current = null;
+    setIsRecording(false);
+
+    if (recordingTimerRef.current) {
+      window.clearInterval(recordingTimerRef.current);
+      recordingTimerRef.current = null;
+    }
+
+    try {
+      setStatus(appointmentId, "uploading");
+      const uploadUrlResponse = await uploadUrlMutation.mutateAsync({
+        appointmentId,
+        userType: sessionRole,
+      });
+
+      const uploadData = uploadUrlResponse.data;
+      if (!uploadData?.uploadUrl || !uploadData.objectKey) {
+        throw new Error("upload_url_missing");
+      }
+
+      await uploadFileMutation.mutateAsync({
+        uploadUrl: uploadData.uploadUrl,
+        audioBlob: blob,
+      });
+
+      setRecordingKey(appointmentId, sessionRole, uploadData.objectKey);
+
+      const guessedKeys = guessOnlineAudioKeys(appointmentId);
+      const doctorKey =
+        sessionRole === "DOCTOR" ? uploadData.objectKey : guessedKeys.doctorKey;
+      const patientKey =
+        sessionRole === "PATIENT"
+          ? uploadData.objectKey
+          : guessedKeys.patientKey;
+
+      setStatus(appointmentId, "processing");
+      const processResponse = await processMutation.mutateAsync({
+        appointmentId,
+        payload: { doctorKey, patientKey },
+      });
+
+      if (processResponse.data?.SOAP) {
+        setDraft(appointmentId, processResponse.data.SOAP);
+      }
+    } catch {
+      setError(appointmentId, tSession("errors.processingQueued"));
+    }
+  }, [
+    appointmentId,
+    processMutation,
+    sessionRole,
+    setDraft,
+    setError,
+    setRecordingKey,
+    setStatus,
+    tSession,
+    uploadFileMutation,
+    uploadUrlMutation,
+  ]);
+
+  const clearRecordingRetry = useCallback(() => {
+    if (recordingRetryTimeoutRef.current) {
+      window.clearTimeout(recordingRetryTimeoutRef.current);
+      recordingRetryTimeoutRef.current = null;
+    }
+    recordingRetryCountRef.current = 0;
+  }, []);
+
+  const broadcastSessionControl = useCallback(
+    async (
+      action: "ended" | "extended",
+      extra?: { minutes?: number; newEndAt?: Date },
+    ) => {
+      const client = clientRef.current;
+      const uniqueUserId = user?.id || user?.email || user?.username;
+      if (!client || !uniqueUserId) return;
+
+      const payload: SessionControlStreamMessagePayload = {
+        kind: "session-control",
+        id: crypto.randomUUID(),
+        senderId: uniqueUserId,
+        senderName: displayName,
+        action,
+        minutes: extra?.minutes,
+        newEndAt: extra?.newEndAt?.toISOString(),
+        timestamp: Date.now(),
+      };
+
+      await sendRtcStreamMessage(client, payload);
+    },
+    [displayName, user?.email, user?.id, user?.username],
+  );
+
+  const leaveMeeting = useCallback(
+    async ({
+      shouldNavigate,
+      terminate,
+    }: {
+      shouldNavigate: boolean;
+      terminate: boolean;
+    }) => {
+      if (leavingRef.current) return;
+      leavingRef.current = true;
+      clearRecordingRetry();
+
+      try {
+        if (terminate && !terminationMessageSentRef.current) {
+          terminationMessageSentRef.current = true;
+          setIsTerminated(true);
+          window.sessionStorage.setItem(
+            `appointment-session-terminated:${appointmentId}`,
+            "true",
+          );
+          await broadcastSessionControl("ended");
+        }
+
+        if (joinedRef.current) {
+          await stopRecorderAndUpload();
+        }
+
+        if (localAudioTrack) {
+          localAudioTrack.stop();
+          localAudioTrack.close();
+        }
+
+        if (localVideoTrack) {
+          localVideoTrack.stop();
+          localVideoTrack.close();
+        }
+
+        if (clientRef.current) {
+          clientRef.current.removeAllListeners();
+          await clientRef.current.leave();
+        }
+
+        clientRef.current = null;
+        joinedRef.current = false;
+        setJoined(false);
+        setLocalAudioTrack(null);
+        setLocalVideoTrack(null);
+        setRemoteUsers([]);
+        setChatMessages([]);
+      } catch {
+        // cleanup only
+      } finally {
+        leavingRef.current = false;
+        if (shouldNavigate) {
+          router.push(backPath);
+        }
+      }
+    },
+    [
+      appointmentId,
+      backPath,
+      broadcastSessionControl,
+      clearRecordingRetry,
+      localAudioTrack,
+      localVideoTrack,
+      router,
+      stopRecorderAndUpload,
+    ],
+  );
+
+  useEffect(() => {
+    leaveMeetingRef.current = leaveMeeting;
+  }, [leaveMeeting]);
+
+  const startRecording = useCallback(async (): Promise<boolean> => {
+    if (!joined || isTerminated || recorderRef.current) return false;
+
+    if (typeof MediaRecorder === "undefined") {
+      toast({
+        title: tCommon("error"),
+        description: tSession("errors.recordingNotSupported"),
+        variant: "destructive",
+      });
+      setStatus(appointmentId, "failed");
+      setError(appointmentId, tSession("errors.recordingNotSupported"));
+      return false;
+    }
+
+    if (!localAudioTrack) {
+      return false;
+    }
+
+    const mediaTrack = localAudioTrack.getMediaStreamTrack();
+    if (!mediaTrack || mediaTrack.readyState !== "live") {
+      return false;
+    }
+
+    const stream = new MediaStream([mediaTrack]);
+    const preferredMimeType = MediaRecorder.isTypeSupported(
+      "audio/webm;codecs=opus",
+    )
+      ? "audio/webm;codecs=opus"
+      : "audio/webm";
+
+    const recorder = new MediaRecorder(stream, { mimeType: preferredMimeType });
+    chunksRef.current = [];
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) chunksRef.current.push(event.data);
+    };
+
+    try {
+      recorder.start(1000);
+      recorderRef.current = recorder;
+      setIsRecording(true);
+      setStatus(appointmentId, "recording");
+      clearRecordingRetry();
+
+      recordingTimerRef.current = window.setInterval(() => {
+      }, 1000);
+      return true;
+    } catch {
+      return false;
+    }
+  }, [
+    appointmentId,
+    clearRecordingRetry,
+    joined,
+    isTerminated,
+    localAudioTrack,
+    setError,
+    setStatus,
+    tCommon,
+    tSession,
+  ]);
+
+  const hasRemoteParticipant = remoteUsers.length > 0;
+
+  const shouldAutoStartRecording =
+    joined &&
+    !isTerminated &&
+    !isRecording &&
+    hasRemoteParticipant &&
+    Boolean(localAudioTrack);
+
+  useEffect(() => {
+    if (!shouldAutoStartRecording) {
+      clearRecordingRetry();
+      return;
+    }
+
+    let cancelled = false;
+
+    const tryStartRecording = async () => {
+      const started = await startRecording();
+
+      if (cancelled || started) {
+        return;
+      }
+
+      recordingRetryCountRef.current += 1;
+
+      if (recordingRetryCountRef.current >= RECORDING_START_MAX_RETRIES) {
+        clearRecordingRetry();
+        setStatus(appointmentId, "failed");
+        setError(appointmentId, tSession("errors.recordingStartFailed"));
+        toast({
+          title: tCommon("error"),
+          description: tSession("errors.recordingStartFailed"),
+          variant: "destructive",
+        });
+        return;
+      }
+
+      recordingRetryTimeoutRef.current = window.setTimeout(() => {
+        void tryStartRecording();
+      }, RECORDING_START_RETRY_DELAY_MS);
+    };
+
+    void tryStartRecording();
+
+    return () => {
+      cancelled = true;
+      if (recordingRetryTimeoutRef.current) {
+        window.clearTimeout(recordingRetryTimeoutRef.current);
+        recordingRetryTimeoutRef.current = null;
+      }
+    };
+  }, [
+    appointmentId,
+    clearRecordingRetry,
+    setError,
+    setStatus,
+    shouldAutoStartRecording,
+    startRecording,
+    tCommon,
+    tSession,
+  ]);
+
+  const setSessionEndFromMessage = useCallback(
+    (message: SessionControlStreamMessagePayload) => {
+      if (message.action === "ended") {
+        setIsTerminated(true);
+        window.sessionStorage.setItem(
+          `appointment-session-terminated:${appointmentId}`,
+          "true",
+        );
+        void leaveMeeting({ shouldNavigate: true, terminate: false });
+        return;
+      }
+
+      if (message.action === "extended") {
+        if (message.newEndAt) {
+          setSessionEndAt(new Date(message.newEndAt));
+          return;
+        }
+
+        if (message.minutes && sessionEndAt) {
+          setSessionEndAt(addMinutesToDate(sessionEndAt, message.minutes));
+        }
+      }
+    },
+    [appointmentId, leaveMeeting, sessionEndAt],
+  );
+
+  const extendMeeting = useCallback(
+    async (extensionMinutes: number) => {
+      if (routeRole !== "doctor" || !sessionEndAt) return;
+
+      const updatedEndAt = addMinutesToDate(sessionEndAt, extensionMinutes);
+      setSessionEndAt(updatedEndAt);
+
+      if (nextScheduleAppointment) {
+        await rescheduleMutation.mutateAsync({
+          appointmentId: nextScheduleAppointment.id,
+          minutes: extensionMinutes,
+        });
+      }
+
+      await broadcastSessionControl("extended", {
+        minutes: extensionMinutes,
+        newEndAt: updatedEndAt,
+      });
+
+      toast({
+        title: tCommon("success"),
+        description: tSession("meeting.extendedSuccessfully", {
+          minutes: extensionMinutes,
+        }),
+      });
+    },
+    [
+      broadcastSessionControl,
+      nextScheduleAppointment,
+      rescheduleMutation,
+      routeRole,
+      sessionEndAt,
+      tCommon,
+      tSession,
+    ],
+  );
+
+  const handleEndConsultation = useCallback(async () => {
+    await leaveMeeting({ shouldNavigate: true, terminate: true });
+  }, [leaveMeeting]);
+
+  const handleLeaveOnly = useCallback(async () => {
+    await leaveMeeting({ shouldNavigate: true, terminate: false });
+  }, [leaveMeeting]);
 
   const toggleMic = useCallback(async () => {
     if (!localAudioTrack) return;
@@ -247,7 +785,7 @@ export function OnlineRoomContainer({
 
       setChatMessages((prev) => [...prev, msg]);
 
-      const payload: AgoraStreamMessagePayload = {
+      const payload: ChatStreamMessagePayload = {
         kind: "chat",
         id: msg.id,
         senderId: msg.senderId,
@@ -256,8 +794,7 @@ export function OnlineRoomContainer({
         timestamp: msg.timestamp,
       };
 
-      void sendRtcStreamMessage(client, payload).catch((err) => {
-        console.error("Chat message send failed:", err);
+      void sendRtcStreamMessage(client, payload).catch(() => {
         toast({
           title: tCommon("error"),
           description: tSession("errors.messageSendFailed"),
@@ -268,191 +805,19 @@ export function OnlineRoomContainer({
     [displayName, joined, tCommon, tSession, user],
   );
 
-  const stopRecorderAndUpload = async (): Promise<void> => {
-    console.log("[AgoraRoom Pipeline] stopRecorderAndUpload initiated.");
-    const recorder = recorderRef.current;
-    let blob = new Blob([], { type: "audio/webm" });
-
-    if (recorder) {
-      console.log("[AgoraRoom Pipeline] Stopping active MediaRecorder...");
-      blob = await new Promise<Blob>((resolve, reject) => {
-        recorder.onstop = () => {
-          const audioBlob = new Blob(chunksRef.current, {
-            type: recorder.mimeType || "audio/webm",
-          });
-          console.log("[AgoraRoom Pipeline] Recorder stopped. Blob size:", audioBlob.size);
-          resolve(audioBlob);
-        };
-        recorder.onerror = (e) => {
-          console.error("[AgoraRoom Pipeline] Recorder error:", e);
-          reject(new Error("recording_error"));
-        };
-        if (recorder.state !== "inactive") {
-          recorder.stop();
-        } else {
-          console.log("[AgoraRoom Pipeline] Recorder already inactive. Yielding empty blob.");
-          resolve(new Blob([], { type: "audio/webm" }));
-        }
-      });
-    } else {
-      console.log("[AgoraRoom Pipeline] No active recorder found (mic may have been disabled). Falling back to empty blob.");
-    }
-
-    recorderRef.current = null;
-    setIsRecording(false);
-    if (recordingTimerRef.current) {
-      window.clearInterval(recordingTimerRef.current);
-    }
-
-    try {
-      console.log("[AgoraRoom Pipeline] Requesting S3 upload URL for userType:", sessionRole);
-      setStatus(appointmentId, "uploading");
-      const uploadUrlResponse = await uploadUrlMutation.mutateAsync({
-        appointmentId,
-        userType: sessionRole,
-      });
-
-      const uploadData = uploadUrlResponse.data;
-      if (!uploadData?.uploadUrl || !uploadData.objectKey) {
-        throw new Error("upload_url_missing");
-      }
-      console.log("[AgoraRoom Pipeline] Upload URL received. Key:", uploadData.objectKey);
-
-      console.log("[AgoraRoom Pipeline] Uploading audio blob to S3...");
-      await uploadFileMutation.mutateAsync({
-        uploadUrl: uploadData.uploadUrl,
-        audioBlob: blob,
-      });
-      console.log("[AgoraRoom Pipeline] S3 upload successful.");
-
-      setRecordingKey(appointmentId, sessionRole, uploadData.objectKey);
-
-      const guessedKeys = guessOnlineAudioKeys(appointmentId);
-      const doctorKey =
-        sessionRole === "DOCTOR" ? uploadData.objectKey : guessedKeys.doctorKey;
-      const patientKey =
-        sessionRole === "PATIENT"
-          ? uploadData.objectKey
-          : guessedKeys.patientKey;
-
-      console.log("[AgoraRoom Pipeline] Triggering AI processing. DoctorKey:", doctorKey, "PatientKey:", patientKey);
-      setStatus(appointmentId, "processing");
-      const processResponse = await processMutation.mutateAsync({
-        appointmentId,
-        payload: { doctorKey, patientKey },
-      });
-
-      console.log("[AgoraRoom Pipeline] AI processing successful! SOAP generated:", !!processResponse.data?.SOAP);
-      if (processResponse.data?.SOAP) {
-        setDraft(appointmentId, processResponse.data.SOAP);
-      }
-    } catch (err) {
-      console.error("[AgoraRoom Pipeline] Pipeline failed:", err);
-      setError(appointmentId, tSession("errors.processingQueued"));
-    }
-  };
-
-  const startRecording = async () => {
-    if (!localAudioTrack || recorderRef.current) return;
-
-    const mediaTrack = localAudioTrack.getMediaStreamTrack();
-    if (!mediaTrack) return;
-
-    const stream = new MediaStream([mediaTrack]);
-    const preferredMimeType = MediaRecorder.isTypeSupported(
-      "audio/webm;codecs=opus",
-    )
-      ? "audio/webm;codecs=opus"
-      : "audio/webm";
-
-    const recorder = new MediaRecorder(stream, { mimeType: preferredMimeType });
-    chunksRef.current = [];
-    recorder.ondataavailable = (event) => {
-      if (event.data.size > 0) chunksRef.current.push(event.data);
-    };
-
-    try {
-      recorder.start(1000);
-      recorderRef.current = recorder;
-    } catch (err) {
-      console.warn(
-        "[AgoraRoom] MediaRecorder start failed (mic likely off):",
-        err,
-      );
-    }
-
-    setIsRecording(true);
-    setRecordingSeconds(0);
-    setStatus(appointmentId, "recording");
-
-    recordingTimerRef.current = window.setInterval(() => {
-      setRecordingSeconds((prev) => prev + 1);
-    }, 1000);
-  };
-
-  const leaveMeeting = async (shouldNavigate = true) => {
-    if (leavingRef.current) return;
-    leavingRef.current = true;
-    console.log("[AgoraRoom] Initiating leaveMeeting sequence...");
-
-    try {
-      if (joinedRef.current) {
-        await stopRecorderAndUpload();
-      } else {
-        console.log("[AgoraRoom] Skipping Pipeline: joining aborted or unmounted before join completed.");
-      }
-
-      if (recordingTimerRef.current) {
-        window.clearInterval(recordingTimerRef.current);
-      }
-
-      if (localAudioTrack) {
-        localAudioTrack.stop();
-        localAudioTrack.close();
-      }
-
-      if (localVideoTrack) {
-        localVideoTrack.stop();
-        localVideoTrack.close();
-      }
-
-      if (clientRef.current) {
-        clientRef.current.removeAllListeners();
-        await clientRef.current.leave();
-      }
-
-      clientRef.current = null;
-      setJoined(false);
-      setLocalAudioTrack(null);
-      setLocalVideoTrack(null);
-      setRemoteUsers([]);
-      setChatMessages([]);
-    } catch {
-    } finally {
-      leavingRef.current = false;
-      if (shouldNavigate) {
-        router.push(backPath);
-      }
-    }
-  };
-
   useEffect(() => {
-    if (startDate && gate.isTooEarly) {
-      console.log("[AgoraRoom] Too early to join, redirecting.");
-      router.push(backPath);
+    if (gate.isTooEarly || isTerminated) {
       return;
     }
 
     const uniqueUserId = user?.id || user?.email || user?.username;
 
-    if (!tokenQuery.data?.data || !uniqueUserId || clientRef.current || joiningRef.current) {
-      console.log("[AgoraRoom] Guard exit:", {
-        hasToken: Boolean(tokenQuery.data?.data),
-        hasUserId: Boolean(uniqueUserId),
-        userObj: user,
-        clientExists: Boolean(clientRef.current),
-        alreadyJoining: joiningRef.current,
-      });
+    if (
+      !tokenQuery.data?.data ||
+      !uniqueUserId ||
+      clientRef.current ||
+      joiningRef.current
+    ) {
       return;
     }
 
@@ -461,6 +826,7 @@ export function OnlineRoomContainer({
       setIsJoining(true);
 
       try {
+        const AgoraRTC = await loadAgoraSDK();
         const tokenData = tokenQuery.data.data;
 
         if (!tokenData?.token || !tokenData.appId) {
@@ -470,7 +836,6 @@ export function OnlineRoomContainer({
         const channelName = tokenData.channelName || appointmentId;
 
         let finalUid: number | string | null = null;
-
         if (tokenData.uid !== undefined && tokenData.uid !== null) {
           finalUid = tokenData.uid;
         }
@@ -479,42 +844,32 @@ export function OnlineRoomContainer({
           finalUid = stringToNumericUid(uniqueUserId);
         }
 
-        console.log("[AgoraRoom] Joining channel:", channelName, "as UID:", finalUid, "role:", sessionRole);
-
         const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
         clientRef.current = client;
 
         const syncRemoteUsers = () => {
-          const current = [...client.remoteUsers];
-          console.log("[AgoraRoom] syncRemoteUsers:", current.map((u) => u.uid));
-          setRemoteUsers(current);
+          setRemoteUsers([...client.remoteUsers]);
         };
 
         const subscribeRemoteTrack = async (
           remoteUser: IAgoraRTCRemoteUser,
           mediaType: "audio" | "video",
         ) => {
-          console.log("[AgoraRoom] Subscribing to", mediaType, "from uid:", remoteUser.uid);
           try {
             await client.subscribe(remoteUser, mediaType);
-            console.log("[AgoraRoom] Subscribed to", mediaType, "from uid:", remoteUser.uid);
             if (mediaType === "audio") {
               remoteUser.audioTrack?.play();
             }
-          } catch (subscribeError) {
-            console.error("[AgoraRoom] Failed subscribing to remote track", subscribeError);
           } finally {
             syncRemoteUsers();
           }
         };
 
-        client.on("user-joined", (remoteUser) => {
-          console.log("[AgoraRoom] user-joined uid:", remoteUser.uid);
+        client.on("user-joined", () => {
           syncRemoteUsers();
         });
 
         client.on("user-published", (remoteUser, mediaType) => {
-          console.log("[AgoraRoom] user-published uid:", remoteUser.uid, "type:", mediaType);
           if (mediaType !== "audio" && mediaType !== "video") {
             syncRemoteUsers();
             return;
@@ -522,47 +877,52 @@ export function OnlineRoomContainer({
           void subscribeRemoteTrack(remoteUser, mediaType);
         });
 
-        client.on("user-unpublished", (remoteUser, mediaType) => {
-          console.log("[AgoraRoom] user-unpublished uid:", remoteUser.uid, "type:", mediaType);
+        client.on("user-unpublished", () => {
           syncRemoteUsers();
         });
 
-        client.on("user-left", (remoteUser) => {
-          console.log("[AgoraRoom] user-left uid:", remoteUser.uid);
+        client.on("user-left", () => {
           syncRemoteUsers();
         });
 
-        client.on("stream-message", (_uid, payload) => {
-          const parsed = decodeStreamMessagePayload(payload);
-          if (!parsed) return;
+        client.on(
+          "stream-message",
+          (_uid: UID, payload: string | Uint8Array) => {
+            const parsed = decodeStreamMessagePayload(payload);
+            if (!parsed) return;
 
-          setChatMessages((prev) => {
-            if (prev.some((item) => item.id === parsed.id)) return prev;
-            return [
-              ...prev,
-              {
-                id: parsed.id,
-                senderId: parsed.senderId,
-                senderName: parsed.senderName,
-                text: parsed.text,
-                timestamp: parsed.timestamp,
-                isOwn: parsed.senderId === uniqueUserId,
-              },
-            ];
-          });
-        });
+            if (parsed.kind === "chat") {
+              setChatMessages((prev) => {
+                if (prev.some((item) => item.id === parsed.id)) return prev;
+                return [
+                  ...prev,
+                  {
+                    id: parsed.id,
+                    senderId: parsed.senderId,
+                    senderName: parsed.senderName,
+                    text: parsed.text,
+                    timestamp: parsed.timestamp,
+                    isOwn: parsed.senderId === uniqueUserId,
+                  },
+                ];
+              });
+              return;
+            }
 
-        console.log("[AgoraRoom] Calling client.join()...");
+            if (parsed.kind === "session-control") {
+              setSessionEndFromMessage(parsed);
+            }
+          },
+        );
+
         await client.join(
           tokenData.appId,
           channelName,
           tokenData.token,
           finalUid,
         );
-        console.log("[AgoraRoom] client.join() succeeded. Actual UID:", client.uid);
 
         const initialRemote = client.remoteUsers;
-        console.log("[AgoraRoom] Users already in channel:", initialRemote.map((u) => u.uid));
         for (const existingUser of initialRemote) {
           if (existingUser.hasAudio) {
             await subscribeRemoteTrack(existingUser, "audio");
@@ -573,14 +933,12 @@ export function OnlineRoomContainer({
         }
         syncRemoteUsers();
 
-        console.log("[AgoraRoom] Creating local tracks...");
         const [audioTrack, videoTrack] =
           await AgoraRTC.createMicrophoneAndCameraTracks(
             initialMicId ? { microphoneId: initialMicId } : undefined,
             initialCamId ? { cameraId: initialCamId } : undefined,
           );
 
-        console.log("[AgoraRoom] Publishing local tracks...");
         await client.publish([audioTrack, videoTrack]);
 
         if (!initialMicOn) {
@@ -596,19 +954,20 @@ export function OnlineRoomContainer({
         setCamOnState(initialCamOn);
         setJoined(true);
         joinedRef.current = true;
-        console.log("[AgoraRoom] Fully joined and published.");
       } catch (error: any) {
-        if (leavingRef.current || error?.message?.includes("OPERATION_ABORTED")) {
-          console.log("[AgoraRoom] Join aborted safely (likely strict-mode unmount).");
+        if (
+          leavingRef.current ||
+          error?.message?.includes("OPERATION_ABORTED")
+        ) {
           return;
         }
 
-        console.error("[AgoraRoom] Session join failed:", error);
         if (clientRef.current) {
           clientRef.current.removeAllListeners();
-          void clientRef.current.leave().catch(() => { });
+          void clientRef.current.leave().catch(() => {});
           clientRef.current = null;
         }
+
         toast({
           title: tCommon("error"),
           description: tSession("errors.joinFailed"),
@@ -630,38 +989,44 @@ export function OnlineRoomContainer({
     initialCamOn,
     initialMicId,
     initialMicOn,
+    isTerminated,
     router,
-    startDate,
+    setSessionEndFromMessage,
     tCommon,
     tSession,
     tokenQuery.data?.data,
+    user?.email,
     user?.id,
+    user?.username,
   ]);
 
   useEffect(() => {
-    if (remoteUsers.length > 0) {
-      hadRemoteUserRef.current = true;
+    if (!joined || isTerminated || consultationEndTimeoutMs === null) return;
+
+    if (consultationEndTimeoutMs === 0) {
+      void handleEndConsultation();
+      return;
     }
 
-    if (!isRecording && joined && remoteUsers.length > 0 && localAudioTrack) {
-      void startRecording();
-    }
+    const timeoutId = window.setTimeout(() => {
+      void handleEndConsultation();
+    }, consultationEndTimeoutMs);
 
-    if (
-      routeRole === "patient" &&
-      hadRemoteUserRef.current &&
-      joined &&
-      remoteUsers.length === 0
-    ) {
-      void leaveMeeting(true);
-    }
-  }, [joined, localAudioTrack, remoteUsers.length, routeRole, isRecording]);
+    return () => window.clearTimeout(timeoutId);
+  }, [consultationEndTimeoutMs, handleEndConsultation, isTerminated, joined]);
 
   useEffect(() => {
     return () => {
-      void leaveMeeting(false);
+      void leaveMeetingRef.current?.({
+        shouldNavigate: false,
+        terminate: false,
+      });
     };
   }, []);
+
+  if (isTerminated) {
+    return <></>;
+  }
 
   return (
     <>
@@ -669,19 +1034,34 @@ export function OnlineRoomContainer({
         isJoining,
         joined,
         isRecording,
-        recordingLabel: formatCountdown(recordingSeconds),
+        sessionStartAt: startDate,
+        sessionEndAt,
         localVideoTrack,
+        localParticipantName: displayName,
+        localParticipantAvatarSrc,
         remoteParticipants,
         micOn,
         camOn,
         displayName,
         chatMessages,
-        controlsDisabled: !joined,
+        controlsDisabled: !joined || isTerminated,
+        routeRole,
+        canExtendMeeting:
+          routeRole === "doctor" &&
+          joined &&
+          !!sessionEndAt &&
+          sessionEndAt.getTime() > Date.now(),
         onToggleMic: toggleMic,
         onToggleCam: toggleCam,
         onSendMessage: sendMessage,
         onLeave: async () => {
-          await leaveMeeting(true);
+          await handleLeaveOnly();
+        },
+        onEndConsultation: async () => {
+          await handleEndConsultation();
+        },
+        onExtendMeeting: async (minutes: number) => {
+          await extendMeeting(minutes);
         },
         tSession,
         tCommon,

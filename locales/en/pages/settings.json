@@ -1,7 +1,24 @@
 {
   "title": "Settings",
+  "generalSettings": "General Settings",
   "updateProfile": "Update Profile",
   "changePassword": "Change Password",
+
+  "generalSection": {
+    "title": "General Settings",
+    "description": "Customize your app appearance and language preferences",
+    "languageTitle": "Language",
+    "languageDescription": "Choose the language used across the application",
+    "english": "English",
+    "arabic": "Arabic",
+    "themeTitle": "Theme",
+    "themeDescription": "Switch between light and dark mode",
+    "light": "Light",
+    "dark": "Dark",
+    "interactiveBackgroundTitle": "Interactive Background",
+    "interactiveBackgroundDescription": "Enable or disable the animated background effect",
+    "interactiveBackgroundLabel": "Show interactive background"
+  },
 
   "profileSection": {
     "title": "Profile Information",

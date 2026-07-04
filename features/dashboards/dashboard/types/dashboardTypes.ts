@@ -1,4 +1,5 @@
 import { User, ApiResponse } from "@/types";
+import { utcToLocalDateTime } from "@/lib/helpers";
 
 export type DashboardUser = User;
 
@@ -57,10 +58,12 @@ export type PatientAppointmentsResponse = ApiResponse<Appointment[]>;
 export type AppointmentDetailsResponse = ApiResponse<Appointment>;
 
 export function transformRawAppointment(raw: RawAppointmentData): Appointment {
+  // Backend returns start_time/end_time in UTC.
+  // Convert to local timezone for correct display.
   return {
     id: raw.id,
-    scheduledTime: `${raw.appointment_date}T${raw.start_time}`,
-    scheduledEndTime: `${raw.appointment_date}T${raw.end_time}`,
+    scheduledTime: utcToLocalDateTime(raw.appointment_date, raw.start_time),
+    scheduledEndTime: utcToLocalDateTime(raw.appointment_date, raw.end_time),
     status: raw.status,
     online: raw.is_online,
     doctor: {

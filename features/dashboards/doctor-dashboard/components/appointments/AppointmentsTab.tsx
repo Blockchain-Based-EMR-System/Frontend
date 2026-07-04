@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,8 +17,10 @@ import { DatePickerPopover } from "@/components/common/DatePickerPopover";
 import { useLanguage } from "@/contexts/LanguageProvider";
 import { AppointmentsTabSkeleton } from "../skeletons";
 import { Appointment } from "../../types/appointment.types";
+import { useSoapDraftStore } from "@/stores/useSoapDraftStore";
 
-const USE_DUMMY_DATA = false;
+
+const USE_DUMMY_DATA = true;
 
 const DUMMY_APPOINTMENTS: Appointment[] = [
   {
@@ -121,6 +123,34 @@ export function AppointmentsTab({}: AppointmentsTabProps) {
   const { locale } = useLanguage();
 
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+
+useEffect(() => {
+  if (!USE_DUMMY_DATA) return;
+
+  const { byAppointment, setDraft, setStatus } = useSoapDraftStore.getState();
+
+  // Only seed if not already present, so we don't stomp on local edits
+  // (the store persists to localStorage between reloads)
+  if (!byAppointment["dummy-3"]) {
+    setDraft("dummy-3", {
+      subjective: "Patient reports mild headache for 2 days, no fever.",
+      objective: "BP 120/80, temp 36.8°C, alert and oriented.",
+      assessment: "Tension-type headache, likely stress-related.",
+      plan: "OTC analgesics, follow up if symptoms persist beyond 5 days.",
+    });
+    setStatus("dummy-3", "confirmed"); // doctor already reviewed & confirmed it
+  }
+
+  if (!byAppointment["dummy-7"]) {
+    setDraft("dummy-7", {
+      subjective: "Patient reports sore throat and mild cough.",
+      objective: "Throat mildly erythematous, no exudate, afebrile.",
+      assessment: "Likely viral pharyngitis.",
+      plan: "Supportive care, hydration, review in 1 week if not resolved.",
+    });
+    // setDraft already sets status to "draft-ready" — doctor hasn't confirmed yet
+  }
+}, []);
 
   const formatDateForAPI = (date: Date): string => {
     const year = date.getFullYear();

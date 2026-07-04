@@ -2,6 +2,23 @@
   "title": "الإعدادات",
   "updateProfile": "تحديث الملف الشخصي",
   "changePassword": "تغيير كلمة المرور",
+  "generalSettings": "الإعدادات العامة",
+
+  "generalSection": {
+    "title": "الإعدادات العامة",
+    "description": "خصص مظهر التطبيق وتفضيلات اللغة الخاصة بك",
+    "languageTitle": "اللغة",
+    "languageDescription": "اختر اللغة المستخدمة في جميع أنحاء التطبيق",
+    "english": "الإنجليزية",
+    "arabic": "العربية",
+    "themeTitle": "السمة",
+    "themeDescription": "التبديل بين الوضع الفاتح والداكن",
+    "light": "فاتح",
+    "dark": "داكن",
+    "interactiveBackgroundTitle": "الخلفية التفاعلية",
+    "interactiveBackgroundDescription": "تمكين أو تعطيل تأثير الخلفية المتحركة",
+    "interactiveBackgroundLabel": "عرض الخلفية التفاعلية"
+  },
 
   "profileSection": {
     "title": "معلومات الملف الشخصي",

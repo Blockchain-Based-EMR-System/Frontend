@@ -38,6 +38,7 @@ export function SoapReviewContainer({
   const appointmentState = useSoapDraftStore(
     (state) => state.byAppointment[appointmentId],
   );
+  
   const setDraftField = useSoapDraftStore((state) => state.setDraftField);
 
   const draft = useMemo(() => {
@@ -64,6 +65,9 @@ export function SoapReviewContainer({
           setDraftField(appointmentId, field, value),
         onBack: () => router.push("/doctor-dashboard/appointments"),
         onConfirm: () => {
+          if (!appointmentState?.draft) return;
+          appointmentState.status = "confirmed";
+          router.push("/doctor-dashboard/appointments");
         },
         tSession,
         tCommon,

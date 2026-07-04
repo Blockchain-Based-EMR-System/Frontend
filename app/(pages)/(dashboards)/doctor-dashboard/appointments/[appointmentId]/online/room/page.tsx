@@ -22,10 +22,13 @@ export default function DoctorOnlineRoomPage() {
         appointmentId={params.appointmentId}
         routeRole="doctor"
         startAt={searchParams.get("startAt")}
+        endAt={searchParams.get("endAt")}
         initialMicId={searchParams.get("mic")}
         initialCamId={searchParams.get("cam")}
         initialMicOn={parseBoolean(searchParams.get("micOn"), true)}
         initialCamOn={parseBoolean(searchParams.get("camOn"), true)}
+        patientName={searchParams.get("patientName")}
+        patientPhoto={searchParams.get("patientPhoto")}
       >
         {(props) => <OnlineRoomPresentational {...props} />}
       </OnlineRoomContainer>

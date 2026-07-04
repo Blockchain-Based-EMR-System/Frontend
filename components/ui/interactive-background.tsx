@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/contexts/ThemeProvider";
 import type p5Types from "p5";
 
 class Particle {
@@ -35,7 +35,10 @@ class Particle {
     // Mouse interaction
     const d = this.p.dist(this.pos.x, this.pos.y, this.p.mouseX, this.p.mouseY);
     if (d < mouseDistance) {
-      const repulsion = this.p.createVector(this.pos.x - this.p.mouseX, this.pos.y - this.p.mouseY);
+      const repulsion = this.p.createVector(
+        this.pos.x - this.p.mouseX,
+        this.pos.y - this.p.mouseY,
+      );
       repulsion.normalize();
       repulsion.mult(0.05);
       this.vel.add(repulsion);
@@ -51,7 +54,7 @@ class Particle {
 }
 
 const InteractiveBackground = () => {
-  const { theme, systemTheme } = useTheme();
+  const { theme } = useTheme();
   const renderRef = useRef<HTMLDivElement>(null);
   const p5InstanceRef = useRef<p5Types | null>(null);
 
@@ -69,24 +72,23 @@ const InteractiveBackground = () => {
           const particleCount = 80;
           const connectionDistance = 120;
           const mouseDistance = 150;
-          
+
           let particleColor: p5Types.Color;
           let lineColor: p5Types.Color;
           let mouseLineColor: p5Types.Color;
           let packetColor: p5Types.Color;
 
           const updateColors = () => {
-            const currentTheme = theme === "system" ? systemTheme : theme;
-            const isDark = currentTheme === "dark";
-          
+            const isDark = theme === "dark";
+
             if (isDark) {
-              particleColor = p.color(200, 255, 255, 150); 
-              lineColor = p.color(64, 224, 208); 
+              particleColor = p.color(200, 255, 255, 150);
+              lineColor = p.color(64, 224, 208);
               mouseLineColor = p.color(255, 255, 255);
               packetColor = p.color(255, 200, 50, 200);
             } else {
-              particleColor = p.color(30, 60, 90, 150); 
-              lineColor = p.color(100, 120, 140); 
+              particleColor = p.color(30, 60, 90, 150);
+              lineColor = p.color(100, 120, 140);
               mouseLineColor = p.color(50, 50, 50);
               packetColor = p.color(255, 140, 0, 200);
             }
@@ -94,59 +96,85 @@ const InteractiveBackground = () => {
 
           p.setup = () => {
             p.createCanvas(p.windowWidth, p.windowHeight);
-            
+
             for (let i = 0; i < particleCount; i++) {
               particles.push(new Particle(p));
             }
-            
+
             updateColors();
           };
 
           p.draw = () => {
-            p.clear(); 
-            
+            p.clear();
+
             for (let i = 0; i < particles.length; i++) {
               particles[i].move(mouseDistance);
               particles[i].display(particleColor);
             }
-            
+
             connectParticles();
           };
 
           const connectParticles = () => {
             for (let i = 0; i < particles.length; i++) {
-             
               for (let j = i + 1; j < particles.length; j++) {
-                const d = p.dist(particles[i].pos.x, particles[i].pos.y, particles[j].pos.x, particles[j].pos.y);
+                const d = p.dist(
+                  particles[i].pos.x,
+                  particles[i].pos.y,
+                  particles[j].pos.x,
+                  particles[j].pos.y,
+                );
                 if (d < connectionDistance) {
                   const alpha = p.map(d, 0, connectionDistance, 150, 0);
-                  const c = p.color(p.red(lineColor), p.green(lineColor), p.blue(lineColor), alpha);
+                  const c = p.color(
+                    p.red(lineColor),
+                    p.green(lineColor),
+                    p.blue(lineColor),
+                    alpha,
+                  );
                   p.stroke(c);
                   p.strokeWeight(1);
-                  p.line(particles[i].pos.x, particles[i].pos.y, particles[j].pos.x, particles[j].pos.y);
+                  p.line(
+                    particles[i].pos.x,
+                    particles[i].pos.y,
+                    particles[j].pos.x,
+                    particles[j].pos.y,
+                  );
                 }
               }
-              
-              
-              const dMouse = p.dist(particles[i].pos.x, particles[i].pos.y, p.mouseX, p.mouseY);
-              if (dMouse < mouseDistance) {
-                 
-                  const alpha = p.map(dMouse, 0, mouseDistance, 150, 0);
-                  const c = p.color(p.red(mouseLineColor), p.green(mouseLineColor), p.blue(mouseLineColor), alpha);
-                  p.stroke(c);
-                  p.strokeWeight(1);
-                  p.line(particles[i].pos.x, particles[i].pos.y, p.mouseX, p.mouseY);
 
-                 
-                  const transferSpeed = 0.02; 
-                  const t = (p.frameCount * transferSpeed + i * 0.1) % 1.0; 
-                  
-                  const tx = p.lerp(particles[i].pos.x, p.mouseX, t);
-                  const ty = p.lerp(particles[i].pos.y, p.mouseY, t);
-                  
-                  p.noStroke();
-                  p.fill(packetColor); 
-                  p.ellipse(tx, ty, 4, 4); 
+              const dMouse = p.dist(
+                particles[i].pos.x,
+                particles[i].pos.y,
+                p.mouseX,
+                p.mouseY,
+              );
+              if (dMouse < mouseDistance) {
+                const alpha = p.map(dMouse, 0, mouseDistance, 150, 0);
+                const c = p.color(
+                  p.red(mouseLineColor),
+                  p.green(mouseLineColor),
+                  p.blue(mouseLineColor),
+                  alpha,
+                );
+                p.stroke(c);
+                p.strokeWeight(1);
+                p.line(
+                  particles[i].pos.x,
+                  particles[i].pos.y,
+                  p.mouseX,
+                  p.mouseY,
+                );
+
+                const transferSpeed = 0.02;
+                const t = (p.frameCount * transferSpeed + i * 0.1) % 1.0;
+
+                const tx = p.lerp(particles[i].pos.x, p.mouseX, t);
+                const ty = p.lerp(particles[i].pos.y, p.mouseY, t);
+
+                p.noStroke();
+                p.fill(packetColor);
+                p.ellipse(tx, ty, 4, 4);
               }
             }
           };
@@ -157,14 +185,12 @@ const InteractiveBackground = () => {
         };
 
         if (renderRef.current && isMounted) {
-            
-            if (p5InstanceRef.current) {
-                p5InstanceRef.current.remove();
-            }
-            
-            p5InstanceRef.current = new P5(sketch, renderRef.current);
-        }
+          if (p5InstanceRef.current) {
+            p5InstanceRef.current.remove();
+          }
 
+          p5InstanceRef.current = new P5(sketch, renderRef.current);
+        }
       } catch (error) {
         console.error("Error loading p5", error);
       }
@@ -179,9 +205,14 @@ const InteractiveBackground = () => {
         p5InstanceRef.current = null;
       }
     };
-  }, [theme, systemTheme]);
+  }, [theme]);
 
-  return <div ref={renderRef} className="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none bg-linear-to-br from-background to-muted" />;
+  return (
+    <div
+      ref={renderRef}
+      className="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none"
+    />
+  );
 };
 
 export default InteractiveBackground;

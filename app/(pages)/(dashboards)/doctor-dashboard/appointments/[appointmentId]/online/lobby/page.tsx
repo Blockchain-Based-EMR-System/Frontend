@@ -11,13 +11,17 @@ export default function DoctorOnlineLobbyPage() {
   const params = useParams<{ appointmentId: string }>();
   const searchParams = useSearchParams();
   const startAt = searchParams.get("startAt");
+  const endAt = searchParams.get("endAt");
 
   return (
     <DoctorDashboardContainer>
       <OnlineLobbyContainer
         appointmentId={params.appointmentId}
         startAt={startAt}
+        endAt={endAt}
         routeRole="doctor"
+        patientName={searchParams.get("patientName")}
+        patientPhoto={searchParams.get("patientPhoto")}
       >
         {(props) => <OnlineLobbyPresentational {...props} />}
       </OnlineLobbyContainer>

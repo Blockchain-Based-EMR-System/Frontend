@@ -22,7 +22,7 @@ import { useBookAppointment } from "../query/appointments.query";
 import { Loader2, Calendar, Clock, Video, Building2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/contexts/LanguageProvider";
-import { getTimeIn12HourFormat } from "@/lib/helpers";
+import { getTimeIn12HourFormat, buildLocalISOString } from "@/lib/helpers";
 
 interface BookAppointmentModalProps {
   isOpen: boolean;
@@ -52,14 +52,14 @@ export function BookAppointmentModal({
 
   const handleConfirm = async () => {
     try {
-      const [hours, minutes] = selectedSlot.start.split(":");
-      const dateTime = new Date(selectedDate);
-      dateTime.setHours(parseInt(hours) + 2, parseInt(minutes), 0, 0);
+      // Build ISO string with local timezone offset so the backend
+      // knows this is local time, not UTC
+      const scheduledTime = buildLocalISOString(selectedDate, selectedSlot.start);
 
       const bookingData = {
         doctorId: doctor.id,
         clinicId: clinic?.id || null,
-        scheduledTime: dateTime.toISOString(),
+        scheduledTime,
       };
 
       console.log(

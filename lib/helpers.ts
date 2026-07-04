@@ -32,7 +32,6 @@ export const getTimeIn12HourFormat = (
 ): string => {
   if (!time || time === "undefined:undefined") return "";
 
-  // Handle full ISO datetime strings like "2026-03-09T01:35" or "2026-03-09T01:35:00"
   const timePart = time.includes("T") ? time.split("T")[1] : time;
 
   const [hourStr, minute] = timePart.split(":");
@@ -79,4 +78,40 @@ export const formatDate = (dateString: string, locale?: string) => {
   } catch {
     return "";
   }
+};
+
+/**
+ * Builds a local datetime ISO string with timezone offset (e.g. "2026-06-28T22:25:00+03:00").
+ * Use this when sending datetime strings to the backend to preserve the user's local time.
+ * Without the offset, the backend may interpret the datetime as UTC.
+ */
+export const buildLocalISOString = (
+  date: string,
+  time: string,
+): string => {
+  const offset = -new Date().getTimezoneOffset();
+  const sign = offset >= 0 ? "+" : "-";
+  const absOffset = Math.abs(offset);
+  const hours = String(Math.floor(absOffset / 60)).padStart(2, "0");
+  const minutes = String(absOffset % 60).padStart(2, "0");
+  return `${date}T${time}:00${sign}${hours}:${minutes}`;
+};
+
+/**
+ * Converts a UTC date and time to a local datetime ISO string.
+ * The backend stores and returns times in UTC, so this function
+ * converts them to the user's local timezone for correct display.
+ * e.g. utcToLocalDateTime("2026-06-28", "19:25") → "2026-06-28T22:25:00" (in UTC+3)
+ */
+export const utcToLocalDateTime = (
+  utcDate: string,
+  utcTime: string,
+): string => {
+  const utc = new Date(`${utcDate}T${utcTime}:00Z`);
+  const y = utc.getFullYear();
+  const mo = String(utc.getMonth() + 1).padStart(2, "0");
+  const d = String(utc.getDate()).padStart(2, "0");
+  const h = String(utc.getHours()).padStart(2, "0");
+  const mi = String(utc.getMinutes()).padStart(2, "0");
+  return `${y}-${mo}-${d}T${h}:${mi}:00`;
 };

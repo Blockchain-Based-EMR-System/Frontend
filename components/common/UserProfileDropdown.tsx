@@ -106,7 +106,7 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
 
               <DropdownMenuItem asChild>
                 <Link
-                  href="/settings/profile"
+                  href="/settings/general"
                   className={`cursor-pointer flex items-center ${isOnSettings ? "text-primary" : ""}`}
                 >
                   <Settings className= {`h-4 w-4 ltr:mr-2 rtl:ml-2 ${isOnSettings ? "text-primary" : ""}`} />
@@ -170,7 +170,7 @@ export function UserProfileDropdown({ user }: UserProfileDropdownProps) {
               className="w-full justify-start"
               asChild
             >
-              <Link href="/settings/profile" className={`flex items-center ${isOnSettings ? "text-primary" : ""}`}>
+              <Link href="/settings/general" className={`flex items-center ${isOnSettings ? "text-primary" : ""}`}>
                 <Settings className={ `h-4 w-4 ltr:mr-2 rtl:ml-2 ${isOnSettings ? "text-primary" : ""}` } />
                 {tCommon("settings")}
               </Link>

@@ -15,6 +15,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Appointment } from "../../types/appointment.types";
 import { useRescheduleAppointment } from "../../query/useAppointments.query";
+import { utcToLocalDateTime, getTimeIn12HourFormat } from "@/lib/helpers";
+import { useLanguage } from "@/contexts/LanguageProvider";
 
 interface RescheduleAppointmentDialogProps {
   appointment: Appointment;
@@ -31,6 +33,7 @@ export function RescheduleAppointmentDialog({
 }: RescheduleAppointmentDialogProps) {
   const t = useTranslations("doctorDashboard.appointments");
   const tCommon = useTranslations("common");
+  const { locale } = useLanguage();
 
   const [minutes, setMinutes] = useState<number>(15);
 
@@ -72,7 +75,10 @@ export function RescheduleAppointmentDialog({
           <DialogDescription>
             {t("rescheduleDescription", {
               patient: appointment.patient_name,
-              time: appointment.start_time,
+              time: getTimeIn12HourFormat(
+                utcToLocalDateTime(appointment.appointment_date, appointment.start_time),
+                locale,
+              ),
             })}
           </DialogDescription>
         </DialogHeader>
@@ -96,7 +102,13 @@ export function RescheduleAppointmentDialog({
             <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-md">
               <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
                 {t("newTime")}:{" "}
-                {calculateNewTime(appointment.start_time, minutes)}
+                {getTimeIn12HourFormat(
+                  calculateNewTime(
+                    utcToLocalDateTime(appointment.appointment_date, appointment.start_time),
+                    minutes,
+                  ),
+                  locale,
+                )}
               </p>
             </div>
           )}
@@ -127,7 +139,9 @@ export function RescheduleAppointmentDialog({
 }
 
 function calculateNewTime(startTime: string, minutesToAdd: number): string {
-  const [hours, minutes] = startTime.split(":").map(Number);
+  // startTime may be a full datetime string or just HH:MM
+  const timePart = startTime.includes("T") ? startTime.split("T")[1] : startTime;
+  const [hours, minutes] = timePart.split(":").map(Number);
   const totalMinutes = hours * 60 + minutes + minutesToAdd;
   const newHours = Math.floor(totalMinutes / 60) % 24;
   const newMinutes = totalMinutes % 60;

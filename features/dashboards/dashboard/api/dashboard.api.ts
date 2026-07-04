@@ -32,7 +32,7 @@ export const getTodayAppointment = async (): Promise<Appointment | null> => {
   const now = Date.now();
 
   const getTime = (a: (typeof list)[number]) =>
-    new Date(`${a.appointment_date}T${a.start_time}`).getTime();
+    new Date(`${a.appointment_date}T${a.start_time}Z`).getTime();
   const confirmed = list.filter((a) => a.status === "CONFIRMED");
   const pickClosest = (candidates: typeof list) => {
     const upcoming = candidates.filter((a) => getTime(a) >= now);

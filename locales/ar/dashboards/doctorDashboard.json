@@ -227,8 +227,9 @@
       "uploading": "جارٍ الرفع",
       "processing": "جارٍ التحليل",
       "draft-ready": "مسودة SOAP جاهزة",
-      "confirmed": "تم التأكيد",
-      "failed": "فشل"
+      "failed": "فشل",
+      "idle": "خامل",
+      "confirmed": "تم حفظ الSOAP"
     },
     "permissions": {
       "microphoneDenied": "يلزم السماح بالميكروفون لبدء التسجيل.",
@@ -236,6 +237,8 @@
     },
     "errors": {
       "recordingStartFailed": "تعذر بدء التسجيل. يرجى التحقق من إعدادات الميكروفون.",
+      "recordingNotSupported": "هذا المتصفح لا يدعم التسجيل التلقائي.",
+      "recordingTrackMissing": "تعذر بدء التسجيل لأن مسار الميكروفون غير جاهز بعد.",
       "offlineProcessingFailed": "تعذر رفع أو معالجة التسجيل. حاول مرة أخرى.",
       "processingQueued": "تم رفع التسجيل. سيستمر إنشاء SOAP عند توفر كل التسجيلات المطلوبة.",
       "joinFailed": "تعذر الانضمام إلى غرفة الجلسة.",
@@ -251,7 +254,7 @@
       "participant": "مشارك",
       "you": "أنت",
       "waitingForParticipant": "بانتظار الطرف الآخر",
-      "autoRecordingNotice": "يبدأ التسجيل تلقائيًا عند دخول الطبيب والمريض ويتوقف عند مغادرة الطبيب.",
+      "autoRecordingNotice": "يبدأ التسجيل تلقائيًا بمجرد دخول الطرفين إلى الجلسة ويستمر حتى انتهاء الاستشارة.",
       "micOn": "الميكروفون يعمل",
       "micOff": "الميكروفون متوقف",
       "camOn": "الكاميرا تعمل",
@@ -259,7 +262,32 @@
       "chat": "المحادثة المباشرة",
       "chatEmpty": "لا رسائل بعد. قل مرحبًا!",
       "messagePlaceholder": "اكتب رسالة…",
-      "sendMessage": "إرسال"
+      "sendMessage": "إرسال",
+      "consentTitle": "الموافقة على التسجيل",
+      "consentDescription": "ستُسجَّل هذه الاستشارة لتحسين جودة الجلسة مع الحفاظ على أمان بياناتك بشكل مُحكم.",
+      "acceptAndJoin": "أوافق والانضمام",
+      "stayInLobby": "البقاء في غرفة الانتظار",
+      "leaveDialogTitle": "مغادرة الاستشارة",
+      "leaveDialogDescription": "اختر ما إذا كنت تريد مغادرة الاستشارة فقط أو إنهاءها للجميع.",
+      "leaveOnly": "مغادرة",
+      "leaveAndEnd": "مغادرة وإنهاء الاستشارة",
+      "extendMeeting": "تمديد الجلسة",
+      "extendDialogTitle": "تمديد الاستشارة",
+      "extendDialogDescription": "اختر خياراً سريعاً أو أدخل مدة مخصصة بالدقائق. يجب أن تكون القيمة بين 1 و {maxMinutes} دقيقة.",
+      "extendPresetsLabel": "خيارات سريعة",
+      "extendMinutesLabel": "{count} دقيقة",
+      "extendCustomLabel": "دقائق مخصصة",
+      "extendCustomPlaceholder": "أدخل الدقائق",
+      "extendCustomHint": "يجب أن تكون القيمة المخصصة أكبر من 0 وأقل من {maxMinutes}.",
+      "extendCustomError": "يرجى إدخال رقم صحيح بين 1 و {maxMinutes}.",
+      "confirmExtend": "تمديد لمدة {minutes} دقيقة",
+      "extending": "جاري التمديد...",
+      "extendedSuccessfully": "تم تمديد الاستشارة لمدة {minutes} دقيقة.",
+      "ended": "انتهت الاستشارة",
+      "terminatedDescription": "انتهت هذه الاستشارة ولم يعد يمكن فتحها مرة أخرى.",
+      "rejoinDisabled": "هذه الاستشارة لم تعد متاحة.",
+      "recordingNotice": "يستمر التسجيل طالما أن الاستشارة نشطة.",
+      "cancel": "إلغاء"
     },
     "offline": {
       "title": "مسجل الجلسة الحضورية",
@@ -305,7 +333,9 @@
       "objective": "الملاحظات الموضوعية",
       "assessment": "التقييم",
       "plan": "الخطة",
-      "confirmPending": "نقطة التأكيد غير متاحة بعد"
+      "confirmPending": "نقطة التأكيد غير متاحة بعد",
+      "confirm": "حفظ التعديلات",
+      "confirming": "جارٍ حفظ التعديلات..."
     },
     "soapOffline": {
       "title": "ملخص الزيارة",

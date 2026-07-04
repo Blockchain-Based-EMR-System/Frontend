@@ -56,7 +56,11 @@ export function DashboardPresentational({
   const sessionStart = useMemo(() => {
     return parseAppointmentStart(todayAppointment?.scheduledTime || "");
   }, [todayAppointment?.scheduledTime]);
+  const sessionEnd = useMemo(() => {
+    return parseAppointmentStart(todayAppointment?.scheduledEndTime || "");
+  }, [todayAppointment?.scheduledEndTime]);
   const gate = useSessionGate(sessionStart, 5);
+  const isSessionEnded = !!sessionEnd && Date.now() >= sessionEnd.getTime();
 
   if (isLoading || !user) {
     return <DashboardSkeleton />;
@@ -89,14 +93,29 @@ export function DashboardPresentational({
     (todayAppointment?.status === "CONFIRMED" ||
       todayAppointment?.status === "RESCHEDULED");
   const showTodayMeetingCountdown =
-    canJoinTodaySession && !!sessionStart && !gate.hasStarted;
+    canJoinTodaySession &&
+    !!sessionStart &&
+    !gate.hasStarted &&
+    !isSessionEnded;
 
   const onJoinTodaySession = () => {
-    if (!todayAppointment || !sessionStart) return;
+    if (!todayAppointment || !sessionStart || isSessionEnded) return;
 
     const params = new URLSearchParams({
       startAt: sessionStart.toISOString(),
     });
+
+    if (sessionEnd) {
+      params.set("endAt", sessionEnd.toISOString());
+    }
+
+    if (todayAppointment.doctor?.name) {
+      params.set("doctorName", todayAppointment.doctor.name);
+    }
+
+    if (todayAppointment.doctor?.profilePic) {
+      params.set("doctorPhoto", todayAppointment.doctor.profilePic);
+    }
 
     router.push(
       `/dashboard/appointments/${todayAppointment.id}/online/lobby?${params.toString()}`,
@@ -227,11 +246,13 @@ export function DashboardPresentational({
                     <>
                       <Button
                         onClick={onJoinTodaySession}
-                        disabled={gate.isTooEarly}
+                        disabled={gate.isTooEarly || isSessionEnded}
                         className="w-full sm:w-auto"
                       >
                         <Video className="h-4 w-4 mr-2" />
-                        {tDashboard("joinSession")}
+                        {isSessionEnded
+                          ? tDashboard("sessionEnded")
+                          : tDashboard("joinSession")}
                       </Button>
                       {showTodayMeetingCountdown && (
                         <p className="text-xs text-muted-foreground">
