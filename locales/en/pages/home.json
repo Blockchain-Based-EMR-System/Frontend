@@ -1,0 +1,89 @@
+{
+  "hero": {
+    "badge": "Blockchain-Secured Healthcare",
+    "titleSub1": "One Platform.",
+    "titleSub2": "Complete Care.",
+    "titleHighlight": "MedicBridge",
+    "description": "Experience the future of healthcare with blockchain-secured medical records, AI-powered consultations, and seamless appointment scheduling - all in one platform.",
+    "bookAppointment": "Book Appointment",
+    "joinAsDoctor": "Join as Doctor",
+    "stats": {
+      "doctors": "Verified Doctors",
+      "patients": "Active Patients",
+      "appointments": "Appointments Completed"
+    }
+  },
+  "features": {
+    "blockchainBadge": "Blockchain Technology",
+    "blockchainTitle": "Secured by Blockchain",
+    "blockchainDescription": "Your medical data is protected with cutting-edge blockchain technology, ensuring an extra layer of security, immutability, and a robust distributed system that you can trust.",
+    "popular": "Popular",
+    "new": "New",
+    "aiPowered": "AI Powered",
+    "patientFeatures": "For Easy & Efficient Care, we Offer:",
+    "doctorFeatures": "For Doctors, we Offer:",
+    "offlineAppointments": {
+      "title": "Offline Appointments",
+      "description": "Schedule appointments with verified doctors at multiple clinics. Choose your preferred doctor, clinic, and time slot that fits your schedule."
+    },
+    "onlineAppointments": {
+      "title": "Online Consultations",
+      "description": "Connect with doctors virtually from anywhere. Get medical consultations through secure video calls without leaving your home."
+    },
+    "queueTracker": {
+      "title": "Real-Time Queue Tracker",
+      "description": "Know your exact position in the queue and the number of patients ahead. Minimize waiting time and plan your visit efficiently."
+    },
+    "userPortal": {
+      "title": "Unified Health Portal",
+      "description": "Store all your medical data, scans, lab results, and medications in one secure place. Share your complete medical history with doctors instantly."
+    },
+    "medicineAlerts": {
+      "title": "Medicine Reminders",
+      "description": "Set medication schedules with smart alerts. Track your medication adherence and never miss a dose with our intelligent reminder system."
+    },
+    "dailyTracking": {
+      "title": "Daily Health Tracking",
+      "description": "Log daily symptoms, pain levels, and health metrics. Monitor your condition over time and provide doctors with detailed health insights."
+    },
+    "aiSummary": {
+      "title": "AI Session Summary",
+      "description": "Automatically generate comprehensive SOAP-format session summaries using AI. Save time on documentation while maintaining detailed medical records."
+    },
+    "drugConflict": {
+      "title": "Drug Conflict Detection",
+      "description": "Digital prescription system with built-in drug interaction checker. Ensure patient safety by avoiding harmful medication combinations."
+    },
+    "chatbot": {
+      "title": "AI Medical Assistant",
+      "description": "Get instant answers about patient history and medical queries during consultations. AI-powered assistant helps you make informed decisions."
+    }
+  },
+  "howItWorks": {
+    "title": "How It Works",
+    "description": "Getting started with MedicBridge is simple. Follow these four easy steps to begin your healthcare journey.",
+    "step1": {
+      "title": "Create Account",
+      "description": "Sign up in minutes with your basic information."
+    },
+    "step2": {
+      "title": "Find Your Doctor",
+      "description": "Browse through our network of verified doctors."
+    },
+    "step3": {
+      "title": "Schedule Appointment",
+      "description": "Book online or offline appointments as you prefer."
+    },
+    "step4": {
+      "title": "Attend Consultation",
+      "description": "Meet your doctor online or in-person."
+    }
+  },
+  "cta": {
+    "badge": "Join MedicBridge Today",
+    "title": "Ready to Transform Your Healthcare Experience?",
+    "description": "Join patients and doctors who trust MedicBridge for secure, efficient, and modern healthcare management.",
+    "getStarted": "Join us Now",
+    "signIn": "Sign In"
+  }
+}

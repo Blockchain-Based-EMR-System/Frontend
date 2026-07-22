@@ -1,0 +1,74 @@
+{
+  "title": "لوحة تحكم الممرضة",
+  "dashboard": "لوحة التحكم",
+  "applicationsTab": "طلباتي",
+  "scheduleTab": "جدولي",
+  "appointmentsTab": "المواعيد",
+
+  "overview": {
+    "title": "مرحباً بعودتك",
+    "subtitle": "إليك ملخص نشاطك"
+  },
+
+  "stats": {
+    "totalApplications": "طلباتي",
+    "approvedCount": "{count} مقبول",
+    "clinicsCount": "العيادات التي أعمل فيها",
+    "doctorsCount": "الأطباء الذين أعمل معهم",
+    "fromSchedule": "من جدولي"
+  },
+
+  "applications": {
+    "title": "طلباتي",
+    "subtitle": "تابع حالة طلبات التوظيف الخاصة بك",
+    "noApplications": "لا توجد طلبات حتى الآن",
+    "noApplicationsDesc": "تصفح الإعلانات وتقدم للمناصب التي تناسب ملفك الشخصي",
+    "browseAnnouncements": "تصفح الإعلانات",
+    "status": {
+      "PENDING": "قيد الانتظار",
+      "APPROVED": "مقبول",
+      "REJECTED": "مرفوض"
+    },
+    "appliedOn": "تقدم في",
+    "workingDays": "أيام العمل"
+  },
+
+  "schedule": {
+    "title": "جدولي",
+    "subtitle": "مهام عملك المعتمدة",
+    "noSchedule": "لم يتم تعيين جدول",
+    "noScheduleDesc": "سيظهر جدولك هنا بمجرد قبول طلبك",
+    "workingDays": "أيام العمل",
+    "viewOnMaps": "عرض على الخريطة"
+  },
+
+  "appointments": {
+    "title": "المواعيد",
+    "subtitle": "عرض مواعيد الطبيب في يوم محدد",
+    "selectPair": "اختر الطبيب والعيادة",
+    "selectPairDesc": "اختر  الطبيب والعيادة",
+    "selectDate": "اختر التاريخ",
+    "confirm": "تأكيد",
+    "changePair": "تغيير",
+    "noAppointments": "لا توجد مواعيد",
+    "noAppointmentsDesc": "لا توجد مواعيد لهذا الطبيب في التاريخ المحدد",
+    "patient": "المريض",
+    "phone": "الهاتف",
+    "time": "الوقت",
+    "duration": "المدة",
+    "minutes": "دقيقة",
+    "status": {
+      "CONFIRMED": "مؤكد",
+      "PENDING": "قيد الانتظار",
+      "COMPLETED": "مكتمل",
+      "CANCELLED": "ملغى"
+    },
+    "markComplete": "تحديد كمكتمل",
+    "completing": "جاري الإكمال...",
+    "completed": "مكتمل"
+  },
+
+  "socket": {
+    "appointmentStatusChanged": "تغيرت حالة الموعد رقم #{id} إلى {status}"
+  }
+}

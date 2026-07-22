@@ -1,0 +1,62 @@
+{
+  "welcome": "Welcome",
+  "settings": "Settings",
+  "logout": "Logout",
+
+  "clinics": "Clinics",
+  "contactUs": "Contact Us",
+  "joinAsDoctor": "Join as a Doctor",
+  "join": "Join",
+  "joinAsNurse": "Join as a Nurse",
+  "announcements": "Announcements",
+
+  "loading": "Loading...",
+  "sending": "Sending...",
+  "resetting": "Resetting...",
+  "completing": "Completing...",
+  "verifing": "Verifying...",
+  "submitting": "Submitting...",
+  "creating": "Creating",
+  "deleting": "Deleting...",
+  "updating": "Updating...",
+
+  "error": "Error",
+  "success": "Success",
+
+  "cancel": "Cancel",
+  "save": "Save",
+  "create": "Create",
+  "delete": "Delete",
+  "edit": "Edit",
+  "view": "View",
+  "search": "Search",
+  "filter": "Filter",
+  "export": "Export",
+  "import": "Import",
+  "verify": "Verify",
+  "reject": "Reject",
+  "submit": "Submit",
+  "complete": "Complete",
+  "navigation": "Navigation Menu",
+
+  "allRightsReserved": "All rights reserved.",
+  "slogan": "One Platform. Complete Care.",
+
+  "actions": "Actions",
+  "accountStatus": "Account Status",
+  "verified": "Verified",
+  "notVerified": "Not Verified",
+  "approved": "Approved",
+  "pending": "Pending",
+  "rejected": "Rejected",
+  "completed": "Completed",
+  "incomplete": "Incomplete",
+  "unknown": "Unknown",
+
+  "next": "Next",
+  "previous": "Previous",
+
+  "doctor": "Dr. ",
+
+  "egp": "EGP"
+}

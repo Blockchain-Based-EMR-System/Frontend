@@ -1,0 +1,74 @@
+{
+  "title": "Nurse Dashboard",
+  "dashboard": "Dashboard",
+  "applicationsTab": "My Applications",
+  "scheduleTab": "My Schedule",
+  "appointmentsTab": "Appointments",
+
+  "overview": {
+    "title": "Welcome back",
+    "subtitle": "Here is a summary of your activity"
+  },
+
+  "stats": {
+    "totalApplications": "My Applications",
+    "approvedCount": "{count} approved",
+    "clinicsCount": "Clinics I Work At",
+    "doctorsCount": "Doctors I Work With",
+    "fromSchedule": "from my schedule"
+  },
+
+  "applications": {
+    "title": "My Applications",
+    "subtitle": "Track the status of your job applications",
+    "noApplications": "No applications yet",
+    "noApplicationsDesc": "Browse announcements and apply to positions that match your profile",
+    "browseAnnouncements": "Browse Announcements",
+    "status": {
+      "PENDING": "Pending",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected"
+    },
+    "appliedOn": "Applied",
+    "workingDays": "Working Days"
+  },
+
+  "schedule": {
+    "title": "My Schedule",
+    "subtitle": "Your approved work assignments",
+    "noSchedule": "No schedule assigned",
+    "noScheduleDesc": "Your schedule will appear here once your application is approved",
+    "workingDays": "Working Days",
+    "viewOnMaps": "View on Maps"
+  },
+
+  "appointments": {
+    "title": "Appointments",
+    "subtitle": "View appointments for a doctor and date",
+    "selectPair": "Select Doctor & Clinic",
+    "selectPairDesc": "Choose the doctor and the-clinic",
+    "selectDate": "Select Date",
+    "confirm": "Confirm",
+    "changePair": "Change",
+    "noAppointments": "No appointments found",
+    "noAppointmentsDesc": "There are no appointments for this doctor on the selected date",
+    "patient": "Patient",
+    "phone": "Phone",
+    "time": "Time",
+    "duration": "Duration",
+    "minutes": "min",
+    "status": {
+      "CONFIRMED": "Confirmed",
+      "PENDING": "Pending",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    },
+    "markComplete": "Mark Complete",
+    "completing": "Completing...",
+    "completed": "Completed"
+  },
+
+  "socket": {
+    "appointmentStatusChanged": "Appointment #{id} status changed to {status}"
+  }
+}

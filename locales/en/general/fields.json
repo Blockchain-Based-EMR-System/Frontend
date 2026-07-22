@@ -1,0 +1,122 @@
+{
+  "name": "Name",
+  "namePlaceholder": "Enter the name",
+  "nameMinLength": "Name must be at least 2 characters",
+
+  "email": "Email",
+  "emailPlaceholder": "Enter the email",
+  "emailRequired": "Email is required",
+  "invalidEmail": "Invalid email address",
+
+  "username": "Username",
+
+  "emailOrUsername": "Email / Username",
+  "emailOrUsernamePlaceholder": "Enter your email or username",
+
+  "password": "Password",
+  "passwordPlaceholder": "Enter the password",
+  "passwordTooLong": "Password must be less than 32 characters",
+  "passwordRequired": "Password is required",
+  "passwordTooShort": "Password must be at least 8 characters",
+  "passwordsMustMatch": "Passwords must match",
+  "passwordsDoNotMatch": "Passwords do not match",
+  "confirmPasswordRequired": "Please confirm your password",
+  "passwordMismatch": "Passwords must match",
+  "passwordMinLength": "Password must be at least 6 characters",
+  "phoneMinLength": "Phone number must be at least 10 digits",
+
+  "confirmPassword": "Confirm Password",
+  "confirmPasswordPlaceholder": "Confirm the password",
+
+  "newPassword": "New Password",
+  "newPasswordPlaceholder": "Enter the new password",
+
+  "fullName": "Full Name",
+  "fullNamePlaceholder": "Enter the full name",
+  "fullNameRequired": "Full name is required",
+
+  "phoneNumber": "Phone Number",
+  "phoneNumberPlaceholder": "Enter the phone number",
+  "phoneNumberRequired": "Phone number is required",
+  "phoneNumberMustBe11Digits": "Phone number must be exactly 11 digits",
+  "invalidPhoneNumberFormat": "Phone number must start with 010, 011, 012, or 015",
+  "phoneNumberTooShort": "Phone number must be at least 10 digits",
+  "invalidPhoneNumber": "Invalid phone number format",
+
+  "forgotPassword": "Forgot Password?",
+  "forgotPasswordDescription": "Enter your email address and we'll send you a link to reset your password.",
+
+  "gender": "Gender",
+  "genderRequired": "Please select your gender",
+  "selectGender": "Select your gender",
+  "male": "Male",
+  "female": "Female",
+
+  "dateOfBirth": "Date of Birth",
+  "pickDate": "Pick a date",
+  "pickDateOfBirth": "Pick your date of birth",
+  "dateOfBirthRequired": "Date of birth is required",
+  "invalidDate": "Invalid date",
+
+  "rememberMe": "Remember me",
+  "specialization": "Specialization",
+
+  "uploadPDF": "Upload PDF",
+  "chooseFile": "Choose file",
+  "fileUploaded": "File uploaded successfully",
+  "removeFile": "Remove file",
+  "noFileChosen": "No file chosen",
+  "changeFile": "Change file",
+  "fileRequired": "This file is required",
+  "fileTooLarge": "File size must be less than 5MB",
+  "onlyPDFAllowed": "Only PDF files are allowed",
+
+  "clinicName": "Clinic Name",
+  "clinicNameRequired": "Clinic name is required",
+  "clinicNameMinLength": "Clinic name must be at least 2 characters",
+
+  "address": "Address",
+  "addressRequired": "Address is required",
+  "addressMinLength": "Address must be at least 5 characters",
+
+  "addressMapsLink": "Google Maps Link",
+  "invalidUrl": "Invalid URL format",
+
+  "openingTime": "Opening Time",
+  "openingTimeRequired": "Opening time is required",
+  "closingTime": "Closing Time",
+  "closingTimeRequired": "Closing time is required",
+  "invalidTimeFormat": "Invalid time format (HH:mm)",
+  "closingMustBeAfterOpening": "Closing time must be after opening time",
+
+  "fees": "Fees",
+  "feesRequired": "Fees are required",
+  "feesMinValue": "Fees must be a positive number",
+
+  "slotDuration": "Slot Duration",
+  "slotDurationRequired": "Slot duration is required",
+  "slotDurationMinValue": "Slot duration must be at least 5 minutes",
+  "slotDurationMaxValue": "Slot duration must be less than 120 minutes",
+
+  "bufferTime": "Buffer Time",
+  "bufferTimeRequired": "Buffer time is required",
+  "bufferTimeMinValue": "Buffer time must be at least 0 minutes",
+  "bufferTimeMaxValue": "Buffer time must be less than 60 minutes",
+
+  "intervalStart": "Interval Start",
+  "intervalEnd": "Interval End",
+  "intervalStartRequired": "Interval start time is required",
+  "intervalEndRequired": "Interval end time is required",
+  "intervalEndMustBeAfterStart": "Interval end time must be after start time",
+  "intervalsOverlap": "Offline and online intervals must not overlap",
+  "intervalOutsideWorkingHours": "Offline interval must be within clinic working hours",
+
+  "availabilityType": "Availability Type",
+  "selectAvailabilityType": "Select your availability type",
+  "availabilityTypeRequired": "Availability type is required",
+  "online": "Online",
+  "offline": "Offline",
+  "both": "Both",
+
+  "optional": "optional"
+}
