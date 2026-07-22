@@ -12,6 +12,13 @@ A blockchain-based Electronic Health Record (EHR) system that links clinics toge
 
 ---
 
+
+<div align="center">
+
+<video src="https://github.com/user-attachments/assets/18c04851-016d-4881-91bd-b6c5f5596593" controls width="800"></video>
+
+</div>
+
 ## Table of Contents
 
 - [Core Features](#core-features)
@@ -222,10 +229,10 @@ Please ensure your code follows the existing feature-based architecture and pass
 
 ## Team
 
-| Name | Link |
+| Name | Contact |
 |---|---|
 | **Kareem Abdel Nabi** | [kareem-abdelnabi.vercel.app](https://kareem-abdelnabi.vercel.app/) |
-| **Enjy Ashraf** | — |
+| **Enjy Ashraf** | [enjyashraf18@gmail.com](mailto:enjyashraf18@gmail.com) |
 | **Salah Mohamed** | — |
 | **Youssef Aboelella** | — |
 
